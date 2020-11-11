@@ -4,6 +4,10 @@ import engine.Board;
 import engine.Piece;
 import engine.MoveGenerator;
 
+/*
+ * This class Tests rook movement, this is going to become depricated soon with a class to test all piece movement. 
+ */
+
 public class RookMoveTest {
 	public static void CheckRookMoves() {
 		Board b = NullBoardMaker.genNullBoard(8);

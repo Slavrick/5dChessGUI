@@ -28,6 +28,7 @@ public class MoveGenerator {
 	
 	public static ArrayList<CoordFive> getRiderMoves(GameState g, CoordFive sourceCoord, CoordFive movementVec){
 		ArrayList<CoordFive> destCoords = new ArrayList<CoordFive>();
+		
 		return destCoords; //@TODO get this thing working
 	}
 	

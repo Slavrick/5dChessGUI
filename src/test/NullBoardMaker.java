@@ -1,7 +1,8 @@
 package test;
 import engine.Board;
-import engine.Piece;
-
+/*
+ * A class to make a blank board. This is largely depricated due to the creation of the FEN parser
+ */
 public class NullBoardMaker {
 
 	public static Board genNullBoard(int width) {

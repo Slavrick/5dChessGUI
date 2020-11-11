@@ -112,7 +112,21 @@ public class MoveNotation {
 	};
 	
 	public static final CoordFive[] KnightMovement = {
+			new CoordFive(2,1,0,0),
+			new CoordFive(-2,1,0,0),
+			new CoordFive(2,-1,0,0),
+			new CoordFive(-2,-1,0,0),
 			
+			new CoordFive(1,2,0,0),
+			new CoordFive(1,2,0,0),
+			new CoordFive(2,1,0,0),
+			new CoordFive(2,-1,0,0),
+			new CoordFive(2,1,0,0),
+			new CoordFive(2,-1,0,0),
+			new CoordFive(2,1,0,0),
+			new CoordFive(2,-1,0,0),
+			new CoordFive(2,1,0,0),
+			new CoordFive(2,-1,0,0),
 	};
 	
 	public static final CoordFive[] pawnMovement = {
