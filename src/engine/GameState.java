@@ -24,7 +24,7 @@ public class GameState {
 		maxTL = 0;
 		tlHandicap = 0;
 	}
-	
+
 	public GameState(Timeline starter) {
 		multiverse = new ArrayList<Timeline>();
 		multiverse.add(starter);
@@ -33,10 +33,10 @@ public class GameState {
 		tlHandicap = 0;
 		color = true;
 	}
-	
+
 	public GameState(Timeline[] starters) {
 		multiverse = new ArrayList<Timeline>();
-		for(Timeline t : starters)
+		for (Timeline t : starters)
 			multiverse.add(t);
 		minTL = 0;
 		maxTL = 0;
@@ -45,31 +45,32 @@ public class GameState {
 	}
 
 	public boolean makeTurn(Move move) {
-		Move[] moves = {move};
+		Move[] moves = { move };
 		return makeTurn(moves);
-	}	
-	
+	}
+
 	public boolean makeTurn(Move[] moves) {
 		for (Move m : moves) {
-			if (m.type == 1) {
+			if (m.type == 1) { // if the move is spatial
 				getTimeline(m.origin.L).addSpatialMove(m, color);
 			} else {
 				Timeline tlOrigin = getTimeline(m.origin.L);
 				Timeline tldest = getTimeline(m.origin.L);
 				int pieceMoved = tlOrigin.addJumpingMove(m.origin, color);
 				Board b = tldest.addJumpingMoveDest(m.dest, color, pieceMoved);
-				if (b != null) {//@todo add retroactive activation.
+				if (b != null) { // means that the move branches.
 					if (color) {
 						maxTL++;
 						Timeline branch = new Timeline(b, !color, m.dest.T, maxTL);
 						branch.active = (maxTL <= ((minTL * -1) + 1 + tlHandicap));
 						multiverse.add(branch);
+						determineActiveTimelines();
 					} else {
 						minTL--;
 						Timeline branch = new Timeline(b, !color, m.dest.T + 1, minTL);
 						branch.active = ((-1 * minTL) <= (maxTL + 1 + tlHandicap));
-						multiverse.add(0,branch);
-						
+						multiverse.add(0, branch);
+
 					}
 				}
 			}
@@ -78,6 +79,15 @@ public class GameState {
 		return true;
 	}
 
+	private boolean validateTurn(Move[] turn){
+		for(int i = minActiveTL - minTL; i < maxActiveTL; i++) {
+			if(multiverse.get(i).colorPlayable == color && multiverse.get(i).Tend <= present) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
 	public boolean isInBounds(CoordFive c, boolean boardColor) {
 		if (c.L > maxTL || c.L < minTL) {
 			return false;
@@ -100,9 +110,13 @@ public class GameState {
 		return multiverse.get(c.L + (-1 * minTL)).getBoard(c.T, boardColor);
 	}
 
+	public void determineActiveTimelines() {
+
+	}
+
 	public void printMultiverse() {
 		int tl = minTL;
-		for(Timeline t: multiverse) {
+		for (Timeline t : multiverse) {
 			System.out.println("----------------------TL" + tl + "----------------------");
 			t.printTimleline();
 			tl++;

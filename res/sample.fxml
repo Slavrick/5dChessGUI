@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+
+
+<AnchorPane fx:id="rootAnchor" prefHeight="200" prefWidth="320" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+    <children>
+        <Label text="Username" layoutX="20" layoutY="35" />
+        <Label text="Password" layoutX="20" layoutY="85" />
+        <Label text="IP Address" layoutX="20" layoutY="135" />
+        <Label text="Hello, Please Enter Usename, Password, and Ip to connect" layoutX="20" layoutY="200" fx:id="statusLabel" />
+        <TextField layoutX="20" layoutY="50" fx:id="user" text="user" />
+        <PasswordField layoutX="20" layoutY="100" fx:id="pwd" text="pass" />
+        <TextField layoutX="20" layoutY="150" fx:id="ip" text="localhost"/>
+        <Button layoutX="126" layoutY="150" text="Login" fx:id="Login" onAction="#handleButtonAction" />
+        <Label layoutX="126" layoutY="120" minHeight="16" minWidth="69" fx:id="label" />
+    </children>
+</AnchorPane>
+
