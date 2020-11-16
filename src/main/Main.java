@@ -35,7 +35,7 @@ public class Main extends Application{
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-        primaryStage.setTitle("AquaBaby's Open5d GUI");
+        primaryStage.setTitle("Open5d GUI");
         Parent root = FXMLLoader.load(getClass().getResource("/sample.fxml"));
         primaryStage.setScene(new Scene(root, 720, 500));
         primaryStage.show();
