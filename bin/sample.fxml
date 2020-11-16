@@ -8,19 +8,35 @@
 <?import javafx.scene.canvas.Canvas?>
 
 
-<AnchorPane fx:id="rootAnchor" prefHeight="200" prefWidth="320" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.Controller">
-	<children>
-		<BorderPane fx:id="innerLayout">
-			<center>
-				<Canvas fx:id="canvasbox">
+<BorderPane fx:id="innerLayout" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.Controller">
+	<top>
+		<MenuBar fx:id="menuBar">
+	        <Menu text="File">
+		       	<MenuItem text="   Open file        "/>
+		       	<MenuItem text="   Save file        "/>
+		       	<MenuItem text="   Close file       "/>
+		    </Menu>
+	        <Menu text="Edit">
+	        </Menu>
+	       	<Menu text="Options" onAction="#handleButtonAction">
+		       	<MenuItem text="   Notation Options "/>
+		       	<MenuItem text="   Properties       "/>
+		       	<MenuItem text="   About            "/>
+	       	</Menu>
+	    </MenuBar>
+	</top>
+	<center>
+		<Canvas fx:id="canvasbox">
 				
-				</Canvas>
-			</center>
-			<right>
-				<ListView fx:id="notationList">
-				</ListView>
-			</right>
-		</BorderPane>
-    </children>
-</AnchorPane>
+		</Canvas>
+	</center>
+	<right>
+		<ListView fx:id="notationList" minWidth="200" maxWidth="300" prefWidth="200">
+		</ListView>
+	</right>
+	<bottom>
+		<Button layoutX="126" layoutY="150" text="Load" fx:id="Login" onAction="#handleButtonAction" />
+	</bottom>
+</BorderPane>
+
 
