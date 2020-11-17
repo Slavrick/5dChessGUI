@@ -3,17 +3,17 @@ package engine;
 import java.util.ArrayList;
 
 public class Timeline {
-	ArrayList<Board> wboards;
-	ArrayList<Board> bboards;
+	public ArrayList<Board> wboards;
+	public ArrayList<Board> bboards;
 	int layer;
-	int Tstart;
-	int Tend;
-	int whiteStart;
+	public int Tstart;
+	public int Tend;
+	public int whiteStart;
 	int whiteEnd;
 	int blackStart;
 	int blackEnd;
-	boolean colorPlayable;
-	boolean colorStart;
+	public boolean colorPlayable;
+	public boolean colorStart;
 	boolean active;
 
 	// starts the timeline with a timestart and layer

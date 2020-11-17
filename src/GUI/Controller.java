@@ -12,9 +12,11 @@ import javafx.scene.layout.*;
 import javafx.scene.control.*;
 import javafx.scene.control.TextField;
 import engine.Board;
+import engine.Timeline;
 import fileIO.FENParser;
 import javafx.collections.FXCollections;
 import javafx.scene.layout.HBox;
+import test.TimeLineTest;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 
@@ -38,10 +40,12 @@ public class Controller {
 		ObservableList<String> Notations = FXCollections.observableArrayList("Single", "Double", "Suite", "Family App");
 		notationList.setItems(Notations);
 		System.out.println(event);
-		GraphicsContext gc = canvasbox.getGraphicsContext2D();  
-		ChessDrawer.drawArrow(gc,0,200,300);
-		Board test = FENParser.getBoardFromString(FENParser.STANDARDBOARD);
-        ChessDrawer.drawFullBoard(gc,50,50,false,test);
+		GraphicsContext gc = canvasbox.getGraphicsContext2D();
+		//Board test = FENParser.getBoardFromString(FENParser.STANDARDBOARD);
+        //ChessDrawer.drawFullBoard(gc,50,50,false,test);
+		canvasbox.setWidth(8000);
+		Timeline t = TimeLineTest.getTestTL();
+		ChessDrawer.drawTimeline(gc,50,200,t);
 	}
 	
 	@FXML
