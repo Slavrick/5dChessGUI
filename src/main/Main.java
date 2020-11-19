@@ -20,9 +20,6 @@ import javafx.stage.Stage;
 
 public class Main extends Application{
 	public static void main(String[] args) {
-		FENParserTest.testSTDBoard();
-		TimeLineTest.testTLPrint();
-		BranchTester.testMultiverse();
 		launch();
 	}
 	

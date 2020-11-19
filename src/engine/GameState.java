@@ -122,4 +122,16 @@ public class GameState {
 			tl++;
 		}
 	}
+	
+	public boolean isMate(boolean color) {
+		return false;
+	}
+	
+	public boolean isLegalState() {
+		return false;
+	}
+	
+	public boolean undoMove() {
+		return false;
+	}
 }

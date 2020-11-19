@@ -7,6 +7,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
 import engine.Board;
+import engine.GameState;
 import engine.Timeline;
 import javafx.scene.canvas.GraphicsContext;
 
@@ -14,6 +15,23 @@ public class ChessDrawer {
 
 	public static Image piecesprites;
 	private static final int SPRITESHEETWIDTH = 10;
+
+	public static void drawMultiverse(GraphicsContext gc, int x, int y, GameState game) {
+		int layerCTR = 0;
+		int boardwidth = 32 * 8;
+		int padding = 50;
+		for (Timeline t : game.multiverse) {
+			int offsetNum = (t.Tstart-1) * 2;
+			if(!t.colorStart) {
+				offsetNum++;
+			}
+			int xoffset = offsetNum * (boardwidth + padding);
+			int yoffset = (layerCTR * (boardwidth + padding));
+			drawTimeline(gc, x + xoffset, y + yoffset, t);
+			layerCTR++;
+		}
+
+	}
 
 	public static void drawTimeline(GraphicsContext gc, int x, int y, Timeline t) {
 		int lastWindex = t.wboards.size();
@@ -25,29 +43,28 @@ public class ChessDrawer {
 			int offsetCTR = 0;
 			for (int i = 0; i < lastBindex || i < lastWindex; i++) {
 				if (i < lastWindex) {
-					System.out.println("W" + (i + t.Tstart));
 					Board b = t.wboards.get(i);
-					System.out.println(b);
 					drawFullBoard(gc, x + (offsetCTR * (boardwidth + padding)), y, true, b);
 					offsetCTR++;
 				}
 				if (i < lastBindex) {
-					System.out.println("B" + (i + t.Tstart));
 					Board b = t.bboards.get(i);
-					System.out.println(b);
 					drawFullBoard(gc, x + (offsetCTR * (boardwidth + padding)), y, false, b);
 					offsetCTR++;
 				}
 			}
 		} else {
 			for (int i = 0; i < lastBindex || i < lastWindex; i++) {
+				int offsetCTR = 0;
 				if (i < lastBindex) {
-					System.out.println("B");
-					System.out.println(t.bboards.get(i));
+					Board b = t.bboards.get(i);
+					drawFullBoard(gc, x + (offsetCTR * (boardwidth + padding)), y, false, b);
+					offsetCTR++;
 				}
 				if (i < lastWindex) {
-					System.out.println("W");
-					System.out.println(t.wboards.get(i));
+					Board b = t.wboards.get(i);
+					drawFullBoard(gc, x + (offsetCTR * (boardwidth + padding)), y, true, b);
+					offsetCTR++;
 				}
 			}
 		}
