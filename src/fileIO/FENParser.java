@@ -1,6 +1,17 @@
 package fileIO;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.Path;
+
 import engine.Board;
+import engine.CoordFive;
+import engine.GameState;
+import engine.Move;
+import engine.Timeline;
 
 public class FENParser {
 	private String FileInput;
@@ -25,23 +36,29 @@ public class FENParser {
 		String[] rows = splitString[2].split("/");
 		int row = 0;
 		int col = 0;
-		for (String s : rows) {
-			for (char c : s.toCharArray()) {
-				if (c >= 'A') {
-					b.brd[row][col] = indexOfElement(Board.pieceChars, c);
-					col++;
-				} else if (c <= '8' && c >= '1') {
-					for (int i = 0; i < (int) (c) - 48; i++) {
-						b.brd[row][col] = indexOfElement(Board.pieceChars, '_');
+		try {
+			for (String s : rows) {
+				for (char c : s.toCharArray()) {
+					if (c >= 'A') {
+						b.brd[height - row - 1][col] = indexOfElement(Board.pieceChars, c);
+						col++;
+					} else if (c <= '9' && c >= '1') {
+						for (int i = 0; i < (int) (c) - 48; i++) {
+							b.brd[row][col] = indexOfElement(Board.pieceChars, '_');
+							col++;
+						}
+					} else {
+						System.out.println("There was an error reading the FEN provided");
 						col++;
 					}
-				} else {
-					System.out.println("There was an error");
-					col++;
 				}
+				row++;
+				col = 0;
 			}
-			row++;
-			col = 0;
+		}catch(ArrayIndexOutOfBoundsException e) { // this means that the board was out of bounds, which means the corrilating numbers are wrong
+			System.out.println("There was an indexOutOfBounds -- this probably means the height or width was incorrectly provided");
+			System.out.println("Height of: " + (height - row - 1) + "Width of: " +(col-height -1));
+			return null;
 		}
 		if(splitString[3].charAt(0) == 'w') {
 			b.color = Board.pieceColor.BLACK.ordinal();
@@ -51,7 +68,123 @@ public class FENParser {
 		}
 		return b;
 	}
-
+	/*
+	 * reference string as follows:
+	>4;4;2;0;b
+	>
+	>r2k/4/4/P2K;;-;w1;3;(1,1,1,0)(1,2,1,0);(1,4,1,0)(3,4,1,0);(4,1,2,0)(3,2,1,0)
+	>
+	>r2k/4/2K1/P2K;;-;b1;2;(1,4,1,1)(1,2,1,1);(3,2,2,1)(2,3,2,1)
+	0 -- fen pieces
+	1 -- casling rights
+	2 -- en passent
+	3 -- time start
+	4 -- number of moves
+	5+ -- moves
+	*/
+	public static GameState FENtoGS(String fileLocation) {
+		File file = new File(fileLocation);
+		GameState gs;
+		try {
+			FileReader fr = new FileReader(file);
+			BufferedReader br = new BufferedReader(fr);
+			StringBuffer sb = new StringBuffer();
+			String line;
+			while((line=br.readLine())!=null) {
+				System.out.println(line);
+			}
+		} catch (IOException e) {
+			System.out.println("File Cound not be opened for reading: " + fileLocation);
+			return null;
+		}
+		return null;
+	}
+	
+	public static Timeline FENtoTL(String fen, int width, int height, int layer) {
+		String[] splitString = fen.split(";");
+		//parses board pieces
+		String[] rows = splitString[0].split("/");
+		Board b = new Board(width,height);
+		int row = 0;
+		int col = 0;
+		try {
+			for (String s : rows) {
+				for (char c : s.toCharArray()) {
+					if (c >= 'A') {
+						b.brd[height - row - 1][col] = indexOfElement(Board.pieceChars, c);
+						col++;
+					} else if (c <= '9' && c >= '1') {
+						for (int i = 0; i < (int) (c) - 48; i++) {
+							b.brd[row][col] = indexOfElement(Board.pieceChars, '_');
+							col++;
+						}
+					} else {
+						System.out.println("There was an error reading the FEN provided");
+						col++;
+					}
+				}
+				row++;
+				col = 0;
+			}
+		}catch(ArrayIndexOutOfBoundsException e) { // this means that the board was out of bounds, which means the corrilating numbers are wrong
+			System.out.println("There was an indexOutOfBounds -- this probably means the height or width was incorrectly provided");
+			System.out.println("Height of: " + (height - row - 1) + "Width of: " +(col-height -1));
+			return null;
+		}
+		//Castling rights
+		populateCastlingRights(b,splitString[1]);
+		//en passent @TODO not implemented yet
+		//splitString[2]
+		//find start time
+		boolean color;
+		if(splitString[3].charAt(0) == 'w') {
+			color = true;
+		}else {
+			color = false;
+		}
+		int timeStart = Integer.parseInt(splitString[3].substring(1,splitString[3].length()));
+		Timeline t = new Timeline(b, color, timeStart, layer);
+		//If there are moves get them..
+		if(splitString.length <= 5) {
+			return t;
+		}
+		int numMoves = Integer.parseInt(splitString[4]);
+		for(int i = 5; i < 5 + numMoves; i++) {
+			Move m = stringToMove(splitString[i]);
+			if(m.type == 1) {
+				t.addSpatialMove(m,color);
+				color = !color;
+			}else {
+				t.addJumpingMove(m.origin,color);
+				color = !color;
+			}
+		}
+		return t;
+	}
+	
+	public static void populateCastlingRights(Board b, String castlingrights) {
+		
+	}//@TODO
+	
+	//Recive string (a,b,c,d) return int[] {a,b,c,d} or coordFIVE
+	public static CoordFive stringtoCoord(String coord) {
+		coord = coord.substring(1,coord.length()-1);
+		String[] coords = coord.split(",");
+		int x = Integer.parseInt(coords[0]);
+		int y = Integer.parseInt(coords[1]);
+		int t = Integer.parseInt(coords[2]);
+		int l = Integer.parseInt(coords[3]);
+		CoordFive cd = new CoordFive(x,y,t,l);
+		return cd;
+	}
+	
+	//Recive string (x0,y0,t0,l0,)(x1,y1,t1,l1) --> move data struct
+	public static Move stringToMove(String move) {
+		CoordFive c1 = stringtoCoord(move.substring(0,move.indexOf(")") + 1));
+		CoordFive c2 = stringtoCoord(move.substring(move.indexOf(")") + 1,move.length()));
+		return new Move(c1,c2);
+	}
+	
 	public static int indexOfElement(int[] arr, int target) {
 		for (int i = 0; i < arr.length; i++) {
 			if (arr[i] == target) {

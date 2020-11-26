@@ -16,12 +16,12 @@ public class Board {
 	public boolean bkingSideCastle;
 	public boolean bqueenSideCastle;
 
-	public final int numTypes = 21;
+	public static final int numTypes = 21;
 
 	public static enum pieceColor {
 		NONE, WHITE, BLACK
 	}
-
+	
 	public static enum piece {
 		EMPTY, WPAWN, WKNIGHT, WBISHOP, WROOK, WPRINCESS, WQUEEN, WKING, WUNICORN, WDRAGON, WBRAWN, BPAWN, BKNIGHT,
 		BBISHOP, BROOK, BPRINCESS, BQUEEN, BKING, BUNICORN, BDRAGON, BBRAWN
@@ -56,7 +56,7 @@ public class Board {
 	}
 
 	public int getSquare(int x, int y) {
-		return brd[x][y];
+		return brd[y][x];
 	}
 
 	/*

@@ -1,7 +1,7 @@
 package engine;
 
+//This class is not used, dont feel like getting rid of it quite yet.
 public class Piece {
-	
 	
 	public boolean nullPiece;
 	public boolean color;

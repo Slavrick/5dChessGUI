@@ -79,7 +79,7 @@ public class GameState {
 		return true;
 	}
 
-	private boolean validateTurn(Move[] turn){
+	private boolean validateTurn(Move[] turn, boolean nextPlayer){
 		for(int i = minActiveTL - minTL; i < maxActiveTL; i++) {
 			if(multiverse.get(i).colorPlayable == color && multiverse.get(i).Tend <= present) {
 				return false;
@@ -107,6 +107,9 @@ public class GameState {
 	}
 
 	public Board getBoard(CoordFive c, boolean boardColor) {
+		if(c.L < minTL || c.L > maxTL) {
+			return null;
+		}
 		return multiverse.get(c.L + (-1 * minTL)).getBoard(c.T, boardColor);
 	}
 
@@ -127,7 +130,10 @@ public class GameState {
 		return false;
 	}
 	
-	public boolean isLegalState() {
+	public boolean isLegalState(boolean color) {
+		for(Timeline t : multiverse) {
+			
+		}
 		return false;
 	}
 	

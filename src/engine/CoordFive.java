@@ -27,5 +27,20 @@ public class CoordFive {
 	public char intTofile(int file) {
 		return (char) (file + 97);
 	}
+	
+	public void add(CoordFive c) {
+		x += c.x;
+		y += c.y;
+		T += c.T;
+		L += c.L;
+	}
+
+	public boolean isSpatial() {
+		return this.T == 0 && this.L == 0;
+	}
+	
+	public boolean equals(CoordFive c) {
+		return this.x == c.x && this.y == c.y && this.T == c.T && this.L == c.L;
+	}
 
 }

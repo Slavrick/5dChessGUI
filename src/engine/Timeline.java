@@ -57,6 +57,9 @@ public class Timeline {
 
 	// gets the board on the timeline at time T and color C
 	public Board getBoard(int t, boolean boardColor) {
+		if(t < Tstart || t > Tend) {
+			return null;
+		}
 		if (boardColor == GameState.WHITE) {
 			return wboards.get(t - whiteStart);
 		} else {
@@ -69,7 +72,7 @@ public class Timeline {
 		if (colorPlayable) {
 			return wboards.get(wboards.size() - 1);
 		} else {
-			return bboards.get(wboards.size() - 1);
+			return bboards.get(bboards.size() - 1);
 		}
 	}
 
@@ -93,20 +96,20 @@ public class Timeline {
 			return false;
 		Board b = getPlayableBoard();
 		Board newBoard = new Board(b);
-		int piece = newBoard.brd[m.origin.x][m.origin.y];
-		newBoard.brd[m.origin.x][m.origin.y] = Board.piece.EMPTY.ordinal();
-		newBoard.brd[m.dest.x][m.dest.y] = piece;
+		int piece = newBoard.brd[m.origin.y][m.origin.x];
+		newBoard.brd[m.origin.y][m.origin.x] = Board.piece.EMPTY.ordinal();
+		newBoard.brd[m.dest.y][m.dest.x] = piece;
 		return addMove(newBoard);
 	}
 
-	//adds jumping destination move, basically just removes that piece from the board.
+	//adds jumping origin move, basically just removes that piece from the board.
 	public int addJumpingMove(CoordFive origin, boolean moveColor) {
 		if(moveColor != colorPlayable)
 			return -1;
 		Board b = getPlayableBoard();
 		Board newBoard = new Board(b);
-		int piece = newBoard.brd[origin.x][origin.y];
-		newBoard.brd[origin.x][origin.y] = Board.piece.EMPTY.ordinal();
+		int piece = newBoard.brd[origin.y][origin.x];
+		newBoard.brd[origin.y][origin.x] = Board.piece.EMPTY.ordinal();
 		addMove(newBoard);
 		return piece;
 	}
@@ -116,7 +119,7 @@ public class Timeline {
 	public Board addJumpingMoveDest(CoordFive dest, boolean moveColor, int piece) {
 		Board b = getBoard(dest.T,moveColor);
 		Board newBoard = new Board(b);
-		newBoard.brd[dest.x][dest.y] = piece;
+		newBoard.brd[dest.y][dest.x] = piece;
 		if(dest.T != Tend) {
 			return newBoard;
 		}
@@ -155,6 +158,17 @@ public class Timeline {
 
 	//will pop off the last board to 'undo'
 	public boolean undoMove() {
+		if(colorPlayable) {
+			wboards.remove(wboards.size()-1);
+			colorPlayable = !colorPlayable;
+		}
+		else {
+			bboards.remove(bboards.size()-1);
+			colorPlayable = !colorPlayable;
+		}
+		if(wboards.size() == 0 && wboards.size() == 0) {
+			return true;
+		}
 		return false;
 	}
 }

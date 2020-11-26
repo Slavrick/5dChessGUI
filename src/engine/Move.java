@@ -18,5 +18,13 @@ public class Move {
 			type = 2;
 		}
 		
-	}	
+	}
+	
+	public String toString() {
+		String moveStr = "";
+		moveStr += origin.toString();
+		moveStr += "-->";
+		moveStr += dest.toString();
+		return moveStr;
+	}
 }

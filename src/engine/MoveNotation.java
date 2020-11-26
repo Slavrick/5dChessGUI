@@ -13,6 +13,7 @@ public class MoveNotation {
 	public static final int[] KING = {1,2,3,4};
 	public static final int[] QUEEN = {1,2,3,4};
 	
+	//All commented out vectors are pure foreward time travel, or pure foreward with some spatial, which means that it is impossible and we dont need to consider
 	public static final CoordFive[] RookMoveset = {
 			new CoordFive(1,0,0,0),
 			new CoordFive(0,1,0,0),
@@ -27,16 +28,16 @@ public class MoveNotation {
 	
 	public static final CoordFive[] BishopMoveset = {
 			new CoordFive(1,1,0,0),
-			new CoordFive(1,0,1,0),
+			//new CoordFive(1,0,1,0),
 			new CoordFive(1,0,0,1),
-			new CoordFive(0,1,1,0),
+			//new CoordFive(0,1,1,0),
 			new CoordFive(0,1,0,1),
 			new CoordFive(0,0,1,1),
 			
 			new CoordFive(-1,1,0,0),
-			new CoordFive(-1,0,1,0),
+			//new CoordFive(-1,0,1,0),
 			new CoordFive(-1,0,0,1),
-			new CoordFive(0,-1,1,0),
+			//new CoordFive(0,-1,1,0),
 			new CoordFive(0,-1,0,1),
 			new CoordFive(0,0,-1,1),
 			
@@ -129,13 +130,28 @@ public class MoveNotation {
 			new CoordFive(2,-1,0,0),
 	};
 	
-	public static final CoordFive[] pawnMovement = {
+	public static final CoordFive[] whitePawnMovement = {
 			new CoordFive(0,1,0,0),
-			new CoordFive(0,-1,0,0),
-			
-
+			new CoordFive(0,0,0,-1)
+	};
+	
+	public static final CoordFive[] whitePawnattack = {
 			new CoordFive(1,1,0,0),
-			
+			new CoordFive(-1,1,0,0),
+			new CoordFive(0,0,1,-1),
+			new CoordFive(0,0,-1,-1)
+	};
+	
+	public static final CoordFive[] blackPawnMovement = {
+			new CoordFive(0,-1,0,0),
+			new CoordFive(0,0,0,1),
+	};
+	
+	public static final CoordFive[] blackPawnattack = {
+			new CoordFive(1,-1,0,0),
+			new CoordFive(-1,-1,0,0),
+			new CoordFive(0,0,1,1),
+			new CoordFive(0,0,-1,1)
 	};
 	
 	public static int[] getMovNotation(Piece.PieceType pt) {
