@@ -27,7 +27,7 @@ public class MoveGenerator {
 		return destCoords; //@TODO get this thing working
 	}
 	
-	public static ArrayList<CoordFive> getSpacialRiderMoves(GameState g, boolean color, CoordFive sourceCoord, CoordFive movementVec){
+	public static ArrayList<CoordFive> getSpatialRiderMoves(GameState g, boolean color, CoordFive sourceCoord, CoordFive movementVec){
 		ArrayList<CoordFive> destCoords = new ArrayList<CoordFive>();
 		if(!movementVec.isSpatial()) {
 			return null;

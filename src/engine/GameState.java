@@ -34,16 +34,24 @@ public class GameState {
 		color = true;
 	}
 
-	public GameState(Timeline[] starters) {
+	public GameState(Timeline[] starters, int minTL, int maxTL) {
 		multiverse = new ArrayList<Timeline>();
 		for (Timeline t : starters)
 			multiverse.add(t);
-		minTL = 0;
-		maxTL = 0;
+		this.minTL = minTL;
+		this.maxTL = maxTL;
 		tlHandicap = 0;
 		color = true;
 	}
 
+	public GameState(ArrayList<Timeline> starters, int minTL, int maxTL) {
+		multiverse = starters;
+		this.minTL = minTL;
+		this.maxTL = maxTL;
+		tlHandicap = 0;
+		color = true;
+	}
+	
 	public boolean makeTurn(Move move) {
 		Move[] moves = { move };
 		return makeTurn(moves);
@@ -126,6 +134,13 @@ public class GameState {
 		}
 	}
 	
+	/**
+	 * Determines whether the current gamestate is mate, with the given color
+	 * 
+	 * @param color the color of the defending player.
+	 * 
+	 * @return returns boolean, true if the gamestate is mate
+	 */
 	public boolean isMate(boolean color) {
 		return false;
 	}

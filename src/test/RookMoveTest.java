@@ -1,7 +1,6 @@
 package test;
 
 import engine.Board;
-import engine.Piece;
 import engine.MoveGenerator;
 
 /*

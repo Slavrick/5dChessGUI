@@ -1,32 +1,19 @@
 package main;
 
-import engine.Board;
 import engine.Board.piece;
 import fileIO.FENParser;
-import test.BranchTester;
 import test.FENParserTest;
 import test.RookMoveTest;
-import test.TimeLineTest;
-
-import java.awt.Desktop;
-import java.io.File;
-import java.io.IOException;
-
-import GUI.WindowFrame;
-
 import javafx.stage.Stage;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.stage.Stage;
 
 public class Main extends Application {
 	
 	public static void main(String[] args) {
-		FENParser.FENtoGS("res/Rookie.FEN.txt");
-		System.out.println(FENParser.stringToMove("(4,2,1,0)(3,3,1,0)"));
-		FENParser.FENtoTL("r2k/4/2K1/P2K;;-;b1;2;(0,3,1,1)(0,1,1,1);(2,1,2,1)(1,2,2,1)", 4, 4, 0).printTimleline();
+		FENParserTest.testFENFileParser();
 		FENParserTest.testMoveParser();
 		launch();
 	}

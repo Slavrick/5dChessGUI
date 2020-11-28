@@ -1,6 +1,7 @@
 package test;
 import engine.Board;
 import engine.CoordFive;
+import engine.GameState;
 import fileIO.FENParser;
 
 /*
@@ -22,6 +23,18 @@ public class FENParserTest {
 		x = FENParser.stringtoCoord("(-10,-5,-2,-1)");
 		assert new CoordFive(-10,-5,-2,-1).equals(x) : x;
 		System.out.println("    Done.");
+	}
+	
+	public static void testFENFileParser() {
+		GameState g = FENParser.FENtoGS("res/Rookie.FEN.txt");
+		//assert g != null : g;
+		if(g != null) {
+			g.printMultiverse();			
+		}
+	}
+	
+	public static void testTimeLineParser(){
+		FENParser.FENtoTL("r2k/4/2K1/P2K;;-;b1;2;(0,3,1,1)(0,1,1,1);(2,1,2,1)(1,2,2,1)", 4, 4, 0).printTimleline();
 	}
 	
 }

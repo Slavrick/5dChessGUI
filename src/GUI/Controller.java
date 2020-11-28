@@ -1,26 +1,20 @@
 package GUI;
 
-import javafx.collections.ObservableList;
-import javafx.scene.control.*;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.layout.AnchorPane;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import javafx.scene.layout.*;
-import javafx.scene.control.*;
-import javafx.scene.control.TextField;
-import engine.Board;
-import engine.GameState;
-import engine.Timeline;
-import fileIO.FENParser;
-import javafx.collections.FXCollections;
-import javafx.scene.layout.HBox;
-import test.BranchTester;
-import test.TimeLineTest;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.*;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.control.Label;
+import javafx.scene.layout.*;
+import javafx.scene.control.TextField;
+import javafx.collections.ObservableList;
+import javafx.collections.FXCollections;
+import javafx.event.*;
+import javafx.scene.input.MouseEvent;
+
+import engine.GameState;
+import test.BranchTester;
 
 public class Controller {
 	@FXML
@@ -30,11 +24,23 @@ public class Controller {
 	@FXML
 	BorderPane innerLayout;
 	@FXML
+	ScrollPane sPane;
+	@FXML
 	Canvas canvasbox;
 	@FXML
 	ListView<String> notationList;
+	@FXML
+	TextField movefied;
 
 	ObservableList<String> Notations;
+	
+	double lastX = 0;
+	double lastY = 0;
+	double screenX = 0;
+	double screenY = 0;
+	double canvasWidth = 8000;
+	double canvasHeight = 8000;
+	
 
 	@FXML
 	private void handleButtonAction(ActionEvent event) {
@@ -44,9 +50,43 @@ public class Controller {
 		GraphicsContext gc = canvasbox.getGraphicsContext2D();
 		//Board test = FENParser.getBoardFromString(FENParser.STANDARDBOARD);
         //ChessDrawer.drawFullBoard(gc,50,50,false,test);
+		
+		canvasbox.addEventHandler(MouseEvent.MOUSE_CLICKED, 
+		        new EventHandler<MouseEvent>() {
+		            @Override
+		            public void handle(MouseEvent t) {            
+			        	   lastX = t.getX();
+			        	   lastY = t.getY();
+		            }
+		        });
+		
+		canvasbox.addEventHandler(MouseEvent.MOUSE_DRAGGED, 
+			       new EventHandler<MouseEvent>() {
+			           @Override
+			           public void handle(MouseEvent e) {
+			        	   double x = e.getX();
+			        	   double y = e.getY();
+			               gc.clearRect(e.getX() - 2, e.getY() - 2, 5, 5);
+			               double xchange = x - lastX;
+			               double ychange = y - lastY;
+			               screenX += xchange;
+			               screenY += ychange;
+			               sPane.setHvalue(sPane.getHvalue() - (xchange / (canvasWidth)));
+			               sPane.setVvalue(sPane.getVvalue() - (ychange / (canvasHeight)));
+			               System.out.println("Change: " + xchange + ", " + ychange);
+			               System.out.println("Screen: " + e.getScreenX() + ", " + e.getScreenY());
+			               System.out.println("Screen: " + screenX + ", " + screenY);
+			               System.out.println("H/V Vals: " + sPane.getHvalue() + ", " + sPane.getVvalue());
+			               lastX = x;
+			               lastY = y;
+			               
+			           }
+			       });
+		
 		canvasbox.setWidth(8000);
 		canvasbox.setHeight(8000);
 		GameState g = BranchTester.getTestGS();
+		gc.fillRect(-1,0,0,0);
 		ChessDrawer.drawMultiverse(gc,30,30,g);
 	}
 	
@@ -62,6 +102,11 @@ public class Controller {
 	
 	@FXML
 	private void handleEventList(ActionEvent event) {
+		
+	}
+	
+	@FXML
+	private void handleMove(ActionEvent event) {
 		
 	}
 
