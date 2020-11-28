@@ -58,6 +58,13 @@ public class Board {
 	public int getSquare(int x, int y) {
 		return brd[y][x];
 	}
+	
+	public int getSquare(CoordFour c) {
+		if(isInBounds(c))
+			return brd[c.y][c.x];
+		else
+			return -1;
+	}
 
 	/*
 	 * public Piece getPieceAt(int x, int y) { return b[x][y]; }
@@ -71,7 +78,7 @@ public class Board {
 		return true;
 	}
 
-	public boolean isInBounds(CoordFive cf) {
+	public boolean isInBounds(CoordFour cf) {
 		return isInBounds(cf.x, cf.y);
 	}
 

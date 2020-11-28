@@ -1,6 +1,6 @@
 package test;
 import engine.Board;
-import engine.CoordFive;
+import engine.CoordFour;
 import engine.GameState;
 import fileIO.FENParser;
 
@@ -16,12 +16,12 @@ public class FENParserTest {
 	
 	public static void testMoveParser() {
 		System.out.println("testingMoveParser: ");
-		CoordFive x = FENParser.stringtoCoord("(0,0,0,0)");
-		assert new CoordFive(0,0,0,0).equals(x) : x;
+		CoordFour x = FENParser.stringtoCoord("(0,0,0,0)");
+		assert new CoordFour(0,0,0,0).equals(x) : x;
 		x = FENParser.stringtoCoord("(10,5,10,5)");
-		assert new CoordFive(10,5,10,5).equals(x) : x;
+		assert new CoordFour(10,5,10,5).equals(x) : x;
 		x = FENParser.stringtoCoord("(-10,-5,-2,-1)");
-		assert new CoordFive(-10,-5,-2,-1).equals(x) : x;
+		assert new CoordFour(-10,-5,-2,-1).equals(x) : x;
 		System.out.println("    Done.");
 	}
 	

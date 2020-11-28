@@ -1,9 +1,7 @@
 package main;
 
-import engine.Board.piece;
-import fileIO.FENParser;
 import test.FENParserTest;
-import test.RookMoveTest;
+import test.MoveTester;
 import javafx.stage.Stage;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -15,6 +13,7 @@ public class Main extends Application {
 	public static void main(String[] args) {
 		FENParserTest.testFENFileParser();
 		FENParserTest.testMoveParser();
+		MoveTester.TestBishopMoves();
 		launch();
 	}
 
@@ -23,12 +22,6 @@ public class Main extends Application {
 		for (String str : strs) {
 			System.out.println(str);
 		}
-	}
-
-	public static void BoardTest() {
-		RookMoveTest.CheckRookMoves();
-		System.out.println("tests Complete");
-		System.out.println((int) piece.BROOK.ordinal());
 	}
 
 	@Override

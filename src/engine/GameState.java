@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class GameState {
 	public static final boolean WHITE = true;
-	public static final boolean BLACK = true;
+	public static final boolean BLACK = false;
 
 	public ArrayList<Timeline> multiverse;
 	public boolean color;
@@ -96,7 +96,7 @@ public class GameState {
 		return true;
 	}
 	
-	public boolean isInBounds(CoordFive c, boolean boardColor) {
+	public boolean isInBounds(CoordFour c, boolean boardColor) {
 		if (c.L > maxTL || c.L < minTL) {
 			return false;
 		}
@@ -110,12 +110,19 @@ public class GameState {
 		return true;
 	}
 
+	public boolean layerExists(int layer) {
+		return (layer >= minTL && layer <= maxTL);
+	}
+	
 	public Timeline getTimeline(int layer) {
+		if(!layerExists(layer)) {
+			return null;
+		}
 		return multiverse.get(layer + (-1 * minTL));
 	}
 
-	public Board getBoard(CoordFive c, boolean boardColor) {
-		if(c.L < minTL || c.L > maxTL) {
+	public Board getBoard(CoordFour c, boolean boardColor) {
+		if(!layerExists(c.L)) {
 			return null;
 		}
 		return multiverse.get(c.L + (-1 * minTL)).getBoard(c.T, boardColor);
@@ -152,7 +159,36 @@ public class GameState {
 		return false;
 	}
 	
-	public boolean undoMove() {
+	/**
+	 * undo a move, based on what timelines were effected on that move.
+	 * 
+	 * @param tlmoved an int array of timelines to undo.
+	 * @return false
+	 */
+	public boolean undoMove(int[] tlmoved) {
+		for(int tl : tlmoved) {
+			Timeline t = multiverse.get(getTLIndex(tl, minTL));
+			if(t.undoMove()) {
+				multiverse.remove(getTLIndex(tl,minTL));
+			}
+		}
 		return false;
+	}
+	
+	public static int getTLIndex(int layer, int minTL) {
+		return layer + (-1 * minTL);
+	}
+	
+	
+	/**
+	 * 
+	 * @param c coordinate of square
+	 * @param color color of square
+	 * @return int relating to piece color
+	 */
+	public int getSquare(CoordFour c, boolean color) {
+		if(layerExists(c.L))
+			return getTimeline(c.L).getSquare(c, color);
+		return -1;
 	}
 }

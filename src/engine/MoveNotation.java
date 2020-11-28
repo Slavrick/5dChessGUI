@@ -14,144 +14,144 @@ public class MoveNotation {
 	public static final int[] QUEEN = {1,2,3,4};
 	
 	//All commented out vectors are pure foreward time travel, or pure foreward with some spatial, which means that it is impossible and we dont need to consider
-	public static final CoordFive[] RookMoveset = {
-			new CoordFive(1,0,0,0),
-			new CoordFive(0,1,0,0),
+	public static final CoordFour[] RookMoveset = {
+			new CoordFour(1,0,0,0),
+			new CoordFour(0,1,0,0),
 			//new CoordFive(0,0,1,0), redundant, cannot move foreward purely
-			new CoordFive(0,0,0,1),
+			new CoordFour(0,0,0,1),
 			
-			new CoordFive(-1,0,0,0),
-			new CoordFive(0,-1,0,0),
-			new CoordFive(0,0,-1,0),
-			new CoordFive(0,0,0,-1)		
+			new CoordFour(-1,0,0,0),
+			new CoordFour(0,-1,0,0),
+			new CoordFour(0,0,-1,0),
+			new CoordFour(0,0,0,-1)		
 	};
 	
-	public static final CoordFive[] BishopMoveset = {
-			new CoordFive(1,1,0,0),
+	public static final CoordFour[] BishopMoveset = {
+			new CoordFour(1,1,0,0),
 			//new CoordFive(1,0,1,0),
-			new CoordFive(1,0,0,1),
+			new CoordFour(1,0,0,1),
 			//new CoordFive(0,1,1,0),
-			new CoordFive(0,1,0,1),
-			new CoordFive(0,0,1,1),
+			new CoordFour(0,1,0,1),
+			new CoordFour(0,0,1,1),
 			
-			new CoordFive(-1,1,0,0),
+			new CoordFour(-1,1,0,0),
 			//new CoordFive(-1,0,1,0),
-			new CoordFive(-1,0,0,1),
+			new CoordFour(-1,0,0,1),
 			//new CoordFive(0,-1,1,0),
-			new CoordFive(0,-1,0,1),
-			new CoordFive(0,0,-1,1),
+			new CoordFour(0,-1,0,1),
+			new CoordFour(0,0,-1,1),
 			
-			new CoordFive(1,-1,0,0),
-			new CoordFive(1,0,-1,0),
-			new CoordFive(1,0,0,-1),
-			new CoordFive(0,1,-1,0),
-			new CoordFive(0,1,0,-1),
-			new CoordFive(0,0,1,-1),	
+			new CoordFour(1,-1,0,0),
+			new CoordFour(1,0,-1,0),
+			new CoordFour(1,0,0,-1),
+			new CoordFour(0,1,-1,0),
+			new CoordFour(0,1,0,-1),
+			new CoordFour(0,0,1,-1),	
 			
-			new CoordFive(-1,-1,0,0),
-			new CoordFive(-1,0,-1,0),
-			new CoordFive(-1,0,0,-1),
-			new CoordFive(0,-1,-1,0),
-			new CoordFive(0,-1,0,-1),
-			new CoordFive(0,0,-1,-1),	
+			new CoordFour(-1,-1,0,0),
+			new CoordFour(-1,0,-1,0),
+			new CoordFour(-1,0,0,-1),
+			new CoordFour(0,-1,-1,0),
+			new CoordFour(0,-1,0,-1),
+			new CoordFour(0,0,-1,-1),	
 	};
 	
-	public static final CoordFive[] UnicornMoveset = {
-			new CoordFive(1,1,1,0),
-			new CoordFive(1,1,0,1),
-			new CoordFive(1,0,1,1),
-			new CoordFive(0,1,1,1),
+	public static final CoordFour[] UnicornMoveset = {
+			new CoordFour(1,1,1,0),
+			new CoordFour(1,1,0,1),
+			new CoordFour(1,0,1,1),
+			new CoordFour(0,1,1,1),
 			
-			new CoordFive(-1,1,1,0),
-			new CoordFive(-1,1,0,1),
-			new CoordFive(-1,0,1,1),
-			new CoordFive(0,-1,1,1),
+			new CoordFour(-1,1,1,0),
+			new CoordFour(-1,1,0,1),
+			new CoordFour(-1,0,1,1),
+			new CoordFour(0,-1,1,1),
 			
-			new CoordFive(1,-1,1,0),
-			new CoordFive(1,-1,0,1),
-			new CoordFive(1,0,-1,1),
-			new CoordFive(0,1,-1,1),
+			new CoordFour(1,-1,1,0),
+			new CoordFour(1,-1,0,1),
+			new CoordFour(1,0,-1,1),
+			new CoordFour(0,1,-1,1),
 			
-			new CoordFive(1,1,-1,0),
-			new CoordFive(1,1,0,-1),
-			new CoordFive(1,0,1,-1),
-			new CoordFive(0,1,1,-1),
+			new CoordFour(1,1,-1,0),
+			new CoordFour(1,1,0,-1),
+			new CoordFour(1,0,1,-1),
+			new CoordFour(0,1,1,-1),
 			
-			new CoordFive(-1,-1,1,0),
-			new CoordFive(-1,-1,0,1),
-			new CoordFive(-1,0,-1,1),
-			new CoordFive(0,-1,-1,1),
+			new CoordFour(-1,-1,1,0),
+			new CoordFour(-1,-1,0,1),
+			new CoordFour(-1,0,-1,1),
+			new CoordFour(0,-1,-1,1),
 			
-			new CoordFive(-1,1,-1,0),
-			new CoordFive(-1,1,0,-1),
-			new CoordFive(-1,0,1,-1),
-			new CoordFive(0,-1,1,-1),
+			new CoordFour(-1,1,-1,0),
+			new CoordFour(-1,1,0,-1),
+			new CoordFour(-1,0,1,-1),
+			new CoordFour(0,-1,1,-1),
 			
-			new CoordFive(-1,-1,-1,0),
-			new CoordFive(-1,-1,0,-1),
-			new CoordFive(-1,0,-1,-1),
-			new CoordFive(0,-1,-1,-1),
+			new CoordFour(-1,-1,-1,0),
+			new CoordFour(-1,-1,0,-1),
+			new CoordFour(-1,0,-1,-1),
+			new CoordFour(0,-1,-1,-1),
 	};
 	
-	public static final CoordFive[] DragonMoveset = {
-			new CoordFive(1,1,1,1),
-			new CoordFive(-1,1,1,1),	
-			new CoordFive(1,-1,1,1),	
-			new CoordFive(1,1,-1,1),
-			new CoordFive(1,1,1,-1),	
-			new CoordFive(-1,-1,1,1),	
-			new CoordFive(-1,1,-1,1),	
-			new CoordFive(-1,1,1,-1),
-			new CoordFive(1,-1,-1,1),
-			new CoordFive(1,-1,1,-1),
-			new CoordFive(1,1,-1,-1),
-			new CoordFive(1,-1,-1,-1),
-			new CoordFive(-1,1,-1,-1),	
-			new CoordFive(-1,-1,1,-1),	
-			new CoordFive(-1,-1,-1,1),
-			new CoordFive(-1,-1,-1,-1),
+	public static final CoordFour[] DragonMoveset = {
+			new CoordFour(1,1,1,1),
+			new CoordFour(-1,1,1,1),	
+			new CoordFour(1,-1,1,1),	
+			new CoordFour(1,1,-1,1),
+			new CoordFour(1,1,1,-1),	
+			new CoordFour(-1,-1,1,1),	
+			new CoordFour(-1,1,-1,1),	
+			new CoordFour(-1,1,1,-1),
+			new CoordFour(1,-1,-1,1),
+			new CoordFour(1,-1,1,-1),
+			new CoordFour(1,1,-1,-1),
+			new CoordFour(1,-1,-1,-1),
+			new CoordFour(-1,1,-1,-1),	
+			new CoordFour(-1,-1,1,-1),	
+			new CoordFour(-1,-1,-1,1),
+			new CoordFour(-1,-1,-1,-1),
 	};
 	
-	public static final CoordFive[] KnightMovement = {
-			new CoordFive(2,1,0,0),
-			new CoordFive(-2,1,0,0),
-			new CoordFive(2,-1,0,0),
-			new CoordFive(-2,-1,0,0),
+	public static final CoordFour[] KnightMovement = {
+			new CoordFour(2,1,0,0),
+			new CoordFour(-2,1,0,0),
+			new CoordFour(2,-1,0,0),
+			new CoordFour(-2,-1,0,0),
 			
-			new CoordFive(1,2,0,0),
-			new CoordFive(1,2,0,0),
-			new CoordFive(2,1,0,0),
-			new CoordFive(2,-1,0,0),
-			new CoordFive(2,1,0,0),
-			new CoordFive(2,-1,0,0),
-			new CoordFive(2,1,0,0),
-			new CoordFive(2,-1,0,0),
-			new CoordFive(2,1,0,0),
-			new CoordFive(2,-1,0,0),
+			new CoordFour(1,2,0,0),
+			new CoordFour(1,2,0,0),
+			new CoordFour(2,1,0,0),
+			new CoordFour(2,-1,0,0),
+			new CoordFour(2,1,0,0),
+			new CoordFour(2,-1,0,0),
+			new CoordFour(2,1,0,0),
+			new CoordFour(2,-1,0,0),
+			new CoordFour(2,1,0,0),
+			new CoordFour(2,-1,0,0),
 	};
 	
-	public static final CoordFive[] whitePawnMovement = {
-			new CoordFive(0,1,0,0),
-			new CoordFive(0,0,0,-1)
+	public static final CoordFour[] whitePawnMovement = {
+			new CoordFour(0,1,0,0),
+			new CoordFour(0,0,0,-1)
 	};
 	
-	public static final CoordFive[] whitePawnattack = {
-			new CoordFive(1,1,0,0),
-			new CoordFive(-1,1,0,0),
-			new CoordFive(0,0,1,-1),
-			new CoordFive(0,0,-1,-1)
+	public static final CoordFour[] whitePawnattack = {
+			new CoordFour(1,1,0,0),
+			new CoordFour(-1,1,0,0),
+			new CoordFour(0,0,1,-1),
+			new CoordFour(0,0,-1,-1)
 	};
 	
-	public static final CoordFive[] blackPawnMovement = {
-			new CoordFive(0,-1,0,0),
-			new CoordFive(0,0,0,1),
+	public static final CoordFour[] blackPawnMovement = {
+			new CoordFour(0,-1,0,0),
+			new CoordFour(0,0,0,1),
 	};
 	
-	public static final CoordFive[] blackPawnattack = {
-			new CoordFive(1,-1,0,0),
-			new CoordFive(-1,-1,0,0),
-			new CoordFive(0,0,1,1),
-			new CoordFive(0,0,-1,1)
+	public static final CoordFour[] blackPawnattack = {
+			new CoordFour(1,-1,0,0),
+			new CoordFour(-1,-1,0,0),
+			new CoordFour(0,0,1,1),
+			new CoordFour(0,0,-1,1)
 	};
 	
 	public static int[] getMovNotation(Piece.PieceType pt) {
@@ -168,36 +168,36 @@ public class MoveNotation {
 		}
 	}
 	
-	public static ArrayList<CoordFive> getMultiMoveset(int[] moveAxes){
-		ArrayList<CoordFive> moveset = new ArrayList<CoordFive>();
+	public static ArrayList<CoordFour> getMultiMoveset(int[] moveAxes){
+		ArrayList<CoordFour> moveset = new ArrayList<CoordFour>();
 		for(int i: moveAxes) {
 			moveset.addAll(getMoveset(i));
 		}
 		return moveset;
 	}	
 	
-	public static ArrayList<CoordFive> getMoveset(int moveAxi){
-		ArrayList<CoordFive> moveset = new ArrayList<CoordFive>();
+	public static ArrayList<CoordFour> getMoveset(int moveAxi){
+		ArrayList<CoordFour> moveset = new ArrayList<CoordFour>();
 		
 		switch(moveAxi)
 		{
 		case 1:
-			for(CoordFive c : RookMoveset) {
+			for(CoordFour c : RookMoveset) {
 				moveset.add(c);				
 			}
 			break;
 		case 2:
-			for(CoordFive c : BishopMoveset) {
+			for(CoordFour c : BishopMoveset) {
 				moveset.add(c);				
 			}
 			break;
 		case 3:
-			for(CoordFive c : UnicornMoveset) {
+			for(CoordFour c : UnicornMoveset) {
 				moveset.add(c);				
 			}
 			break;
 		case 4:
-			for(CoordFive c : DragonMoveset) {
+			for(CoordFour c : DragonMoveset) {
 				moveset.add(c);				
 			}
 			break;

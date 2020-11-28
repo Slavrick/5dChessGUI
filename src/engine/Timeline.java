@@ -3,17 +3,28 @@ package engine;
 import java.util.ArrayList;
 
 public class Timeline {
+	/* the white and black boards on the timeline. */
 	public ArrayList<Board> wboards;
 	public ArrayList<Board> bboards;
+	/* the layer of the timeline (Im not sure this is nessesary */
 	int layer;
+	/* the absolute start and end time of both white or black */
 	public int Tstart;
 	public int Tend;
+	/* white start time, end time */
 	public int whiteStart;
-	int whiteEnd;
-	int blackStart;
-	int blackEnd;
+	public int whiteEnd;
+	/* black start time, end time */
+	public int blackStart;
+	public int blackEnd;
+	/* the color of the current playable board */
 	public boolean colorPlayable;
+	/*
+	 * the color of the first board of the timeline, white(true) for any timeline <
+	 * 0. and black(false) for any timeline above 0
+	 */
 	public boolean colorStart;
+	/* the "activeness" of the timeline, not sure if this fits here */
 	boolean active;
 
 	// starts the timeline with a timestart and layer
@@ -25,7 +36,7 @@ public class Timeline {
 			whiteStart = startTime;
 			whiteEnd = startTime;
 			blackStart = startTime;
-			blackEnd = startTime-1;
+			blackEnd = startTime - 1;
 		} else {
 			bboards.add(origin);
 			whiteStart = startTime + 1;
@@ -39,25 +50,22 @@ public class Timeline {
 		Tend = startTime;
 	}
 
-	//returns if the time exists or not, ie if the time is in bounds
+	// returns if the time exists or not, ie if the time is in bounds @TODO fix
+	// this, not nessesaraly true for instance if white branches to t1, a black t1
+	// exists but not white t1, but timestart would be 1,
 	public boolean timeExists(int t, boolean boardColor) {
-		if (t > Tstart && t < Tend)
-			return true;
-		if (boardColor == GameState.WHITE) {
-			if (t >= whiteStart && t <= whiteEnd) {
-				return true;
-			}
-		} else {
-			if (t >= blackStart && t <= blackEnd) {
-				return true;
-			}
+		if ((boardColor == GameState.WHITE && (t < whiteStart || t > whiteEnd))) {
+			return false;
 		}
-		return false;
+		else if((boardColor == GameState.BLACK && (t < blackStart || t > blackEnd))) {
+			return false;
+		}
+		return true;
 	}
 
 	// gets the board on the timeline at time T and color C
 	public Board getBoard(int t, boolean boardColor) {
-		if(t < Tstart || t > Tend) {
+		if (!timeExists(t, boardColor)) {
 			return null;
 		}
 		if (boardColor == GameState.WHITE) {
@@ -92,7 +100,7 @@ public class Timeline {
 
 	// this func sucks im debating on adding implicit checks here
 	public boolean addSpatialMove(Move m, boolean moveColor) {
-		if(moveColor != colorPlayable)
+		if (moveColor != colorPlayable)
 			return false;
 		Board b = getPlayableBoard();
 		Board newBoard = new Board(b);
@@ -102,9 +110,9 @@ public class Timeline {
 		return addMove(newBoard);
 	}
 
-	//adds jumping origin move, basically just removes that piece from the board.
-	public int addJumpingMove(CoordFive origin, boolean moveColor) {
-		if(moveColor != colorPlayable)
+	// adds jumping origin move, basically just removes that piece from the board.
+	public int addJumpingMove(CoordFour origin, boolean moveColor) {
+		if (moveColor != colorPlayable)
 			return -1;
 		Board b = getPlayableBoard();
 		Board newBoard = new Board(b);
@@ -113,42 +121,42 @@ public class Timeline {
 		addMove(newBoard);
 		return piece;
 	}
-	
-	
-	//add a move jumping, if the move is branching return the branched board, otherwise, add the board onto the end of the timeline.
-	public Board addJumpingMoveDest(CoordFive dest, boolean moveColor, int piece) {
-		Board b = getBoard(dest.T,moveColor);
+
+	// add a move jumping, if the move is branching return the branched board,
+	// otherwise, add the board onto the end of the timeline.
+	public Board addJumpingMoveDest(CoordFour dest, boolean moveColor, int piece) {
+		Board b = getBoard(dest.T, moveColor);
 		Board newBoard = new Board(b);
 		newBoard.brd[dest.y][dest.x] = piece;
-		if(dest.T != Tend) {
+		if (dest.T != Tend) {
 			return newBoard;
 		}
 		addMove(newBoard);
 		return null;
 	}
-	
-	//prints the board in a primative way
-	public void printTimleline() { 
+
+	// prints the board in a primative way
+	public void printTimleline() {
 		int lastWindex = wboards.size();
 		int lastBindex = bboards.size();
 		if (colorStart) {
 			for (int i = 0; i < lastBindex || i < lastWindex; i++) {
-				if(i < lastWindex) {					
-					System.out.println("W" + (i+Tstart));
+				if (i < lastWindex) {
+					System.out.println("W" + (i + Tstart));
 					System.out.println(wboards.get(i));
 				}
-				if(i < lastBindex) {	
-					System.out.println("B" + (i+Tstart));
+				if (i < lastBindex) {
+					System.out.println("B" + (i + Tstart));
 					System.out.println(bboards.get(i));
 				}
 			}
 		} else {
 			for (int i = 0; i < lastBindex || i < lastWindex; i++) {
-				if(i < lastBindex) {	
+				if (i < lastBindex) {
 					System.out.println("B");
 					System.out.println(bboards.get(i));
 				}
-				if(i < lastWindex) {					
+				if (i < lastWindex) {
 					System.out.println("W");
 					System.out.println(wboards.get(i));
 				}
@@ -156,19 +164,26 @@ public class Timeline {
 		}
 	}
 
-	//will pop off the last board to 'undo'
+	// will pop off the last board to 'undo'
 	public boolean undoMove() {
-		if(colorPlayable) {
-			wboards.remove(wboards.size()-1);
+		if (colorPlayable) {
+			wboards.remove(wboards.size() - 1);
+			colorPlayable = !colorPlayable;
+		} else {
+			bboards.remove(bboards.size() - 1);
 			colorPlayable = !colorPlayable;
 		}
-		else {
-			bboards.remove(bboards.size()-1);
-			colorPlayable = !colorPlayable;
-		}
-		if(wboards.size() == 0 && wboards.size() == 0) {
+		if (wboards.size() == 0 && bboards.size() == 0) {
 			return true;
 		}
 		return false;
+	}
+
+	public int getSquare(CoordFour c, boolean color) {
+		Board b = getBoard(c.T, color);
+		if(b != null) {
+			return b.getSquare(c);
+		}
+		return -1;
 	}
 }

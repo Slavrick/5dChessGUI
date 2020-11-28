@@ -9,7 +9,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 
 import engine.Board;
-import engine.CoordFive;
+import engine.CoordFour;
 import engine.GameState;
 import engine.Move;
 import engine.Timeline;
@@ -97,6 +97,7 @@ public class FENParser {
 			while ((line = br.readLine()) != null) {
 				lines.add(line);
 			}
+			br.close();
 		} catch (IOException e) {
 			System.out.println("File Cound not be opened for reading: " + fileLocation);
 			return null;
@@ -194,27 +195,27 @@ public class FENParser {
 	}// @TODO
 
 	// Recive string (a,b,c,d) return int[] {a,b,c,d} or coordFIVE
-	public static CoordFive stringtoCoord(String coord) {
+	public static CoordFour stringtoCoord(String coord) {
 		coord = coord.substring(1, coord.length() - 1);
 		String[] coords = coord.split(",");
 		int x = Integer.parseInt(coords[0]);
 		int y = Integer.parseInt(coords[1]);
 		int t = Integer.parseInt(coords[2]);
 		int l = Integer.parseInt(coords[3]);
-		CoordFive cd = new CoordFive(x, y, t, l);
+		CoordFour cd = new CoordFour(x, y, t, l);
 		return cd;
 	}
 
 	// Recive string (x0,y0,t0,l0,)(x1,y1,t1,l1) --> move data struct
 	public static Move stringToMove(String move) {
-		CoordFive c1 = stringtoCoord(move.substring(0, move.indexOf(")") + 1));
-		CoordFive c2 = stringtoCoord(move.substring(move.indexOf(")") + 1, move.length()));
+		CoordFour c1 = stringtoCoord(move.substring(0, move.indexOf(")") + 1));
+		CoordFour c2 = stringtoCoord(move.substring(move.indexOf(")") + 1, move.length()));
 		return new Move(c1, c2);
 	}
 
 	public static Move stringToMove(String coord1, String coord2) {
-		CoordFive c1 = stringtoCoord(coord1);
-		CoordFive c2 = stringtoCoord(coord2);
+		CoordFour c1 = stringtoCoord(coord1);
+		CoordFour c2 = stringtoCoord(coord2);
 		return new Move(c1, c2);
 	}
 

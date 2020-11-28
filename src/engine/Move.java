@@ -2,12 +2,12 @@ package engine;
 
 public class Move {
 
-	public CoordFive origin;
-	public CoordFive dest;
+	public CoordFour origin;
+	public CoordFour dest;
 	//1 for spatial, 2 for jumping or branching.
 	public int type;
 	
-	public Move(CoordFive coordorigin, CoordFive coorddest) {
+	public Move(CoordFour coordorigin, CoordFour coorddest) {
 		origin = coordorigin;
 		dest = coorddest;
 		
