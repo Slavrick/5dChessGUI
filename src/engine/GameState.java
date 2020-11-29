@@ -63,7 +63,7 @@ public class GameState {
 				getTimeline(m.origin.L).addSpatialMove(m, color);
 			} else {
 				Timeline tlOrigin = getTimeline(m.origin.L);
-				Timeline tldest = getTimeline(m.origin.L);
+				Timeline tldest = getTimeline(m.dest.L);
 				int pieceMoved = tlOrigin.addJumpingMove(m.origin, color);
 				Board b = tldest.addJumpingMoveDest(m.dest, color, pieceMoved);
 				if (b != null) { // means that the move branches.

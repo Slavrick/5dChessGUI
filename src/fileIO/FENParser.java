@@ -206,7 +206,7 @@ public class FENParser {
 		return cd;
 	}
 
-	// Recive string (x0,y0,t0,l0,)(x1,y1,t1,l1) --> move data struct
+	// Recive string (x0,y0,t0,l0)(x1,y1,t1,l1) --> move data struct
 	public static Move stringToMove(String move) {
 		CoordFour c1 = stringtoCoord(move.substring(0, move.indexOf(")") + 1));
 		CoordFour c2 = stringtoCoord(move.substring(move.indexOf(")") + 1, move.length()));

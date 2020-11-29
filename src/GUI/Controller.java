@@ -14,6 +14,7 @@ import javafx.event.*;
 import javafx.scene.input.MouseEvent;
 
 import engine.GameState;
+import fileIO.FENParser;
 import test.BranchTester;
 
 public class Controller {
@@ -30,9 +31,11 @@ public class Controller {
 	@FXML
 	ListView<String> notationList;
 	@FXML
-	TextField movefied;
-
+	TextField movefield;
+	
 	ObservableList<String> Notations;
+	
+	GameState g;
 	
 	double lastX = 0;
 	double lastY = 0;
@@ -85,9 +88,9 @@ public class Controller {
 		
 		canvasbox.setWidth(8000);
 		canvasbox.setHeight(8000);
-		GameState g = BranchTester.getTestGS();
 		gc.fillRect(-1,0,0,0);
 		ChessDrawer.drawMultiverse(gc,30,30,g);
+		g.printMultiverse();
 	}
 	
 	@FXML
@@ -107,11 +110,12 @@ public class Controller {
 	
 	@FXML
 	private void handleMove(ActionEvent event) {
+		g.makeTurn(FENParser.stringToMove(movefield.getText()));
 		
 	}
 
 	public Controller() {
-		
+		g = BranchTester.getTestGS();
 	}
 
 }
