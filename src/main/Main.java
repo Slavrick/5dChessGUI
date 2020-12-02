@@ -3,6 +3,7 @@ package main;
 import test.FENParserTest;
 import test.MoveTester;
 import javafx.stage.Stage;
+import engine.Board;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.fxml.FXMLLoader;
@@ -14,6 +15,7 @@ public class Main extends Application {
 		FENParserTest.testFENFileParser();
 		FENParserTest.testMoveParser();
 		MoveTester.TestBishopMoves();
+		System.out.println(Board.piece.WBISHOP.ordinal());
 		launch();
 	}
 

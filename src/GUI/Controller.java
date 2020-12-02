@@ -13,6 +13,10 @@ import javafx.collections.FXCollections;
 import javafx.event.*;
 import javafx.scene.input.MouseEvent;
 
+import java.awt.MouseInfo;
+import java.awt.Point;
+import java.awt.PointerInfo;
+
 import engine.GameState;
 import fileIO.FENParser;
 import test.BranchTester;
@@ -44,6 +48,13 @@ public class Controller {
 	double canvasWidth = 8000;
 	double canvasHeight = 8000;
 	
+	double startDragx;
+	double startDragy;
+	double xchange;
+	double ychange; 
+	
+	boolean dragging = false;
+	
 
 	@FXML
 	private void handleButtonAction(ActionEvent event) {
@@ -54,12 +65,14 @@ public class Controller {
 		//Board test = FENParser.getBoardFromString(FENParser.STANDARDBOARD);
         //ChessDrawer.drawFullBoard(gc,50,50,false,test);
 		
-		canvasbox.addEventHandler(MouseEvent.MOUSE_CLICKED, 
+
+		canvasbox.addEventHandler(MouseEvent.MOUSE_RELEASED, 
 		        new EventHandler<MouseEvent>() {
 		            @Override
-		            public void handle(MouseEvent t) {            
-			        	   lastX = t.getX();
-			        	   lastY = t.getY();
+		            public void handle(MouseEvent t) {
+		            	System.out.println("Release");
+		            	dragging = false;
+		            	
 		            }
 		        });
 		
@@ -67,21 +80,32 @@ public class Controller {
 			       new EventHandler<MouseEvent>() {
 			           @Override
 			           public void handle(MouseEvent e) {
-			        	   double x = e.getX();
-			        	   double y = e.getY();
-			               gc.clearRect(e.getX() - 2, e.getY() - 2, 5, 5);
-			               double xchange = x - lastX;
-			               double ychange = y - lastY;
-			               screenX += xchange;
-			               screenY += ychange;
-			               sPane.setHvalue(sPane.getHvalue() - (xchange / (canvasWidth)));
-			               sPane.setVvalue(sPane.getVvalue() - (ychange / (canvasHeight)));
-			               System.out.println("Change: " + xchange + ", " + ychange);
-			               System.out.println("Screen: " + e.getScreenX() + ", " + e.getScreenY());
-			               System.out.println("Screen: " + screenX + ", " + screenY);
-			               System.out.println("H/V Vals: " + sPane.getHvalue() + ", " + sPane.getVvalue());
-			               lastX = x;
-			               lastY = y;
+			        	   //System.out.println("DragEvent");
+			        	   PointerInfo mouse = MouseInfo.getPointerInfo();
+			        	   Point mousePt = mouse.getLocation();
+			        	   if(!dragging) {
+			        		   dragging = true;
+			        		   startDragx = mousePt.x;
+			        		   startDragy = mousePt.y;
+			        		   screenX -= xchange;
+			        		   screenY -= ychange;
+			        		   if(screenX < 0) {
+			        			   screenX = 0;
+			        		   }
+			        		   if(screenY < 0) {
+			        			   screenY = 0;
+			        		   }
+			        	   }
+			               //gc.clearRect(e.getX() - 2, e.getY() - 2, 5, 5);
+			               xchange = (mousePt.x - startDragx) * 1.1;
+			               ychange = (mousePt.y - startDragy) * 1.1;
+			               
+			               sPane.setHvalue(((screenX - xchange) / (canvasWidth)));
+			               sPane.setVvalue((screenY - ychange) / (canvasHeight));
+			               //System.out.println("Change: " + xchange + ", " + ychange);
+			               //System.out.println("Screen: " + e.getScreenX() + ", " + e.getScreenY());
+			               //System.out.println("Screen: " + screenX + ", " + screenY);
+			               //System.out.println("H/V Vals: " + sPane.getHvalue() + ", " + sPane.getVvalue());
 			               
 			           }
 			       });
@@ -115,7 +139,7 @@ public class Controller {
 	}
 
 	public Controller() {
-		g = BranchTester.getTestGS();
+		g = FENParser.FENtoGS("res/Rookie.FEN.txt");
 	}
 
 }

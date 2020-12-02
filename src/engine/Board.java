@@ -2,7 +2,7 @@ package engine;
 
 public class Board {
 
-	// public Piece[][] b;
+	//make this private, would be better for certain reasons.
 	public int[][] brd;
 	public int height;
 	public int width;
@@ -90,6 +90,22 @@ public class Board {
 			return pieceColor.BLACK;
 		}
 		return pieceColor.WHITE;
+	}
+	
+	/**
+	 * 
+	 * 
+	 * @param pieceCode integer that matches the enum
+	 * @return true for white false for black and false for empty.
+	 */
+	public static boolean getColorBool(int pieceCode) {
+		if (pieceCode == piece.EMPTY.ordinal()) {
+			return false;
+		}
+		if (pieceCode >= piece.BPAWN.ordinal()) {
+			return GameState.BLACK;
+		}
+		return GameState.WHITE;
 	}
 
 	public String toString() {

@@ -56,8 +56,7 @@ public class Timeline {
 	public boolean timeExists(int t, boolean boardColor) {
 		if ((boardColor == GameState.WHITE && (t < whiteStart || t > whiteEnd))) {
 			return false;
-		}
-		else if((boardColor == GameState.BLACK && (t < blackStart || t > blackEnd))) {
+		} else if ((boardColor == GameState.BLACK && (t < blackStart || t > blackEnd))) {
 			return false;
 		}
 		return true;
@@ -85,7 +84,7 @@ public class Timeline {
 	}
 
 	// add a board to the end of the timeline.
-	public boolean addMove(Board b) {
+	private boolean addMove(Board b) {
 		if (colorPlayable) {
 			bboards.add(b);
 			blackEnd++;
@@ -135,6 +134,12 @@ public class Timeline {
 		return null;
 	}
 
+	// Adds a null move to the Timeline. This can be used to check for certain
+	// things.
+	public void addNullMove() {
+		addMove(getPlayableBoard());
+	}
+
 	// prints the board in a primative way
 	public void printTimleline() {
 		int lastWindex = wboards.size();
@@ -168,11 +173,10 @@ public class Timeline {
 	public boolean undoMove() {
 		if (colorPlayable) {
 			wboards.remove(wboards.size() - 1);
-			colorPlayable = !colorPlayable;
 		} else {
 			bboards.remove(bboards.size() - 1);
-			colorPlayable = !colorPlayable;
 		}
+		colorPlayable = !colorPlayable;
 		if (wboards.size() == 0 && bboards.size() == 0) {
 			return true;
 		}
@@ -181,7 +185,7 @@ public class Timeline {
 
 	public int getSquare(CoordFour c, boolean color) {
 		Board b = getBoard(c.T, color);
-		if(b != null) {
+		if (b != null) {
 			return b.getSquare(c);
 		}
 		return -1;

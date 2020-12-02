@@ -27,7 +27,7 @@ public class FENParserTest {
 	
 	public static void testFENFileParser() {
 		GameState g = FENParser.FENtoGS("res/Rookie.FEN.txt");
-		//assert g != null : g;
+		assert g != null : g;
 		if(g != null) {
 			g.printMultiverse();			
 		}

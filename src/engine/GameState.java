@@ -15,6 +15,11 @@ public class GameState {
 	public int minTL;
 	public int minActiveTL;
 	public int maxActiveTL;
+	
+	//This is a planned workaround for 2 timeline +-0 starting positions. We may start with 0,1 tl, but white can still branch
+	//in other words, a posative value means that white can make n more timelines than black, and the opposite for negative numbers
+	//therefore in the above example, you would have 2 timeline start. starters would be 0,1 and handicap would be 1.
+	//without this, the +2 TL would be inactive.
 	public int tlHandicap;
 
 	public GameState(Board start) {
@@ -23,6 +28,8 @@ public class GameState {
 		minTL = 0;
 		maxTL = 0;
 		tlHandicap = 0;
+		this.width = start.width;
+		this.height = start.height;
 	}
 
 	public GameState(Timeline starter) {
@@ -32,9 +39,15 @@ public class GameState {
 		maxTL = 0;
 		tlHandicap = 0;
 		color = true;
+		Board b = starter.getPlayableBoard();
+		this.width = b.width;
+		this.height = b.height;
 	}
 
 	public GameState(Timeline[] starters, int minTL, int maxTL) {
+		Board b = starters[0].getPlayableBoard();
+		this.width = b.width;
+		this.height = b.height;
 		multiverse = new ArrayList<Timeline>();
 		for (Timeline t : starters)
 			multiverse.add(t);
@@ -45,10 +58,24 @@ public class GameState {
 	}
 
 	public GameState(ArrayList<Timeline> starters, int minTL, int maxTL) {
+		Board b = starters.get(0).getPlayableBoard();
+		this.width = b.width;
+		this.height = b.height;
 		multiverse = starters;
 		this.minTL = minTL;
 		this.maxTL = maxTL;
 		tlHandicap = 0;
+		color = true;
+	}
+	
+	public GameState(ArrayList<Timeline> starters, int minTL, int maxTL, int handicap) {
+		Board b = starters.get(0).getPlayableBoard();
+		this.width = b.width;
+		this.height = b.height;
+		multiverse = starters;
+		this.minTL = minTL;
+		this.maxTL = maxTL;
+		tlHandicap = handicap;
 		color = true;
 	}
 	
@@ -133,6 +160,7 @@ public class GameState {
 	}
 
 	public void printMultiverse() {
+		System.out.println(color);
 		int tl = minTL;
 		for (Timeline t : multiverse) {
 			System.out.println("----------------------TL" + tl + "----------------------");
@@ -153,7 +181,7 @@ public class GameState {
 	}
 	
 	public boolean isLegalState(boolean color) {
-		for(Timeline t : multiverse) {
+		for(int i = minTL; i < maxTL; i++) {
 			
 		}
 		return false;

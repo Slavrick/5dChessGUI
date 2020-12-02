@@ -123,6 +123,7 @@ public class FENParser {
 			
 		}
 		GameState gs = new GameState(starters, startingTimeline, (startingTimeline + starters.size() - 1));
+		gs.color = color;
 		return gs;
 	}
 

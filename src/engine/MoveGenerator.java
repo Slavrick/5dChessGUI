@@ -25,11 +25,44 @@ public class MoveGenerator {
 		return null;
 	}
 	
-	public static ArrayList<CoordFour> getRiderMoves(GameState g, CoordFour sourceCoord, CoordFour movementVec){
+	public static ArrayList<CoordFour> getLeaperMoves(GameState g, boolean color, CoordFour sourceCoord, CoordFour[] movementVec){
 		ArrayList<CoordFour> destCoords = new ArrayList<CoordFour>();
-		return destCoords; //@TODO get this thing working
+		for(CoordFour leap: movementVec) {
+			int piece = g.getSquare(CoordFour.add(sourceCoord, leap), color);
+			if(piece == -1) {
+				continue;
+			}
+			if(piece == EMPTYSQUARE) {
+				destCoords.add(CoordFour.add(sourceCoord, leap));
+			}
+			else if( Board.getColorBool(piece) != color ) {
+				destCoords.add(CoordFour.add(sourceCoord, leap));
+			}
+		}
+		return destCoords; 
 	}
 	
+	/**
+	 * Takes a list of rider vectors and returns everywhere they can go
+	 * 
+	 * @param g
+	 * @param color
+	 * @param sourceCoord
+	 * @param movementVec an array of vectors the rider can move on
+	 * @return a list of every coordinate that the rider can reach with given movement vector
+	 */
+	public static ArrayList<CoordFour> getRiderMoves(GameState g, boolean color, CoordFour sourceCoord, CoordFour[] movementVec) {
+		ArrayList<CoordFour> moveList = new ArrayList<CoordFour>();
+		for(CoordFour cf: movementVec) {
+			if(cf.isSpatial()) {
+				moveList.addAll(MoveGenerator.getSpatialRiderMoves(g, color, sourceCoord, cf));
+			}
+			else {
+				moveList.addAll(MoveGenerator.getTemporalRiderMoves(g, color, sourceCoord, cf));
+			}
+		}
+		return moveList;
+	}
 	
 	/**
 	 * Takes a square, vector and color, and returns all the coordinates that the piece can go to.
@@ -64,6 +97,15 @@ public class MoveGenerator {
 		return destCoords;
 	}
 	
+	
+	/**
+	 * 
+	 * @param g gamestate to search
+	 * @param color color boards to search
+	 * @param sourceCoord source of coordinate
+	 * @param movementVec movment vecotor of rider
+	 * @return all coordinates that a rider can move with given source and vector
+	 */
 	public static ArrayList<CoordFour> getTemporalRiderMoves(GameState g, boolean color, CoordFour sourceCoord, CoordFour movementVec){
 		ArrayList<CoordFour> destCoords = new ArrayList<CoordFour>();
 		CoordFour currSquare = CoordFour.add(sourceCoord, movementVec);
@@ -91,17 +133,6 @@ public class MoveGenerator {
 		return null;
 	}
 	
-	public static ArrayList<CoordFour> getMoves(GameState g, boolean color, CoordFour sourceCoord, CoordFour[] movementVec) {
-		ArrayList<CoordFour> moveList = new ArrayList<CoordFour>();
-		for(CoordFour cf: movementVec) {
-			if(cf.isSpatial()) {
-				moveList.addAll(MoveGenerator.getSpatialRiderMoves(g, color, sourceCoord, cf));
-			}
-			else {
-				moveList.addAll(MoveGenerator.getTemporalRiderMoves(g, color, sourceCoord, cf));
-			}
-		}
-		return moveList;
-	}
+
 	
 }
