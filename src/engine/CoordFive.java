@@ -20,6 +20,10 @@ public class CoordFive extends CoordFour{
 		this.color = color;
 	}
 	
+	public boolean equals(CoordFive compare) {
+		return compare.x == this.x && compare.y == this.y && compare.T == this.T && compare.L == this.L && compare.color == this.color;
+	}
+	
 	public CoordFive clone() {
 		return new CoordFive(this.clone(),this.color);
 	}

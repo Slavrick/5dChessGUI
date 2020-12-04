@@ -338,4 +338,8 @@ public class GameState {
 	public boolean getColor() {
 		return color;
 	}
+	
+	public boolean coordIsPlayable(CoordFive c) {
+		return getTimeline(c.L).isMostRecentTime(c.T, c.color);
+	}
 }

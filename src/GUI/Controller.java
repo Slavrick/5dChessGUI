@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import engine.CoordFive;
 import engine.CoordFour;
 import engine.GameState;
+import engine.Move;
 import engine.MoveGenerator;
 import engine.MoveNotation;
 import fileIO.FENParser;
@@ -65,6 +66,9 @@ public class Controller {
 	double ychange;
 
 	boolean dragging = false;
+	
+	CoordFive selectedSquare;
+	ArrayList<CoordFour> destinations;
 
 	@FXML
 	void initialize() {
@@ -103,7 +107,6 @@ public class Controller {
 				// gc.clearRect(e.getX() - 2, e.getY() - 2, 5, 5);
 				xchange = (mousePt.x - startDragx) * 1.1;
 				ychange = (mousePt.y - startDragy) * 1.1;
-
 				sPane.setHvalue(((screenX - xchange) / (canvasWidth)));
 				sPane.setVvalue((screenY - ychange) / (canvasHeight));
 				// System.out.println("Change: " + xchange + ", " + ychange);
@@ -114,18 +117,26 @@ public class Controller {
 
 			}
 		});
-
+		
+		//this is the jankiest way to handle this.... but im not sure how to do it otherwise haha.
 		canvasbox.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent e) {
 				System.out.println((e.getX() + screenX) + ", " + (e.getY() + screenY));
 				CoordFive clickedCoord = getCoordClicked((int) e.getX(), (int) e.getY(), g.width, g.height);
-				if(clickedCoord != null) {
-					drawMoves(clickedCoord);					
+				if(destinations != null && clickedCoord != null && alContains(destinations,clickedCoord)) {
+					g.makeMove(new Move(selectedSquare, clickedCoord));
+					selectedSquare = null;
+					destinations = null;
+					drawStage();
+				}
+				else if(clickedCoord != null && g.coordIsPlayable(clickedCoord)) {					
+					selectedSquare = clickedCoord;
+					updateDestinations(selectedSquare);
+					drawStage();
 				}
 			}
 		});
-
 		canvasbox.setWidth(8000);
 		canvasbox.setHeight(8000);
 		gc.fillRect(-1, 0, 0, 0);
@@ -200,8 +211,32 @@ public class Controller {
 	public void drawMoves(CoordFive c) {
 		int piece = g.getSquare(c, c.color);
 		CoordFour[] moveset = MoveNotation.getMoveVectors(piece);
-		ArrayList<CoordFour> destList = MoveGenerator.getRiderMoves(g, c.color, c, moveset);
-		ChessDrawer.drawAllSquares(canvasbox.getGraphicsContext2D(), g.width, g.height, g.minTL, Color.AQUAMARINE, destList, c.color);
+		destinations = MoveGenerator.getRiderMoves(g, c.color, c, moveset);
+		ChessDrawer.drawAllSquares(canvasbox.getGraphicsContext2D(), g.width, g.height, g.minTL, Color.AQUAMARINE, destinations, c.color);
+	}
+	
+	public void updateDestinations(CoordFive c) {
+		int piece = g.getSquare(c, c.color);
+		CoordFour[] moveset = MoveNotation.getMoveVectors(piece);
+		destinations = MoveGenerator.getRiderMoves(g, c.color, c, moveset);
+	}
+	
+	public void drawStage() {
+		GraphicsContext gc = canvasbox.getGraphicsContext2D();
+		gc.clearRect(0, 0, 1000, 1000);
+		ChessDrawer.drawMultiverse(canvasbox.getGraphicsContext2D(), 0, 0, g);
+		if(destinations != null) {			
+			ChessDrawer.drawAllSquares(gc, g.width, g.height, g.minTL, Color.AQUAMARINE, destinations, selectedSquare.color);
+		}
+		
+	}
+	
+	public static boolean alContains(ArrayList<CoordFour> al, CoordFour target) {
+		for(CoordFour c : al) {
+			if(c.equals(target))
+				return true;
+		}
+		return false;
 	}
 
 }

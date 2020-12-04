@@ -190,4 +190,8 @@ public class Timeline {
 		}
 		return -1;
 	}
+	
+	public boolean isMostRecentTime(int t, boolean color) {
+		return colorPlayable == color && t == Tend;
+	}
 }
