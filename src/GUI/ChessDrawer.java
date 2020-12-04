@@ -5,8 +5,11 @@ import javafx.scene.image.Image;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 
 import engine.Board;
+import engine.CoordFive;
+import engine.CoordFour;
 import engine.GameState;
 import engine.Timeline;
 import javafx.scene.canvas.GraphicsContext;
@@ -16,7 +19,14 @@ public class ChessDrawer {
 	public static Image piecesprites;
 	private static final int SPRITEWIDTH = 32;
 	private static final int SPRITESHEETWIDTH = 10;
-
+	public static Color lightColor = Color.TAN;
+	public static Color darkColor = Color.DARKGOLDENROD;
+	public static int squarewidth = 32;
+	public static int padding = 50;
+	
+	
+	// TODO fix this because it needs to clear the area.
+	
 	public static void drawMultiverse(GraphicsContext gc, int x, int y, GameState game) {
 		int SquareWidth = 32;
 		int layerCTR = 0;
@@ -30,7 +40,7 @@ public class ChessDrawer {
 			}
 			int xoffset = offsetNum * (boardwidth + padding);
 			int yoffset = (layerCTR * (boardHeight + padding));
-			drawTimeline(gc, x + xoffset, y + yoffset, game.width, t);
+			drawTimeline(gc, padding + xoffset, padding + yoffset, game.width, t);
 			layerCTR++;
 		}
 
@@ -57,7 +67,7 @@ public class ChessDrawer {
 				}
 				if (i < lastBindex) {
 					Board b = t.bboards.get(i);
-					if (lastBindex - 1 == i && lastWindex == i) {
+					if (lastBindex - 1 == i && lastWindex - 1 == i ) {
 						drawFullBoard(gc, x + (offsetCTR * (boardwidth + padding)), y, false, b, true);
 					} else {
 						drawFullBoard(gc, x + (offsetCTR * (boardwidth + padding)), y, false, b, false);
@@ -79,7 +89,7 @@ public class ChessDrawer {
 				}
 				if (i < lastWindex) {
 					Board b = t.wboards.get(i);
-					if (lastWindex - 1 == i && lastBindex == i) {
+					if (lastWindex - 1 == i && lastBindex - 1 == i) {
 						drawFullBoard(gc, x + (offsetCTR * (boardwidth + padding)), y, true, b, true);
 					} else {
 						drawFullBoard(gc, x + (offsetCTR * (boardwidth + padding)), y, true, b, false);
@@ -90,6 +100,7 @@ public class ChessDrawer {
 		}
 	}
 
+	//this func depricated. ill delete it soon TODO delete func
 	public static void drawFullBoard(GraphicsContext gc, int x, int y, boolean color, Board b) {
 		int SquareWidth = 32;
 		if (piecesprites == null) {
@@ -100,7 +111,7 @@ public class ChessDrawer {
 				e.printStackTrace();
 			}
 		}
-		drawChessBoardColored(gc, x, y, color);
+		drawChessBoardColored(gc, x, y, b.width, b.height, color, false);
 		for (int squarex = 0; squarex < b.width; squarex++) {
 			for (int squarey = 0; squarey < b.height; squarey++) {
 				int piecenum = b.getSquare(squarex,squarey);
@@ -112,7 +123,7 @@ public class ChessDrawer {
 		}
 	}
 
-	// @TODO fix this, load piecesprites somewhere else, so that it condenses the
+	// TODO fix this, load piecesprites somewhere else, so that it condenses the
 	// code.
 	public static void drawFullBoard(GraphicsContext gc, int x, int y, boolean color, Board b, boolean playable) {
 		int SquareWidth = 32;
@@ -132,97 +143,6 @@ public class ChessDrawer {
 				int yoffset = (SquareWidth * (b.height - squarey - 1));
 				gc.drawImage(piecesprites, (piecenum % SPRITESHEETWIDTH) * SPRITEWIDTH, (piecenum / SPRITESHEETWIDTH) * SPRITEWIDTH, SPRITEWIDTH,
 						SPRITEWIDTH, x + xoffset, y + yoffset, SquareWidth, SquareWidth);
-			}
-		}
-	}
-
-	// these funcstions are bad
-	public static void drawChessBoard(GraphicsContext gc, int x, int y) {
-		int SquareWidth = 32;
-		gc.setFill(Color.TAN);
-		for (int squarey = 0; squarey < 8; squarey++) {
-			for (int squarex = 0; squarex < 4; squarex++) {
-				int xOffset = (squarex * 2 * SquareWidth);
-				if (squarey % 2 == 1) {
-					xOffset += SquareWidth;
-				}
-				gc.fillRect(x + xOffset, y + (squarey * SquareWidth), SquareWidth, SquareWidth);
-			}
-		}
-		gc.setFill(Color.DARKGOLDENROD);
-		for (int squarey = 0; squarey < 8; squarey++) {
-			for (int squarex = 0; squarex < 4; squarex++) {
-				int xOffset = (squarex * 2 * SquareWidth);
-				if (squarey % 2 == 0) {
-					xOffset += SquareWidth;
-				}
-				gc.fillRect(x + xOffset, y + (squarey * SquareWidth), SquareWidth, SquareWidth);
-			}
-		}
-	}
-
-	public static void drawChessBoardColored(GraphicsContext gc, int x, int y, boolean color) {
-		int SquareWidth = 32;
-
-		if (color) {
-			gc.setFill(Color.LIGHTGRAY);
-		} else {
-			gc.setFill(Color.BLACK);
-		}
-		gc.fillRoundRect(x - 10, y - 10, SquareWidth * 8 + 20, SquareWidth * 8 + 20, 15, 15);
-		gc.setFill(Color.TAN);
-		for (int squarey = 0; squarey < 8; squarey++) {
-			for (int squarex = 0; squarex < 4; squarex++) {
-				int xOffset = (squarex * 2 * SquareWidth);
-				if (squarey % 2 == 1) {
-					xOffset += SquareWidth;
-				}
-				gc.fillRect(x + xOffset, y + (squarey * SquareWidth), SquareWidth, SquareWidth);
-			}
-		}
-		gc.setFill(Color.DARKGOLDENROD);
-		for (int squarey = 0; squarey < 8; squarey++) {
-			for (int squarex = 0; squarex < 4; squarex++) {
-				int xOffset = (squarex * 2 * SquareWidth);
-				if (squarey % 2 == 0) {
-					xOffset += SquareWidth;
-				}
-				gc.fillRect(x + xOffset, y + (squarey * SquareWidth), SquareWidth, SquareWidth);
-			}
-		}
-	}
-
-	public static void drawChessBoardColored(GraphicsContext gc, int x, int y, boolean color, boolean playable) {
-		int SquareWidth = 32;
-
-		if (color) {
-			gc.setFill(Color.LIGHTGRAY);
-		} else {
-			gc.setFill(Color.BLACK);
-		}
-		if (playable) {
-			gc.fillRoundRect(x - 10, y - 10, SquareWidth * 8 + 20, SquareWidth * 8 + 20, 15, 15);
-		} else {
-			gc.fillRoundRect(x - 5, y - 5, SquareWidth * 8 + 10, SquareWidth * 8 + 10, 15, 15);
-		}
-		gc.setFill(Color.TAN);
-		for (int squarey = 0; squarey < 8; squarey++) {
-			for (int squarex = 0; squarex < 4; squarex++) {
-				int xOffset = (squarex * 2 * SquareWidth);
-				if (squarey % 2 == 1) {
-					xOffset += SquareWidth;
-				}
-				gc.fillRect(x + xOffset, y + (squarey * SquareWidth), SquareWidth, SquareWidth);
-			}
-		}
-		gc.setFill(Color.DARKGOLDENROD);
-		for (int squarey = 0; squarey < 8; squarey++) {
-			for (int squarex = 0; squarex < 4; squarex++) {
-				int xOffset = (squarex * 2 * SquareWidth);
-				if (squarey % 2 == 0) {
-					xOffset += SquareWidth;
-				}
-				gc.fillRect(x + xOffset, y + (squarey * SquareWidth), SquareWidth, SquareWidth);
 			}
 		}
 	}
@@ -260,5 +180,23 @@ public class ChessDrawer {
 		double[] arrowy = { (double) y - 40, (double) y + 40, (double) y };
 		gc.fillPolygon(arrowx, arrowy, 3);
 
+	}
+	
+	public static void drawSquare(GraphicsContext gc, int width, int height, int minLayer, CoordFive squareLoc , Color c ) {
+		gc.setFill(c);
+		int xboardOffset = (width * squarewidth) + padding;
+		int yboardOffset = (height * squarewidth) + padding;
+		int xOffset = (2 * (squareLoc.T-1) * (xboardOffset) + (squareLoc.x * squarewidth) + padding);
+		if(!squareLoc.color) {
+			xOffset += xboardOffset;
+		}
+		int yOffset = ((squareLoc.L - minLayer + 1) * (yboardOffset)) - ((squareLoc.y+1) * squarewidth);
+		gc.fillRect(xOffset, yOffset, squarewidth, squarewidth);
+	}
+	
+	public static void drawAllSquares(GraphicsContext gc, int width, int height, int minLayer, Color c , ArrayList<CoordFour> list, boolean color) {
+		for(CoordFour c4 : list) {
+			ChessDrawer.drawSquare(gc, width, height, minLayer, new CoordFive(c4,color), c);
+		}
 	}
 }

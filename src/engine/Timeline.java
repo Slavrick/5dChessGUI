@@ -94,7 +94,7 @@ public class Timeline {
 			Tend++;
 		}
 		colorPlayable = !colorPlayable;
-		return false;
+		return true;
 	}
 
 	// this func sucks im debating on adding implicit checks here
@@ -147,22 +147,22 @@ public class Timeline {
 		if (colorStart) {
 			for (int i = 0; i < lastBindex || i < lastWindex; i++) {
 				if (i < lastWindex) {
-					System.out.println("W" + (i + Tstart));
+					System.out.println("W T" + (i + Tstart));
 					System.out.println(wboards.get(i));
 				}
 				if (i < lastBindex) {
-					System.out.println("B" + (i + Tstart));
+					System.out.println("B T" + (i + Tstart));
 					System.out.println(bboards.get(i));
 				}
 			}
 		} else {
 			for (int i = 0; i < lastBindex || i < lastWindex; i++) {
 				if (i < lastBindex) {
-					System.out.println("B");
+					System.out.println("B T" + (i + Tstart));
 					System.out.println(bboards.get(i));
 				}
 				if (i < lastWindex) {
-					System.out.println("W");
+					System.out.println("W T" + (i + Tstart));
 					System.out.println(wboards.get(i));
 				}
 			}

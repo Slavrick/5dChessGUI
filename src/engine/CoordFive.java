@@ -2,7 +2,7 @@ package engine;
 
 public class CoordFive extends CoordFour{
 
-	boolean color;
+	public boolean color;
 	
 	public CoordFive(int x, int y, boolean color) {
 		super(x, y);
@@ -22,5 +22,15 @@ public class CoordFive extends CoordFour{
 	
 	public CoordFive clone() {
 		return new CoordFive(this.clone(),this.color);
+	}
+	
+	public String toString() {
+		char colorch;
+		if(color) {
+			colorch = 'w';
+		}else {
+			colorch = 'b';
+		}
+		return "(" + colorch + "." + L + "L." + "T" + T + "." + intTofile(x) + "" + (y + 1) + ")";
 	}
 }

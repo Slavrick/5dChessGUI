@@ -127,6 +127,7 @@ public class FENParser {
 		return gs;
 	}
 
+	//this doesnt work if the move is from another TL but jumps to the created one. @TODO
 	public static Timeline FENtoTL(String fen, int width, int height, int layer) {
 		String[] splitString = fen.split(";");
 		// parses board pieces
