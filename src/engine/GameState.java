@@ -144,7 +144,7 @@ public class GameState {
 		}
 		// TODO validate origin.
 		Timeline originT = getTimeline(m.origin.L);
-		Timeline destT = getTimeline(m.origin.L);
+		Timeline destT = getTimeline(m.dest.L);
 		if (originT == null || destT == null) {
 			return false;
 		}
@@ -228,7 +228,7 @@ public class GameState {
 		} else { // black branches,
 			minTL--;
 			Timeline branch = new Timeline(b, !color, timeStart + 1, maxTL);
-			multiverse.add(branch);
+			multiverse.add(0,branch);
 			return minTL;
 		}
 	}
@@ -341,5 +341,23 @@ public class GameState {
 	
 	public boolean coordIsPlayable(CoordFive c) {
 		return getTimeline(c.L).isMostRecentTime(c.T, c.color);
+	}
+
+	public void undoTempMoves() {
+		if(turnTLs.size() <= 0)
+			return;
+		for(int i : turnTLs) {
+			if(getTimeline(i).undoMove()) {
+				//this means that the timeline had only one board.
+				multiverse.remove(GameState.getTLIndex(i, this.minTL));
+				if(color) {
+					maxTL--;
+				}
+				else {
+					minTL++;
+				}
+			}
+		}
+		turnTLs.clear();
 	}
 }

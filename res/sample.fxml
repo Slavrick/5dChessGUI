@@ -29,7 +29,6 @@
 		<ScrollPane fx:id="sPane">
 			<AnchorPane>
 				<Canvas fx:id="canvasbox" width="500" height="500"/>
-				<Button layoutX="126" layoutY="150" text="Submit Turn" onAction="#handleButtonAction" />	
 			</AnchorPane>
 		</ScrollPane>
 	</center>
@@ -41,7 +40,7 @@
 		<VBox>
 			<HBox>
 				<Button layoutX="126" layoutY="150" text="Submit Turn" onAction="#handleButtonAction" />	
-				<Button layoutX="126" layoutY="150" text="Undo Turn" onAction="#handleButtonAction" />
+				<Button layoutX="126" layoutY="150" text="Undo Turn" onAction="#handleUndoButton" />
 				<Button layoutX="126" layoutY="150" text="Undo Move" onAction="#handleButtonAction" />
 			</HBox>
 			<HBox>

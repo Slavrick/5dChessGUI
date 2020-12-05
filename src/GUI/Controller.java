@@ -125,7 +125,9 @@ public class Controller {
 				System.out.println((e.getX() + screenX) + ", " + (e.getY() + screenY));
 				CoordFive clickedCoord = getCoordClicked((int) e.getX(), (int) e.getY(), g.width, g.height);
 				if(destinations != null && clickedCoord != null && alContains(destinations,clickedCoord)) {
-					g.makeMove(new Move(selectedSquare, clickedCoord));
+					Move selectedMove = new Move(selectedSquare,clickedCoord);
+					System.out.println(selectedMove);
+					g.makeMove(selectedMove);
 					selectedSquare = null;
 					destinations = null;
 					drawStage();
@@ -149,7 +151,7 @@ public class Controller {
 		GraphicsContext gc = canvasbox.getGraphicsContext2D();
 		gc.setFill(Color.AQUA);
 		gc.fillRect(0, 0, 100, 100);
-		ChessDrawer.drawMultiverse(gc, 30, 30, g);
+		drawStage();
 		g.printMultiverse();
 	}
 
@@ -185,7 +187,6 @@ public class Controller {
 	private void handleMove(ActionEvent event) {
 		CoordFive c = new CoordFive(FENParser.stringtoCoord(movefield.getText()), true);
 		ChessDrawer.drawSquare(canvasbox.getGraphicsContext2D(), g.width, g.height, g.minTL, c, Color.AQUA);
-
 	}
 
 	public Controller() {
@@ -237,6 +238,12 @@ public class Controller {
 				return true;
 		}
 		return false;
+	}
+	
+	@FXML
+	public void handleUndoButton(ActionEvent e) {
+		g.undoTempMoves();
+		drawStage();
 	}
 
 }

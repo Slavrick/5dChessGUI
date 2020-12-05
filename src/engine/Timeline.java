@@ -147,22 +147,22 @@ public class Timeline {
 		if (colorStart) {
 			for (int i = 0; i < lastBindex || i < lastWindex; i++) {
 				if (i < lastWindex) {
-					System.out.println("W T" + (i + Tstart));
+					System.out.println("__W_T_" + (i + Tstart) + "__\n");
 					System.out.println(wboards.get(i));
 				}
 				if (i < lastBindex) {
-					System.out.println("B T" + (i + Tstart));
+					System.out.println("__B_T_" + (i + Tstart) + "__\n");
 					System.out.println(bboards.get(i));
 				}
 			}
 		} else {
 			for (int i = 0; i < lastBindex || i < lastWindex; i++) {
 				if (i < lastBindex) {
-					System.out.println("B T" + (i + Tstart));
+					System.out.println("__B_T_" + (i + Tstart) + "__\n");
 					System.out.println(bboards.get(i));
 				}
 				if (i < lastWindex) {
-					System.out.println("W T" + (i + Tstart));
+					System.out.println("__W_T_" + (i + Tstart) + "__\n");
 					System.out.println(wboards.get(i));
 				}
 			}
@@ -173,8 +173,11 @@ public class Timeline {
 	public boolean undoMove() {
 		if (colorPlayable) {
 			wboards.remove(wboards.size() - 1);
+			whiteEnd--;
+			Tend--;
 		} else {
 			bboards.remove(bboards.size() - 1);
+			blackEnd--;
 		}
 		colorPlayable = !colorPlayable;
 		if (wboards.size() == 0 && bboards.size() == 0) {
