@@ -201,6 +201,23 @@ public class GameState {
 		return multiverse.get(layer + (-1 * minTL));
 	}
 
+	public boolean getColor() {
+		return color;
+	}
+
+	/**
+	 * 
+	 * @param c     coordinate of square
+	 * @param color color of square
+	 * @return int relating to piece color
+	 */
+	public int getSquare(CoordFour c, boolean color) {
+		if (layerExists(c.L))
+			return getTimeline(c.L).getSquare(c, color);
+		return -1;
+	}
+
+	
 	public Board getBoard(CoordFour c, boolean boardColor) {
 		if (!layerExists(c.L)) {
 			return null;
@@ -233,6 +250,9 @@ public class GameState {
 		}
 	}
 
+	/**
+	 * Prints the entire game state -- not very visually appealing though mainly used for debugging
+	 */
 	public void printMultiverse() {
 		System.out.println(color);
 		int tl = minTL;
@@ -262,20 +282,40 @@ public class GameState {
 	}
 
 	/**
-	 * undo a move, based on what timelines were effected on that move.
+	 * undo a turn, based on what timelines were effected on that move, this relies on another structure keeping track of the gamestate changes.
 	 * 
 	 * @param tlmoved an int array of timelines to undo.
 	 * @return false
 	 */
-	public boolean undoMove(int[] tlmoved) {
+	public boolean undoTurn(int[] tlmoved) {
 		for (int tl : tlmoved) {
 			Timeline t = multiverse.get(getTLIndex(tl, minTL));
+			if(t.colorPlayable != color)
+				continue;
 			if (t.undoMove()) {
 				multiverse.remove(getTLIndex(tl, minTL));
 				// update min/max tls. TODO fix this
 			}
 		}
 		return false;
+	}
+	
+	public void undoTempMoves() {
+		if(turnTLs.size() <= 0)
+			return;
+		for(int i : turnTLs) {
+			if(getTimeline(i).undoMove()) {
+				//this means that the timeline had only one board.
+				multiverse.remove(GameState.getTLIndex(i, this.minTL));
+				if(color) {
+					maxTL--;
+				}
+				else {
+					minTL++;
+				}
+			}
+		}
+		turnTLs.clear();
 	}
 
 	public static int getTLIndex(int layer, int minTL) {
@@ -323,41 +363,9 @@ public class GameState {
 		return presentColor;
 	}
 
-	/**
-	 * 
-	 * @param c     coordinate of square
-	 * @param color color of square
-	 * @return int relating to piece color
-	 */
-	public int getSquare(CoordFour c, boolean color) {
-		if (layerExists(c.L))
-			return getTimeline(c.L).getSquare(c, color);
-		return -1;
-	}
-
-	public boolean getColor() {
-		return color;
-	}
-	
 	public boolean coordIsPlayable(CoordFive c) {
 		return getTimeline(c.L).isMostRecentTime(c.T, c.color);
 	}
 
-	public void undoTempMoves() {
-		if(turnTLs.size() <= 0)
-			return;
-		for(int i : turnTLs) {
-			if(getTimeline(i).undoMove()) {
-				//this means that the timeline had only one board.
-				multiverse.remove(GameState.getTLIndex(i, this.minTL));
-				if(color) {
-					maxTL--;
-				}
-				else {
-					minTL++;
-				}
-			}
-		}
-		turnTLs.clear();
-	}
+	
 }

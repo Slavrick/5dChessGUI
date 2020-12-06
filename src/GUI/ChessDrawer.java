@@ -52,7 +52,7 @@ public class ChessDrawer {
 		int SquareWidth = 32;
 		int boardwidth = SquareWidth * width;
 		int padding = 50;
-		drawArrow(gc, x, y + (boardwidth / 2), (lastWindex + 2) * (boardwidth + padding));
+		drawArrow(gc, x - 10, y + (boardwidth / 2), (lastWindex + lastBindex) * (boardwidth + padding));
 		if (t.colorStart) {
 			int offsetCTR = 0;
 			for (int i = 0; i < lastBindex || i < lastWindex; i++) {
@@ -179,7 +179,6 @@ public class ChessDrawer {
 		double[] arrowx = { (double) x + len, (double) x + len, (double) x + len + 30 };
 		double[] arrowy = { (double) y - 40, (double) y + 40, (double) y };
 		gc.fillPolygon(arrowx, arrowy, 3);
-
 	}
 	
 	public static void drawSquare(GraphicsContext gc, int width, int height, int minLayer, CoordFive squareLoc , Color c ) {

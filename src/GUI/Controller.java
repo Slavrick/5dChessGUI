@@ -204,7 +204,7 @@ public class Controller {
 		int T = x / ((w * ChessDrawer.squarewidth) + ChessDrawer.padding);
 		int pxFile = x % ((w * ChessDrawer.squarewidth) + ChessDrawer.padding);
 		int file = ((pxFile - 50) / 32);
-		CoordFive cf = new CoordFive(file, rank, (T / 2) + 1, L, (T % 2 == 0));
+		CoordFive cf = new CoordFive(file, rank, (T / 2) + 1, L + g.minTL, (T % 2 == 0));
 		//System.out.println(cf);
 		return cf;
 	}
