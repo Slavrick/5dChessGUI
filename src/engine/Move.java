@@ -10,7 +10,6 @@ public class Move {
 	public Move(CoordFour coordorigin, CoordFour coorddest) {
 		origin = coordorigin;
 		dest = coorddest;
-		
 		if(origin.L == dest.L && origin.T == dest.T) {
 			type = 1;
 		}
@@ -18,6 +17,10 @@ public class Move {
 			type = 2;
 		}
 		
+	}
+	
+	public String rawMoveNotation() {
+		return this.origin.rawCoord() + this.dest.rawCoord();
 	}
 	
 	public String toString() {

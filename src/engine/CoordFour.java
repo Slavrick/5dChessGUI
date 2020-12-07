@@ -106,4 +106,8 @@ public class CoordFour {
 		return this.x == c.x && this.y == c.y && this.T == c.T && this.L == c.L;
 	}
 
+	public String rawCoord() {
+		return "(" + this.x + "," + this.y + "," + this.T + "," + this.L + ")";
+	}
+
 }

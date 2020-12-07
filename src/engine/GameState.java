@@ -138,9 +138,15 @@ public class GameState {
 	 */
 	public boolean makeMove(Move m) {
 		if (m.type == 1) {
-			turnTLs.add(m.origin.L);
-			turnMoves.add(m);
-			return getTimeline(m.origin.L).addSpatialMove(m, color);
+			boolean moveResult = getTimeline(m.origin.L).addSpatialMove(m, color);
+			if(moveResult) {
+				turnTLs.add(m.origin.L);
+				turnMoves.add(m);
+				return true;
+			}
+			else {
+				return false;
+			}
 		}
 		// TODO validate origin.
 		Timeline originT = getTimeline(m.origin.L);
