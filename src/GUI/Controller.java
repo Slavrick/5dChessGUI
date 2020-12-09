@@ -12,6 +12,7 @@ import javafx.scene.control.TextField;
 import javafx.collections.ObservableList;
 import javafx.collections.FXCollections;
 import javafx.event.*;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -79,7 +80,7 @@ public class Controller {
 		canvasbox.addEventHandler(MouseEvent.MOUSE_RELEASED, new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent t) {
-				System.out.println("Release");
+				//System.out.println("Release");
 				dragging = false;
 
 			}
@@ -122,21 +123,29 @@ public class Controller {
 		canvasbox.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent e) {
-				System.out.println((e.getX() + screenX) + ", " + (e.getY() + screenY));
-				CoordFive clickedCoord = getCoordClicked((int) e.getX(), (int) e.getY(), g.width, g.height);
-				if(destinations != null && clickedCoord != null && alContains(destinations,clickedCoord)) {
-					Move selectedMove = new Move(selectedSquare,clickedCoord);
-					System.out.println(selectedMove);
-					g.makeMove(selectedMove);
+				//System.out.println((e.getX() + screenX) + ", " + (e.getY() + screenY));
+				if(e.getButton() == MouseButton.SECONDARY) {
 					selectedSquare = null;
 					destinations = null;
 					drawStage();
 				}
-				else if(clickedCoord != null && g.coordIsPlayable(clickedCoord)) {					
-					selectedSquare = clickedCoord;
-					updateDestinations(selectedSquare);
-					drawStage();
+				else if(e.getButton() == MouseButton.PRIMARY) {
+					CoordFive clickedCoord = getCoordClicked((int) e.getX(), (int) e.getY(), g.width, g.height);
+					if(destinations != null && clickedCoord != null && alContains(destinations,clickedCoord)) {
+						Move selectedMove = new Move(selectedSquare,clickedCoord);
+						System.out.println(selectedMove);
+						g.makeMove(selectedMove);
+						selectedSquare = null;
+						destinations = null;
+						drawStage();
+					}
+					else if(clickedCoord != null && g.coordIsPlayable(clickedCoord)) {//TODO i dont understand, but this is potentially passing the game object a null pointer.			
+						selectedSquare = clickedCoord;
+						updateDestinations(selectedSquare);
+						drawStage();
+					}
 				}
+				
 			}
 		});
 		canvasbox.setWidth(8000);

@@ -12,18 +12,16 @@ import javafx.scene.Parent;
 public class Main extends Application {
 	
 	public static void main(String[] args) {
-		FENParserTest.testFENFileParser();
-		FENParserTest.testMoveParser();
-		MoveTester.TestBishopMoves();
-		System.out.println(Board.piece.WBISHOP.ordinal());
+		//runTests();
 		launch();
 	}
 
-	public static void testPrint() {
-		String[] strs = "nbru/4/4/KPPP;;-;w1;0;".split(";");
-		for (String str : strs) {
-			System.out.println(str);
-		}
+	public static void runTests() {
+		System.out.println("Starting Tests");
+		FENParserTest.testFENFileParser();
+		FENParserTest.testMoveParser();
+		MoveTester.TestBishopMoves();
+		System.out.println("Done.");
 	}
 
 	@Override

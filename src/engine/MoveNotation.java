@@ -3,6 +3,11 @@ import java.util.ArrayList;
 
 public class MoveNotation {
 	
+	//There are 2 types of pieces, riders and leapers. A rider will "ride" along some sort of line, indefinetely until they hit an edge or other piece.
+	//a leaper is a piece who "Leaps" a specific length and stays there.
+	//rooks, bishops, queens, unicorns, dragons, are all riders
+	//Kings, Rooks, and pawns are leapers. however Pawn 2 move on 2nd/7th rank is not a leap, but psuedo leap/ride.
+	
 	boolean rider;
 	int[] movnote;
 	
@@ -233,7 +238,7 @@ public class MoveNotation {
 			*/
 	};
 	
-	//This one is probably not needed, due to the reason mentioned in the function below.
+	//This one is probably not needed, due to the reason mentioned in the function below. TODO remove if possible
 	public static final CoordFour[] QUEENMOVESET = { //all copied directly from the other movesets, so problems in those will have problems in these
 			
 			//Rook Movement

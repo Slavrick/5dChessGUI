@@ -22,6 +22,7 @@ public class FENParser {
 	public final static String PROTECTEDPAWN = "8;8;rqbnkbnr/pppppppp/8/8/8/8/PPPPPPPP/RQBNKBNR;w;KQkq;-;0;1";
 	public final static String HALFREFLECTED = "8;8;rnbkqbnr/pppppppp/8/8/8/8/PPPPPPPP/RQBNKBNR;w;KQkq;-;0;1";
 
+	//This is somewhat not used TODO handle this.
 	public static Board getBoardFromString(String FENFormat) {
 		// Splits string delineated by semicolon
 		String[] splitString = FENFormat.split(";");

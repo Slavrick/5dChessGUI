@@ -6,6 +6,8 @@ public class GameStateManager {
 	
 	public GameState game;
 	public ArrayList<Turn> turns;
+	public ArrayList<Move> turnMoves;
+	public ArrayList<Integer> turnTls;
 	public int currTurn;
 	
 	public GameStateManager(GameState game) {

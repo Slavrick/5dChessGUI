@@ -260,7 +260,7 @@ public class GameState {
 	 * Prints the entire game state -- not very visually appealing though mainly used for debugging
 	 */
 	public void printMultiverse() {
-		System.out.println(color);
+		System.out.println("Turn: " + color);
 		int tl = minTL;
 		for (Timeline t : multiverse) {
 			System.out.println("----------------------TL" + tl + "----------------------");
@@ -294,16 +294,22 @@ public class GameState {
 	 * @return false
 	 */
 	public boolean undoTurn(int[] tlmoved) {
-		for (int tl : tlmoved) {
-			Timeline t = multiverse.get(getTLIndex(tl, minTL));
-			if(t.colorPlayable != color)
-				continue;
-			if (t.undoMove()) {
-				multiverse.remove(getTLIndex(tl, minTL));
-				// update min/max tls. TODO fix this
+		if(tlmoved.length == 0)
+			return false;
+		for(int i : tlmoved) {
+			if(getTimeline(i).undoMove()) {
+				//this means that the timeline had only one board.
+				multiverse.remove(GameState.getTLIndex(i, this.minTL));
+				if(color) { //TODO this assumption may not be true -- same for the next function
+					maxTL--;
+				}
+				else {
+					minTL++;
+				}
 			}
 		}
-		return false;
+		color = !color;
+		return true;
 	}
 	
 	public void undoTempMoves() {

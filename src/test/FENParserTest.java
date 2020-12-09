@@ -15,7 +15,7 @@ public class FENParserTest {
 	}
 	
 	public static void testMoveParser() {
-		System.out.println("testingMoveParser: ");
+		System.out.println("Testing Move Parser: ");
 		CoordFour x = FENParser.stringtoCoord("(0,0,0,0)");
 		assert new CoordFour(0,0,0,0).equals(x) : x;
 		x = FENParser.stringtoCoord("(10,5,10,5)");
@@ -26,11 +26,15 @@ public class FENParserTest {
 	}
 	
 	public static void testFENFileParser() {
+		System.out.println("Testing Parsing Rookie.FEN.txt:");
 		GameState g = FENParser.FENtoGS("res/Rookie.FEN.txt");
 		assert g != null : g;
-		if(g != null) {
-			g.printMultiverse();			
-		}
+		assert g.getColor() == false;
+		assert g.minTL == 0;
+		assert g.maxTL == 1;
+		assert g.getTimeline(0).Tend == 2;
+		assert g.getTimeline(1).Tend == 2;
+		System.out.println("    Done.");
 	}
 	
 	public static void testTimeLineParser(){

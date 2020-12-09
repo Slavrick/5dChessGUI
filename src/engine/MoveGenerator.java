@@ -8,24 +8,6 @@ public class MoveGenerator {
 
 	public static final int EMPTYSQUARE = Board.piece.EMPTY.ordinal();
 
-	public static Move[] check2dMoves(Board b, boolean color) {
-		ArrayList<CoordFour> movablePieces = new ArrayList<CoordFour>();
-		for (int x = 0; x < b.width; x++) {
-			for (int y = 0; y < b.height; y++) {
-				if (b.brd[x][y] != Board.piece.EMPTY.ordinal()) {// b.b[x][y].isColor(color)) { @TODO fix this to make
-																	// it better, or just remove this later.
-					movablePieces.add(new CoordFour(x, y));
-				}
-			}
-		}
-
-		for (CoordFour coord : movablePieces) {
-			System.out.println(coord);
-		}
-		System.out.println(movablePieces);
-		return null;
-	}
-
 	public static ArrayList<CoordFour> getLeaperMoves(GameState g, boolean color, CoordFour sourceCoord,
 			CoordFour[] movementVec) {
 		ArrayList<CoordFour> destCoords = new ArrayList<CoordFour>();
