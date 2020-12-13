@@ -35,6 +35,6 @@ public class CoordFive extends CoordFour{
 		}else {
 			colorch = 'b';
 		}
-		return "(" + colorch + "." + L + "L." + "T" + T + "." + intTofile(x) + "" + (y + 1) + ")";
+		return "(" + colorch + "." + L + "L." + "T" + T + "." + intToFile(x) + "" + (y + 1) + ")";
 	}
 }

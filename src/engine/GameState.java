@@ -8,6 +8,7 @@ public class GameState {
 
 	public ArrayList<Timeline> multiverse;
 	public boolean color;
+	public int startPresent;
 	public int present;
 	public int width;
 	public int height;
@@ -36,6 +37,7 @@ public class GameState {
 		tlHandicap = 0;
 		this.width = start.width;
 		this.height = start.height;
+		startPresent = 1;
 	}
 
 	public GameState(Timeline starter) {
@@ -49,6 +51,7 @@ public class GameState {
 		Board b = starter.getPlayableBoard();
 		this.width = b.width;
 		this.height = b.height;
+		startPresent = starter.Tend;
 	}
 
 	public GameState(Timeline[] starters, int minTL, int maxTL) {
@@ -63,6 +66,8 @@ public class GameState {
 		this.maxTL = maxTL;
 		tlHandicap = 0;
 		color = true;
+		calcPresent();
+		startPresent = present;
 	}
 
 	public GameState(ArrayList<Timeline> starters, int minTL, int maxTL) {
@@ -99,8 +104,9 @@ public class GameState {
 		return makeTurn(moves);
 	}
 
-	// TODO make this turn better.
+	// TODO Redo This
 	public boolean makeTurn(Move[] moves) {
+		/*
 		for (Move m : moves) {
 			if (m.type == 1) { // if the move is spatial
 				getTimeline(m.origin.L).addSpatialMove(m, color);
@@ -126,6 +132,8 @@ public class GameState {
 				}
 			}
 		}
+		*/
+		
 		color = !color;
 		return true;
 	}
@@ -172,6 +180,24 @@ public class GameState {
 		return true;
 	}
 	// make sure to add the move iff there was a move added, and never if not.
+
+	public boolean submitMoves() {
+		determineActiveTLS();
+		calcPresent();
+		if(!isInCheck() && (present != startPresent)) {
+			turnTLs.clear();
+			turnMoves.clear();
+			color =! color;
+			return true;
+		}
+		return false;
+	}
+	
+	
+	private boolean isInCheck() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 
 	private boolean validateTurn(Move[] turn, boolean nextPlayer) {
 		for (int i = minActiveTL - minTL; i < maxActiveTL; i++) {

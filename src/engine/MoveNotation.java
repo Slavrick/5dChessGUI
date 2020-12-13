@@ -238,98 +238,6 @@ public class MoveNotation {
 			*/
 	};
 	
-	//This one is probably not needed, due to the reason mentioned in the function below. TODO remove if possible
-	public static final CoordFour[] QUEENMOVESET = { //all copied directly from the other movesets, so problems in those will have problems in these
-			
-			//Rook Movement
-			//spatial
-			new CoordFour(1,0,0,0),
-			new CoordFour(0,1,0,0),
-			new CoordFour(-1,0,0,0),
-			new CoordFour(0,-1,0,0),
-			//temporal
-			new CoordFour(0,0,0,1),
-			new CoordFour(0,0,-1,0),
-			new CoordFour(0,0,0,-1),		
-			//new CoordFive(0,0,1,0), redundant, cannot move foreward purely
-			
-			//BishopMovement
-			new CoordFour(1,1,0,0),
-			//new CoordFive(1,0,1,0),
-			new CoordFour(1,0,0,1),
-			//new CoordFive(0,1,1,0),
-			new CoordFour(0,1,0,1),
-			new CoordFour(0,0,1,1),
-			new CoordFour(-1,1,0,0),
-			//new CoordFive(-1,0,1,0),
-			new CoordFour(-1,0,0,1),
-			//new CoordFive(0,-1,1,0),
-			new CoordFour(0,-1,0,1),
-			new CoordFour(0,0,-1,1),
-			new CoordFour(1,-1,0,0),
-			new CoordFour(1,0,-1,0),
-			new CoordFour(1,0,0,-1),
-			new CoordFour(0,1,-1,0),
-			new CoordFour(0,1,0,-1),
-			new CoordFour(0,0,1,-1),	
-			new CoordFour(-1,-1,0,0),
-			new CoordFour(-1,0,-1,0),
-			new CoordFour(-1,0,0,-1),
-			new CoordFour(0,-1,-1,0),
-			new CoordFour(0,-1,0,-1),
-			new CoordFour(0,0,-1,-1),
-			
-			
-			//Uniconrn Movement
-			new CoordFour(1,1,1,0),
-			new CoordFour(1,1,0,1),
-			new CoordFour(1,0,1,1),
-			new CoordFour(0,1,1,1),
-			new CoordFour(-1,1,1,0),
-			new CoordFour(-1,1,0,1),
-			new CoordFour(-1,0,1,1),
-			new CoordFour(0,-1,1,1),
-			new CoordFour(1,-1,1,0),
-			new CoordFour(1,-1,0,1),
-			new CoordFour(1,0,-1,1),
-			new CoordFour(0,1,-1,1),
-			new CoordFour(1,1,-1,0),
-			new CoordFour(1,1,0,-1),
-			new CoordFour(1,0,1,-1),
-			new CoordFour(0,1,1,-1),
-			new CoordFour(-1,-1,1,0),
-			new CoordFour(-1,-1,0,1),
-			new CoordFour(-1,0,-1,1),
-			new CoordFour(0,-1,-1,1),
-			new CoordFour(-1,1,-1,0),
-			new CoordFour(-1,1,0,-1),
-			new CoordFour(-1,0,1,-1),
-			new CoordFour(0,-1,1,-1),
-			new CoordFour(-1,-1,-1,0),
-			new CoordFour(-1,-1,0,-1),
-			new CoordFour(-1,0,-1,-1),
-			new CoordFour(0,-1,-1,-1),
-			
-			
-			//Dragon Movement 
-			new CoordFour(1,1,1,1),
-			new CoordFour(-1,1,1,1),	
-			new CoordFour(1,-1,1,1),	
-			new CoordFour(1,1,-1,1),
-			new CoordFour(1,1,1,-1),	
-			new CoordFour(-1,-1,1,1),	
-			new CoordFour(-1,1,-1,1),	
-			new CoordFour(-1,1,1,-1),
-			new CoordFour(1,-1,-1,1),
-			new CoordFour(1,-1,1,-1),
-			new CoordFour(1,1,-1,-1),
-			new CoordFour(1,-1,-1,-1),
-			new CoordFour(-1,1,-1,-1),	
-			new CoordFour(-1,-1,1,-1),	
-			new CoordFour(-1,-1,-1,1),
-			new CoordFour(-1,-1,-1,-1),
-	};
-	
 	public static final CoordFour[] KINGMOVESET = {
 			//pure Spatial
 			new CoordFour(1,0,0,0),
@@ -448,20 +356,6 @@ public class MoveNotation {
 			new CoordFour(0,0,-1,1)
 	};
 	
-	public static int[] getMovNotation(Piece.PieceType pt) {
-		switch(pt) {
-		case BISHOP:
-			return MoveNotation.BISHOP;
-		case ROOK:
-			return MoveNotation.ROOK;
-		case PAWN:
-		case KNIGHT:
-		default:
-			int[] nullmove = {};
-			return nullmove;
-		}
-	}
-	
 	/**
 	 * Take a piece and turns it into an array of movement vectors,
 	 * 
@@ -503,6 +397,21 @@ public class MoveNotation {
 		case 0:
 		default:
 			return NULLMOVESET;
+		}
+	}
+	
+	//returns whether piece is a leaper or no
+	public static boolean pieceIsRider(int piece) {
+		switch(piece) {
+		case 1 + 10:
+		case 1:
+		case 2 + 10:	
+		case 2:
+		case 7 + 10:
+		case 7:
+			return false;
+		default: 
+			return true;
 		}
 	}
 	

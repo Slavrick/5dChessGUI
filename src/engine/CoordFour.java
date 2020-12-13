@@ -26,12 +26,15 @@ public class CoordFour {
 		return new CoordFour(this.x, this.y, this.T, this.L);
 	}
 	
-	public String toString() {
-		return "(" + L + "L." + "T" + T + "." + intTofile(x) + "" + (y + 1) + ")";
+	//add
+	public static CoordFour add(CoordFour c1, CoordFour c2) {
+		CoordFour sum = new CoordFour( c2.x + c1.x, c2.y +c1.y, c2.T + c1.T, c2.L + c1.L);
+		return sum;
 	}
-
-	public char intTofile(int file) {
-		return (char) (file + 97);
+	
+	//sub
+	public static CoordFour sub(CoordFour c1, CoordFour c2) {
+		return new CoordFour( c2.x - c1.x, c2.y - c1.y, c2.T - c1.T, c2.L - c1.L);
 	}
 	
 	/**
@@ -45,31 +48,20 @@ public class CoordFour {
 		T += c.T;
 		L += c.L;
 	}
-
-	//add
-	public static CoordFour add(CoordFour c1, CoordFour c2) {
-		CoordFour sum = new CoordFour( c2.x + c1.x, c2.y +c1.y, c2.T + c1.T, c2.L + c1.L);
-		return sum;
-	}
-	
-	//sub
-	public static CoordFour sub(CoordFour c1, CoordFour c2) {
-		return new CoordFour( c2.x - c1.x, c2.y - c1.y, c2.T - c1.T, c2.L - c1.L);
-	}
 	
 	//turns a coord into a vector, or a coord with only 1/0's
 	public void makeVector() {
 		if(this.x != 0) {
-			this.x = (this.x / Math.abs(this.x));
+			this.x = 1;
 		}
 		if(this.y != 0) {
-			this.y = (this.y / Math.abs(this.y));		
+			this.y = 1;
 		}
 		if(this.T != 0) {
-			this.T = (this.T / Math.abs(this.T));		
+			this.T = 1;
 		}
 		if(this.L != 0) {
-			this.L = (this.L / Math.abs(this.L));		
+			this.L = 1;
 		}
 	}
 	
@@ -106,8 +98,32 @@ public class CoordFour {
 		return this.x == c.x && this.y == c.y && this.T == c.T && this.L == c.L;
 	}
 
-	public String rawCoord() {
+	public String toString() {
+		return "(" + L + "L." + "T" + T + "." + intToFile(x) + "" + (y + 1) + ")";
+	}
+	
+	/**
+	 * gets a string raw representation of this.
+	 * @return raw coord string
+	 */
+	public String rawCoordString() {
 		return "(" + this.x + "," + this.y + "," + this.T + "," + this.L + ")";
 	}
 
+	/**
+	 * get a SAN 2d coord of the given object such as a1 e4 ....
+	 * @return String SAN representation
+	 */
+	public String SANString() {
+		return intToFile(this.x) + "" + (this.y +1);
+	}
+	
+	/**
+	 * returns the corrisponding file from the int file sent, 0 indexed so a is 0 b is 1 and so on.
+	 * @param file file to get char for
+	 * @return char corrisponding to sent file.
+	 */
+	public static char intToFile(int file) {
+		return (char) (file + 97);
+	}
 }

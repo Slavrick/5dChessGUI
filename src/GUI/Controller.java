@@ -71,6 +71,12 @@ public class Controller {
 	CoordFive selectedSquare;
 	ArrayList<CoordFour> destinations;
 
+	//This func is called in the very start of initialization of this class
+	public Controller() {
+		g = FENParser.FENtoGS("res/Standard.FEN.txt");
+	}
+	
+	//This func is called after all initializations from the FXML parser.
 	@FXML
 	void initialize() {
 		ObservableList<String> Notations = FXCollections.observableArrayList("Single", "Double", "Suite", "Family App");
@@ -163,6 +169,17 @@ public class Controller {
 		drawStage();
 		g.printMultiverse();
 	}
+	
+	@FXML
+	public void handleUndoButton(ActionEvent e) {
+		g.undoTempMoves();
+		drawStage();
+	}
+	
+	@FXML
+	public void handleSubmitButton(ActionEvent e) {
+		System.out.println(g.submitMoves());
+	}
 
 	@FXML
 	private void handleMenu(ActionEvent event) {
@@ -178,6 +195,19 @@ public class Controller {
 		} // TODO add game loading
 	}
 
+	@FXML
+	private void handleEventList(ActionEvent event) {
+		
+	}
+	
+	@FXML
+	private void handleMove(ActionEvent event) {
+		CoordFive c = new CoordFive(FENParser.stringtoCoord(movefield.getText()), true);
+		ChessDrawer.drawSquare(canvasbox.getGraphicsContext2D(), g.width, g.height, g.minTL, c, Color.AQUA);
+	}
+	
+
+
 	private File getFile() {
 		Popup p = new Popup();
 		FileChooser fileChooser = new FileChooser();
@@ -185,21 +215,6 @@ public class Controller {
 		fileChooser.setTitle("Open Resource File");
 		File selectedFile = fileChooser.showOpenDialog(p.getOwnerWindow());
 		return selectedFile;
-	}
-
-	@FXML
-	private void handleEventList(ActionEvent event) {
-
-	}
-
-	@FXML
-	private void handleMove(ActionEvent event) {
-		CoordFive c = new CoordFive(FENParser.stringtoCoord(movefield.getText()), true);
-		ChessDrawer.drawSquare(canvasbox.getGraphicsContext2D(), g.width, g.height, g.minTL, c, Color.AQUA);
-	}
-
-	public Controller() {
-		g = FENParser.FENtoGS("res/Rookie.FEN.txt");
 	}
 
 	public CoordFive getCoordClicked(int x, int y, int w, int h) {
@@ -218,22 +233,15 @@ public class Controller {
 		return cf;
 	}
 	
-	public void drawMoves(CoordFive c) {
-		int piece = g.getSquare(c, c.color);
-		CoordFour[] moveset = MoveNotation.getMoveVectors(piece);
-		destinations = MoveGenerator.getRiderMoves(g, c.color, c, moveset);
-		ChessDrawer.drawAllSquares(canvasbox.getGraphicsContext2D(), g.width, g.height, g.minTL, Color.AQUAMARINE, destinations, c.color);
-	}
-	
 	public void updateDestinations(CoordFive c) {
 		int piece = g.getSquare(c, c.color);
 		CoordFour[] moveset = MoveNotation.getMoveVectors(piece);
-		destinations = MoveGenerator.getRiderMoves(g, c.color, c, moveset);
+		destinations = MoveGenerator.getMoves(piece, g, new CoordFive(c, c.color));
 	}
 	
 	public void drawStage() {
 		GraphicsContext gc = canvasbox.getGraphicsContext2D();
-		gc.clearRect(0, 0, 1000, 1000);
+		gc.clearRect(0, 0, 8000, 8000);
 		ChessDrawer.drawMultiverse(canvasbox.getGraphicsContext2D(), 0, 0, g);
 		if(destinations != null) {			
 			ChessDrawer.drawAllSquares(gc, g.width, g.height, g.minTL, Color.AQUAMARINE, destinations, selectedSquare.color);
@@ -249,10 +257,6 @@ public class Controller {
 		return false;
 	}
 	
-	@FXML
-	public void handleUndoButton(ActionEvent e) {
-		g.undoTempMoves();
-		drawStage();
-	}
+
 
 }

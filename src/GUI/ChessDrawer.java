@@ -100,29 +100,6 @@ public class ChessDrawer {
 		}
 	}
 
-	//this func depricated. ill delete it soon TODO delete func
-	public static void drawFullBoard(GraphicsContext gc, int x, int y, boolean color, Board b) {
-		int SquareWidth = 32;
-		if (piecesprites == null) {
-			try {
-				piecesprites = new Image(new FileInputStream("res/PieceSprites.png"));
-			} catch (FileNotFoundException e) {
-				System.out.println("Cannot find the Image :l");
-				e.printStackTrace();
-			}
-		}
-		drawChessBoardColored(gc, x, y, b.width, b.height, color, false);
-		for (int squarex = 0; squarex < b.width; squarex++) {
-			for (int squarey = 0; squarey < b.height; squarey++) {
-				int piecenum = b.getSquare(squarex,squarey);
-				int xoffset = (SquareWidth * squarex);
-				int yoffset = (SquareWidth * (b.height - squarey - 1));
-				gc.drawImage(piecesprites, (piecenum % SPRITESHEETWIDTH) * SPRITEWIDTH, (piecenum / SPRITESHEETWIDTH) * SPRITEWIDTH, SPRITEWIDTH,
-						SPRITEWIDTH, x + xoffset, y + yoffset, SquareWidth, SquareWidth);
-			}
-		}
-	}
-
 	// TODO fix this, load piecesprites somewhere else, so that it condenses the
 	// code.
 	public static void drawFullBoard(GraphicsContext gc, int x, int y, boolean color, Board b, boolean playable) {

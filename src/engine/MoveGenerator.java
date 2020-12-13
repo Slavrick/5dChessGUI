@@ -8,6 +8,15 @@ public class MoveGenerator {
 
 	public static final int EMPTYSQUARE = Board.piece.EMPTY.ordinal();
 
+	public static ArrayList<CoordFour> getMoves(int piece, GameState g, CoordFive source){
+		if(MoveNotation.pieceIsRider(piece)) {
+			return MoveGenerator.getRiderMoves(g, source.color, source, MoveNotation.getMoveVectors(piece));
+		}
+		else {
+			return MoveGenerator.getLeaperMoves(g, source.color, source, MoveNotation.getMoveVectors(piece));
+		}
+	}
+	
 	public static ArrayList<CoordFour> getLeaperMoves(GameState g, boolean color, CoordFour sourceCoord,
 			CoordFour[] movementVec) {
 		ArrayList<CoordFour> destCoords = new ArrayList<CoordFour>();

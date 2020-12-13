@@ -39,7 +39,7 @@
 	<bottom>
 		<VBox>
 			<HBox>
-				<Button layoutX="126" layoutY="150" text="Submit Turn" onAction="#handleButtonAction" />	
+				<Button layoutX="126" layoutY="150" text="Submit Turn" onAction="#handleSubmitButton" />	
 				<Button layoutX="126" layoutY="150" text="Undo Turn" onAction="#handleUndoButton" />
 				<Button layoutX="126" layoutY="150" text="Undo Move" onAction="#handleButtonAction" />
 			</HBox>

@@ -20,7 +20,7 @@ public class Move {
 	}
 	
 	public String rawMoveNotation() {
-		return this.origin.rawCoord() + this.dest.rawCoord();
+		return this.origin.rawCoordString() + this.dest.rawCoordString();
 	}
 	
 	public String toString() {
