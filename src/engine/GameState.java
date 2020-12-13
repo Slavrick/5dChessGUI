@@ -183,13 +183,17 @@ public class GameState {
 
 	public boolean submitMoves() {
 		determineActiveTLS();
-		calcPresent();
-		if(!isInCheck() && (present != startPresent)) {
+		boolean presColor = calcPresent();
+		System.out.println(startPresent + " current: " + present);
+		System.out.println(color + " current: " + presColor);
+		if(!isInCheck() && !(present == startPresent && presColor == color)) {
 			turnTLs.clear();
 			turnMoves.clear();
 			color =! color;
+			startPresent = present;
 			return true;
 		}
+		System.out.println(startPresent + " current: " + present);
 		return false;
 	}
 	
@@ -386,8 +390,8 @@ public class GameState {
 	private boolean calcPresent() {
 		int presentTime = getTimeline(minActiveTL).Tend;
 		boolean presentColor = getTimeline(minActiveTL).colorPlayable;
-		for (int i = minActiveTL; i < maxActiveTL; i++) {
-			Timeline t = getTimeline(minActiveTL);
+		for (int i = minActiveTL; i <= maxActiveTL; i++) {
+			Timeline t = getTimeline(i);
 			if (t.Tend < presentTime) {
 				presentTime = t.Tend;
 				presentColor = t.colorPlayable;
