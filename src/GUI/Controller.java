@@ -54,6 +54,7 @@ public class Controller {
 
 	GameState g;
 
+	// Canvas Constants
 	double lastX = 0;
 	double lastY = 0;
 	double screenX = 0;
@@ -67,27 +68,31 @@ public class Controller {
 	double ychange;
 
 	boolean dragging = false;
+	boolean release = false;
 	
 	CoordFive selectedSquare;
 	ArrayList<CoordFour> destinations;
 
-	//This func is called in the very start of initialization of this class
+	// This func is called in the very start of initialization of this class
 	public Controller() {
 		g = FENParser.FENtoGS("res/Standard.FEN.txt");
 	}
-	
-	//This func is called after all initializations from the FXML parser.
+
+	// This func is called after all initializations from the FXML parser.
 	@FXML
 	void initialize() {
-		ObservableList<String> Notations = FXCollections.observableArrayList("Single", "Double", "Suite", "Family App");
-		notationList.setItems(Notations);
-		GraphicsContext gc = canvasbox.getGraphicsContext2D();
-
+		// -Anonymous-Functions---------------------------------------------------------------------------------------------------------------------------
 		canvasbox.addEventHandler(MouseEvent.MOUSE_RELEASED, new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent t) {
 				//System.out.println("Release");
-				dragging = false;
+				if(dragging) {
+					dragging = false;
+					release = true;
+					screenX -= xchange;
+					screenY -= ychange;
+					drawStage();
+				}
 
 			}
 		});
@@ -102,62 +107,51 @@ public class Controller {
 					dragging = true;
 					startDragx = mousePt.x;
 					startDragy = mousePt.y;
-					screenX -= xchange;
-					screenY -= ychange;
-					if (screenX < 0) {
-						screenX = 0;
-					}
-					if (screenY < 0) {
-						screenY = 0;
-					}
 				}
 				// gc.clearRect(e.getX() - 2, e.getY() - 2, 5, 5);
 				xchange = (mousePt.x - startDragx) * 1.1;
 				ychange = (mousePt.y - startDragy) * 1.1;
-				sPane.setHvalue(((screenX - xchange) / (canvasWidth)));
-				sPane.setVvalue((screenY - ychange) / (canvasHeight));
-				// System.out.println("Change: " + xchange + ", " + ychange);
-				// System.out.println("Screen: " + e.getScreenX() + ", " + e.getScreenY());
-				// System.out.println("Screen: " + screenX + ", " + screenY);
-				// System.out.println("H/V Vals: " + sPane.getHvalue() + ", " +
-				// sPane.getVvalue());
-
+				drawStage(xchange,ychange);
 			}
 		});
-		
-		//this is the jankiest way to handle this.... but im not sure how to do it otherwise haha.
-		canvasbox.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+
+		// this is the jankiest way to handle this.... but im not sure how to do it
+		// otherwise haha.
+		canvasbox.addEventHandler(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent e) {
 				//System.out.println((e.getX() + screenX) + ", " + (e.getY() + screenY));
-				if(e.getButton() == MouseButton.SECONDARY) {
+				if (e.getButton() == MouseButton.SECONDARY) {
 					selectedSquare = null;
 					destinations = null;
 					drawStage();
-				}
-				else if(e.getButton() == MouseButton.PRIMARY) {
+				} else if (e.getButton() == MouseButton.PRIMARY) {
 					CoordFive clickedCoord = getCoordClicked((int) e.getX(), (int) e.getY(), g.width, g.height);
-					if(destinations != null && clickedCoord != null && alContains(destinations,clickedCoord)) {
-						Move selectedMove = new Move(selectedSquare,clickedCoord);
+					if (destinations != null && clickedCoord != null && clickedCoord.color == selectedSquare.color && alContains(destinations, clickedCoord)) {
+						Move selectedMove = new Move(selectedSquare, clickedCoord);
 						System.out.println(selectedMove);
 						g.makeMove(selectedMove);
 						selectedSquare = null;
 						destinations = null;
 						drawStage();
-					}
-					else if(clickedCoord != null && g.coordIsPlayable(clickedCoord)) {//TODO i dont understand, but this is potentially passing the game object a null pointer.			
-						selectedSquare = clickedCoord;
-						updateDestinations(selectedSquare);
+					} else if (clickedCoord != null && g.coordIsPlayable(clickedCoord)) {// TODO i dont understand, but
+																							// this is potentially
+																							// passing the game object a
+																							// null pointer. Concurrency Problem.... I need to do something about that.
+						if(updateDestinations(clickedCoord))
+							selectedSquare = clickedCoord;
 						drawStage();
 					}
 				}
-				
+
 			}
 		});
-		canvasbox.setWidth(8000);
-		canvasbox.setHeight(8000);
+		//---------------------------------------------------------------------------------------------------------------------------
+		ObservableList<String> Notations = FXCollections.observableArrayList("Single", "Double", "Suite", "Family App");
+		notationList.setItems(Notations);
+		GraphicsContext gc = canvasbox.getGraphicsContext2D();
 		gc.fillRect(-1, 0, 0, 0);
-		ChessDrawer.drawMultiverse(gc, 0, 0, g);
+		drawStage();
 		g.printMultiverse();
 	}
 
@@ -169,13 +163,13 @@ public class Controller {
 		drawStage();
 		g.printMultiverse();
 	}
-	
+
 	@FXML
 	public void handleUndoButton(ActionEvent e) {
 		g.undoTempMoves();
 		drawStage();
 	}
-	
+
 	@FXML
 	public void handleSubmitButton(ActionEvent e) {
 		System.out.println(g.submitMoves());
@@ -197,16 +191,14 @@ public class Controller {
 
 	@FXML
 	private void handleEventList(ActionEvent event) {
-		
+
 	}
-	
+
 	@FXML
 	private void handleMove(ActionEvent event) {
 		CoordFive c = new CoordFive(FENParser.stringtoCoord(movefield.getText()), true);
 		ChessDrawer.drawSquare(canvasbox.getGraphicsContext2D(), g.width, g.height, g.minTL, c, Color.AQUA);
 	}
-	
-
 
 	private File getFile() {
 		Popup p = new Popup();
@@ -217,9 +209,14 @@ public class Controller {
 		return selectedFile;
 	}
 
+	// Canvas Functions
+
 	public CoordFive getCoordClicked(int x, int y, int w, int h) {
+		x += screenX;
+		y += screenY;
 		if (x < 0 || y < 0)
 			return null;
+		
 		int L = y / ((h * ChessDrawer.squarewidth) + ChessDrawer.padding);
 		int pxrank = y % ((h * ChessDrawer.squarewidth) + ChessDrawer.padding);
 		if (pxrank <= 50)
@@ -229,34 +226,48 @@ public class Controller {
 		int pxFile = x % ((w * ChessDrawer.squarewidth) + ChessDrawer.padding);
 		int file = ((pxFile - 50) / 32);
 		CoordFive cf = new CoordFive(file, rank, (T / 2) + 1, L + g.minTL, (T % 2 == 0));
-		//System.out.println(cf);
+		// System.out.println(cf);
 		return cf;
 	}
-	
-	public void updateDestinations(CoordFive c) {
+
+	public boolean updateDestinations(CoordFive c) {
 		int piece = g.getSquare(c, c.color);
-		CoordFour[] moveset = MoveNotation.getMoveVectors(piece);
+		if(piece == 0)
+			return false;
 		destinations = MoveGenerator.getMoves(piece, g, new CoordFive(c, c.color));
+		return true;
 	}
-	
+
 	public void drawStage() {
+		//System.out.println("n(" + screenX + "," + screenY + ")");
 		GraphicsContext gc = canvasbox.getGraphicsContext2D();
 		gc.clearRect(0, 0, 8000, 8000);
-		ChessDrawer.drawMultiverse(canvasbox.getGraphicsContext2D(), 0, 0, g);
-		if(destinations != null) {			
-			ChessDrawer.drawAllSquares(gc, g.width, g.height, g.minTL, Color.AQUAMARINE, destinations, selectedSquare.color);
+		ChessDrawer.drawMultiverseV(canvasbox.getGraphicsContext2D(), (int) screenX, (int) screenY, g);
+		if (destinations != null) {
+			ChessDrawer.drawAllSquaresV(gc, Color.AQUAMARINE, destinations, selectedSquare.color, g.width, g.height, g.minTL, (int)screenX, (int)screenY);
 		}
-		
+
 	}
-	
+
+	public void drawStage(double changex, double changey) {
+		//System.out.println("(" + screenX + "," + screenY + ")");
+		//System.out.println("y(" + (screenX - changex) + "," + (screenY - changey) + ")");
+		GraphicsContext gc = canvasbox.getGraphicsContext2D();
+		gc.clearRect(0, 0, 8000, 8000);
+		ChessDrawer.drawMultiverseV(canvasbox.getGraphicsContext2D(), (int)(screenX - changex), (int)(screenY - changey), g);
+		if (destinations != null) {
+			ChessDrawer.drawAllSquaresV(gc, Color.AQUAMARINE, destinations, selectedSquare.color, g.width, g.height, g.minTL, (int)(screenX - changex), (int)(screenY- changey));
+			
+		}
+
+	}
+
 	public static boolean alContains(ArrayList<CoordFour> al, CoordFour target) {
-		for(CoordFour c : al) {
-			if(c.equals(target))
+		for (CoordFour c : al) {
+			if (c.equals(target))
 				return true;
 		}
 		return false;
 	}
-	
-
 
 }

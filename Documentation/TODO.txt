@@ -1,0 +1,2 @@
+SideBar, Notation and mover
+	Possibly a tree like notation thingy for sidelines

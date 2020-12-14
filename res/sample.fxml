@@ -26,10 +26,8 @@
 	    </MenuBar>
 	</top>
 	<center>
-		<ScrollPane fx:id="sPane">
-			<AnchorPane>
-				<Canvas fx:id="canvasbox" width="500" height="500"/>
-			</AnchorPane>
+		<ScrollPane>
+				<Canvas fx:id="canvasbox" width="2000" height="2000"/>
 		</ScrollPane>
 	</center>
 	<right>
@@ -42,10 +40,6 @@
 				<Button layoutX="126" layoutY="150" text="Submit Turn" onAction="#handleSubmitButton" />	
 				<Button layoutX="126" layoutY="150" text="Undo Turn" onAction="#handleUndoButton" />
 				<Button layoutX="126" layoutY="150" text="Undo Move" onAction="#handleButtonAction" />
-			</HBox>
-			<HBox>
-				<TextField fx:id="movefield" />
-				<Button text="Submit" onAction="#handleMove"/>
 			</HBox>
 			<HBox>
 				<ListView maxHeight="50">

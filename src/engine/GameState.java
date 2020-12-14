@@ -406,6 +406,8 @@ public class GameState {
 	}
 
 	public boolean coordIsPlayable(CoordFive c) {
+		if(c == null )
+			return false;
 		return getTimeline(c.L).isMostRecentTime(c.T, c.color);
 	}
 
