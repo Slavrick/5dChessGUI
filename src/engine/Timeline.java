@@ -127,7 +127,7 @@ public class Timeline {
 		Board b = getBoard(dest.T, moveColor);
 		Board newBoard = new Board(b);
 		newBoard.brd[dest.y][dest.x] = piece;
-		if (dest.T != Tend) {
+		if (dest.T != Tend || moveColor != colorPlayable) {
 			return newBoard;
 		}
 		addMove(newBoard);

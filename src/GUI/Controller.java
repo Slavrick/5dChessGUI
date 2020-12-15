@@ -25,6 +25,7 @@ import java.awt.PointerInfo;
 import java.io.File;
 import java.util.ArrayList;
 
+import engine.Board;
 import engine.CoordFive;
 import engine.CoordFour;
 import engine.GameState;
@@ -148,6 +149,7 @@ public class Controller {
 		});
 		//---------------------------------------------------------------------------------------------------------------------------
 		ObservableList<String> Notations = FXCollections.observableArrayList("Single", "Double", "Suite", "Family App");
+		Notations.add("23w T31.Ne3 Qf3");
 		notationList.setItems(Notations);
 		GraphicsContext gc = canvasbox.getGraphicsContext2D();
 		gc.fillRect(-1, 0, 0, 0);
@@ -232,7 +234,7 @@ public class Controller {
 
 	public boolean updateDestinations(CoordFive c) {
 		int piece = g.getSquare(c, c.color);
-		if(piece == 0)
+		if(piece == 0 || Board.getColorBool(piece) != c.color)
 			return false;
 		destinations = MoveGenerator.getMoves(piece, g, new CoordFive(c, c.color));
 		return true;

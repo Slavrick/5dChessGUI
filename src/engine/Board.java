@@ -153,7 +153,27 @@ public class Board {
 		return temp;
 	}
 
-	
+	public boolean CastleKing(boolean color, boolean side) {
+		if(color) {
+			if(side && wkingSideCastle) {
+				wkingSideCastle = false;
+				wqueenSideCastle = false;
+				//TODO add code swapping pieces.
+				return true;
+			}
+			else if(!side && wqueenSideCastle) {
+				bkingSideCastle = false;
+				bqueenSideCastle = false;
+				return false;
+			}else {
+				return false;
+			}
+		}else if (!color) {
+			return false;
+		}else {
+			return false;
+		}
+	}
 
 
 }
