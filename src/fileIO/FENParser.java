@@ -15,12 +15,6 @@ import engine.Move;
 import engine.Timeline;
 
 public class FENParser {
-	private String FileInput;
-
-	public final static String STANDARDBOARD = "8;8;rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR;w;KQkq;-;0;1";
-	public final static String PRINCESSBOARD = "8;8;rnbskbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBSKBNR;w;KQkq;-;0;1";
-	public final static String PROTECTEDPAWN = "8;8;rqbnkbnr/pppppppp/8/8/8/8/PPPPPPPP/RQBNKBNR;w;KQkq;-;0;1";
-	public final static String HALFREFLECTED = "8;8;rnbkqbnr/pppppppp/8/8/8/8/PPPPPPPP/RQBNKBNR;w;KQkq;-;0;1";
 
 	//This is somewhat not used TODO handle this.
 	public static Board getBoardFromString(String FENFormat) {
@@ -34,7 +28,7 @@ public class FENParser {
 		int height = Integer.parseInt(splitString[0]);
 		int width = Integer.parseInt(splitString[1]);
 		Board b = new Board(height, width);
-		// gets the raw pieces, @todo add checks for proper FEN
+		// gets the raw pieces, TODO add checks for proper FEN
 		String[] rows = splitString[2].split("/");
 		int row = 0;
 		int col = 0;
@@ -90,6 +84,10 @@ public class FENParser {
 	 */
 	public static GameState FENtoGS(String fileLocation) {
 		File file = new File(fileLocation);
+		return FENtoGS(file);
+	}
+	
+	public static GameState FENtoGS(File file) {
 		ArrayList<String> lines = new ArrayList<String>();
 		try {
 			FileReader fr = new FileReader(file);
@@ -100,7 +98,7 @@ public class FENParser {
 			}
 			br.close();
 		} catch (IOException e) {
-			System.out.println("File Cound not be opened for reading: " + fileLocation);
+			System.out.println("File Cound not be opened for reading: " + file.getAbsolutePath());
 			return null;
 		}
 		if (lines.size() < 2) {
@@ -127,8 +125,10 @@ public class FENParser {
 		gs.color = color;
 		return gs;
 	}
+	
 
-	//this doesnt work if the move is from another TL but jumps to the created one. @TODO
+
+	//TODO this doesnt work if the move is from another TL but jumps to the created one. 
 	public static Timeline FENtoTL(String fen, int width, int height, int layer) {
 		String[] splitString = fen.split(";");
 		// parses board pieces
@@ -164,7 +164,7 @@ public class FENParser {
 		}
 		// Castling rights
 		populateCastlingRights(b, splitString[1]);
-		// en passent @TODO not implemented yet
+		// en passent TODO not implemented yet
 		// splitString[2]
 		// find start time
 		boolean color;
@@ -195,7 +195,7 @@ public class FENParser {
 
 	public static void populateCastlingRights(Board b, String castlingrights) {
 
-	}// @TODO
+	}// TODO
 
 	// Recive string (a,b,c,d) return int[] {a,b,c,d} or coordFIVE
 	public static CoordFour stringtoCoord(String coord) {

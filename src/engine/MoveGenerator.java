@@ -79,7 +79,6 @@ public class MoveGenerator {
 		return objs;
 	}
 
-	
 
 	/**
 	 * Takes a square, vector and color, and returns all the coordinates that the

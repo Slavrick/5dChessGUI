@@ -11,8 +11,8 @@
 <BorderPane fx:id="innerLayout" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.Controller">
 	<top>
 		<MenuBar fx:id="menuBar">
-	        <Menu text="File" onAction="#handleMenu">
-		       	<MenuItem text="   Open file        "/>
+	        <Menu text="File">
+		       	<MenuItem text="   Open file        " fx:id="open" onAction="#loadGame"/>
 		       	<MenuItem text="   Save file        "/>
 		       	<MenuItem text="   Close file       "/>
 		    </Menu>

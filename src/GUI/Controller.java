@@ -178,12 +178,18 @@ public class Controller {
 	}
 
 	@FXML
+	private void handleMove(ActionEvent event) {
+		CoordFive c = new CoordFive(FENParser.stringtoCoord(movefield.getText()), true);
+		ChessDrawer.drawSquare(canvasbox.getGraphicsContext2D(), g.width, g.height, g.minTL, c, Color.AQUA);
+	}
+
+	@FXML
 	private void handleMenu(ActionEvent event) {
 		if (event.getSource() instanceof Menu)
 			System.out.println("Got Menu Event!");
 		if (event.getSource() instanceof MenuItem) {
 			System.out.println("Got Menu Event!");
-			System.out.println(((MenuItem) event.getSource()).getText());
+			System.out.println(((MenuItem) event.getSource()).getId());
 		}
 		File selectedFile = getFile();
 		if (selectedFile != null) {
@@ -195,12 +201,16 @@ public class Controller {
 	private void handleEventList(ActionEvent event) {
 
 	}
-
+	
 	@FXML
-	private void handleMove(ActionEvent event) {
-		CoordFive c = new CoordFive(FENParser.stringtoCoord(movefield.getText()), true);
-		ChessDrawer.drawSquare(canvasbox.getGraphicsContext2D(), g.width, g.height, g.minTL, c, Color.AQUA);
+	private void loadGame(ActionEvent event) {
+		File selectedFile = getFile();
+		if (selectedFile != null) {
+			g = FENParser.FENtoGS(selectedFile);
+			drawStage();
+		}
 	}
+
 
 	private File getFile() {
 		Popup p = new Popup();
@@ -211,7 +221,7 @@ public class Controller {
 		return selectedFile;
 	}
 
-	// Canvas Functions
+	// =========================================Canvas Functions=========================================
 
 	public CoordFive getCoordClicked(int x, int y, int w, int h) {
 		x += screenX;

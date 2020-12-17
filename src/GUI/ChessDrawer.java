@@ -178,6 +178,7 @@ public class ChessDrawer {
 	
 	
 //===================================Virtual New Methods====================================================================================================================================
+	//TODO fix the drawing of squares, either add transparency or outline of destination squares.
 	//TODO exclude things that do not need to be drawn.
 	public static void drawMultiverseV(GraphicsContext gc, int screenx, int screeny, GameState game) {
 		int SquareWidth = 32;

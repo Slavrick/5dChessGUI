@@ -184,8 +184,6 @@ public class GameState {
 	public boolean submitMoves() {
 		determineActiveTLS();
 		boolean presColor = calcPresent();
-		System.out.println(startPresent + " current: " + present);
-		System.out.println(color + " current: " + presColor);
 		if(!isInCheck() && !(present == startPresent && presColor == color)) {
 			turnTLs.clear();
 			turnMoves.clear();
@@ -193,16 +191,20 @@ public class GameState {
 			startPresent = present;
 			return true;
 		}
-		System.out.println(startPresent + " current: " + present);
 		return false;
 	}
 	
 	
 	private boolean isInCheck() {
+		
 		// TODO Auto-generated method stub
 		return false;
 	}
 
+	private boolean opponentCanCaptureKing() {
+		return false;
+	}
+	
 	private boolean validateTurn(Move[] turn, boolean nextPlayer) {
 		for (int i = minActiveTL - minTL; i < maxActiveTL; i++) {
 			if (multiverse.get(i).colorPlayable == color && multiverse.get(i).Tend <= present) {
@@ -330,7 +332,7 @@ public class GameState {
 			if(getTimeline(i).undoMove()) {
 				//this means that the timeline had only one board.
 				multiverse.remove(GameState.getTLIndex(i, this.minTL));
-				if(color) { //TODO this assumption may not be true -- same for the next function
+				if(color) { //TODO this assumption may not be true -- same for the next function(ie. a deleted timeline may not be on the edge of the multiverse.
 					maxTL--;
 				}
 				else {
