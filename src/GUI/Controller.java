@@ -15,9 +15,7 @@ import javafx.event.*;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
-import javafx.stage.Stage;
 import javafx.stage.Popup;
-import javafx.stage.Window;
 
 import java.awt.MouseInfo;
 import java.awt.Point;
@@ -31,13 +29,9 @@ import engine.CoordFour;
 import engine.GameState;
 import engine.Move;
 import engine.MoveGenerator;
-import engine.MoveNotation;
 import fileIO.FENParser;
-import test.BranchTester;
 
 public class Controller {
-	@FXML
-	Label statusLabel;
 	@FXML
 	AnchorPane rootAnchor;
 	@FXML
@@ -50,6 +44,8 @@ public class Controller {
 	ListView<String> notationList;
 	@FXML
 	TextField movefield;
+	@FXML
+	Label statusLabel;
 
 	ObservableList<String> Notations;
 
@@ -135,10 +131,7 @@ public class Controller {
 						selectedSquare = null;
 						destinations = null;
 						drawStage();
-					} else if (clickedCoord != null && g.coordIsPlayable(clickedCoord)) {// TODO i dont understand, but
-																							// this is potentially
-																							// passing the game object a
-																							// null pointer. Concurrency Problem.... I need to do something about that.
+					} else if (clickedCoord != null && g.coordIsPlayable(clickedCoord)) {
 						if(updateDestinations(clickedCoord))
 							selectedSquare = clickedCoord;
 						drawStage();
@@ -148,12 +141,12 @@ public class Controller {
 			}
 		});
 		//---------------------------------------------------------------------------------------------------------------------------
-		ObservableList<String> Notations = FXCollections.observableArrayList("Single", "Double", "Suite", "Family App");
+		Notations = FXCollections.observableArrayList();
 		Notations.add("23w T31.Ne3 Qf3");
 		notationList.setItems(Notations);
-		GraphicsContext gc = canvasbox.getGraphicsContext2D();
-		gc.fillRect(-1, 0, 0, 0);
+		Notations.add("TestThing");
 		drawStage();
+		setStatusLabel();
 		g.printMultiverse();
 	}
 
@@ -175,6 +168,7 @@ public class Controller {
 	@FXML
 	public void handleSubmitButton(ActionEvent e) {
 		System.out.println(g.submitMoves());
+		setStatusLabel();
 	}
 
 	@FXML
@@ -220,6 +214,11 @@ public class Controller {
 		File selectedFile = fileChooser.showOpenDialog(p.getOwnerWindow());
 		return selectedFile;
 	}
+	
+	private void setStatusLabel() {
+		String status = g.color + " " + g.present;
+		statusLabel.setText(status);
+	}
 
 	// =========================================Canvas Functions=========================================
 
@@ -258,7 +257,6 @@ public class Controller {
 		if (destinations != null) {
 			ChessDrawer.drawAllSquaresV(gc, Color.AQUAMARINE, destinations, selectedSquare.color, g.width, g.height, g.minTL, (int)screenX, (int)screenY);
 		}
-
 	}
 
 	public void drawStage(double changex, double changey) {

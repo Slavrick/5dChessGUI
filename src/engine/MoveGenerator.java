@@ -8,16 +8,42 @@ public class MoveGenerator {
 
 	public static final int EMPTYSQUARE = Board.piece.EMPTY.ordinal();
 
-	public static ArrayList<CoordFour> getMoves(int piece, GameState g, CoordFive source){
-		if(MoveNotation.pieceIsRider(piece)) {
-			return MoveGenerator.getRiderMoves(g, source.color, source, MoveNotation.getMoveVectors(piece));
+	public static ArrayList<CoordFour> getMoves(int piece, GameState g, CoordFive source) {
+		if (piece == 0)
+			return null;
+		if (piece == 1 || piece == 11) {
+			return getPawnMoves(piece, g, source);
 		}
-		else {
-			return MoveGenerator.getLeaperMoves(g, source.color, source, MoveNotation.getMoveVectors(piece));
+		if (piece == 7 || piece == 17) {
+			// piece is a king, and potentially can castle.
+		}
+		if (MoveNotation.pieceIsRider(piece)) {
+			return MoveGenerator.getRiderMoves(g, source.color, source, MoveNotation.getMoveVectors(piece));
+		} else {
+			return MoveGenerator.getLeaperMovesandCaptures(g, source.color, source, MoveNotation.getMoveVectors(piece));
 		}
 	}
+
+	private static ArrayList<CoordFour> getPawnMoves(int piece, GameState g, CoordFive source) {
+		ArrayList<CoordFour> destCoords = new ArrayList<CoordFour>();
+		//Checks whether to go one or 2 squares.
+		if(source.y <= 1 || source.y >= g.height - 2) {
+			destCoords.addAll(getSliderMoves(g,source.color,source,MoveNotation.getMoveVectors(piece),2));
+		}else {			
+			destCoords.addAll(getLeaperMoves(g, source.color, source, MoveNotation.getMoveVectors(piece)));
+		}
+		//Gets attack squares.
+		CoordFour[] Movementvec;
+		if(Board.getColorBool(piece)) {
+			Movementvec = MoveNotation.whitePawnattack;
+		}else {
+			Movementvec = MoveNotation.blackPawnattack;
+		}
+		destCoords.addAll(getLeaperCaptures(g,source.color,source,Movementvec));
+		return destCoords;
+	}
 	
-	public static ArrayList<CoordFour> getLeaperMoves(GameState g, boolean color, CoordFour sourceCoord,
+	public static ArrayList<CoordFour> getLeaperMovesandCaptures(GameState g, boolean color, CoordFour sourceCoord,
 			CoordFour[] movementVec) {
 		ArrayList<CoordFour> destCoords = new ArrayList<CoordFour>();
 		for (CoordFour leap : movementVec) {
@@ -33,7 +59,44 @@ public class MoveGenerator {
 		}
 		return destCoords;
 	}
+	
+	/**
+	 * gets a leapers moves, but only on the captures, used for pawn movement mainly.
+	 * @param g gamestate to search
+	 * @param color color of coordinate
+	 * @param sourceCoord source of movement
+	 * @param movementVec vector to move
+	 * @return a list of capturable squares.
+	 */
+	public static ArrayList<CoordFour> getLeaperCaptures(GameState g, boolean color, CoordFour sourceCoord,
+			CoordFour[] movementVec) {
+		ArrayList<CoordFour> destCoords = new ArrayList<CoordFour>();
+		for (CoordFour leap : movementVec) {
+			int piece = g.getSquare(CoordFour.add(sourceCoord, leap), color);
+			if (piece == -1 || piece == 0) {
+				continue;
+			} else if (Board.getColorBool(piece) != color) {
+				destCoords.add(CoordFour.add(sourceCoord, leap));
+			}
+		}
+		return destCoords;
+	}
 
+	public static ArrayList<CoordFour> getLeaperMoves(GameState g, boolean color, CoordFour sourceCoord,
+			CoordFour[] movementVec){
+		ArrayList<CoordFour> destCoords = new ArrayList<CoordFour>();
+		for (CoordFour leap : movementVec) {
+			int piece = g.getSquare(CoordFour.add(sourceCoord, leap), color);
+			if (piece == -1) {
+				continue;
+			}
+			if (piece == EMPTYSQUARE) {
+				destCoords.add(CoordFour.add(sourceCoord, leap));
+			}
+		}
+		return destCoords;
+	}
+	
 	/**
 	 * Takes a list of rider vectors and returns everywhere they can go
 	 * 
@@ -72,13 +135,12 @@ public class MoveGenerator {
 				capList.addAll(list[1]);
 			}
 		}
-		
+
 		ArrayList<CoordFour>[] objs = new ArrayList[2];
 		objs[0] = moveList;
 		objs[1] = capList;
 		return objs;
 	}
-
 
 	/**
 	 * Takes a square, vector and color, and returns all the coordinates that the
@@ -176,7 +238,7 @@ public class MoveGenerator {
 		}
 		return destCoords;
 	}
-	
+
 	private static ArrayList[] getTemporalRiderMovesAndCaptures(GameState g, boolean color, CoordFour sourceCoord,
 			CoordFour movementVec) {
 		ArrayList<CoordFour> destCoords = new ArrayList<CoordFour>();
@@ -198,16 +260,27 @@ public class MoveGenerator {
 			currSquare.add(movementVec);
 			currPiece = g.getSquare(currSquare, color);
 		}
-		
+
 		ArrayList<CoordFour>[] objs = new ArrayList[2];
 		objs[0] = destCoords;
 		objs[1] = capCoords;
 		return objs;
 	}
-
-	public static ArrayList<CoordFour> getMoves(Board b, CoordFour sourceCoord, CoordFour movementVec) {
-
-		return null;
+	
+	private static ArrayList<CoordFour> getSliderMoves(GameState g, boolean color, CoordFour sourceCoord,
+			CoordFour[] movementVec, int range){
+		if(range <= 0)
+			return null;
+		ArrayList<CoordFour> destCoords = new ArrayList<CoordFour>();
+		for(CoordFour vec: movementVec) {
+			CoordFour newsrc = CoordFour.add(vec, sourceCoord);
+			int rangeLeft = range - 1;
+			while(rangeLeft >= 0 && g.getSquare(newsrc, color) == EMPTYSQUARE) {
+				destCoords.add(newsrc.clone());
+				rangeLeft--;
+				newsrc.add(vec);
+			}
+		}
+		return destCoords;
 	}
-
 }

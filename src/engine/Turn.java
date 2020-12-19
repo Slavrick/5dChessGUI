@@ -1,5 +1,7 @@
 package engine;
 
+import java.util.ArrayList;
+
 public class Turn {
 	
 	private Move[] moves;
@@ -21,7 +23,32 @@ public class Turn {
 	
 	//This will do no validation as of yet.
 	public Turn(Move[] tmoves) {
-		this.moves = tmoves;//TODO make sure this line works as intended
+		this.moves = tmoves;//TODO make sure this line works as intended, IE copies each and not just the ref to the array.
+		int count = 0;
+		for(Move m : this.moves) {
+			count++;
+			if(m.type != 1)
+				count++;
+		}
+		this.tls = new int[count];
+		count = 0;
+		for(Move m : this.moves) {
+			if(m.type != 1){
+				tls[count] = m.origin.L;
+				count++;
+				tls[count] = m.dest.L;
+				count++;
+			}else {
+				tls[count] = m.dest.L;
+				count++;
+			}
+		}
+		mode = notationMode.RAW;
+		pre = prefixMode.NONE;
+	}
+	
+	public Turn(ArrayList<Move> tmoves) {
+		this.moves = tmoves.toArray(this.moves);
 		int count = 0;
 		for(Move m : this.moves) {
 			count++;

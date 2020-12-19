@@ -15,7 +15,7 @@ public class MoveTester {
 		//System.out.println(dests);
 		//System.out.println(dests.size());
 		assert dests.size() == 18;
-		ArrayList<CoordFour> dests2 = MoveGenerator.getLeaperMoves(g, true, new CoordFour(2,2,3,0), MoveNotation.KNIGHTMOVESET);
+		ArrayList<CoordFour> dests2 = MoveGenerator.getLeaperMovesandCaptures(g, true, new CoordFour(2,2,3,0), MoveNotation.KNIGHTMOVESET);
 		//System.out.println(dests2);
 		//System.out.println(dests2.size());
 		assert dests2.size() == 15;

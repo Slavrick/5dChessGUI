@@ -17,8 +17,8 @@ public class GameState {
 	public int minActiveTL;
 	public int maxActiveTL;
 
-	private ArrayList<Move> turnMoves;
-	private ArrayList<Integer> turnTLs;
+	protected ArrayList<Move> turnMoves;
+	protected ArrayList<Integer> turnTLs;
 
 	// This is a planned workaround for 2 timeline +-0 starting positions. We may
 	// start with 0,1 tl, but white can still branch
@@ -29,6 +29,22 @@ public class GameState {
 	// without this, the +2 TL would be inactive.
 	public int tlHandicap;
 
+	//Copies, but not in the best way, the end results in 2 which point to the same arrays. But it will work for certain purposes, ie. for a subclass.
+	public GameState(GameState g) {
+		this.multiverse = g.multiverse;
+		this.color = g.color;
+		this.startPresent = g.startPresent;
+		this.present = g.present;
+		this.width = g.width;
+		this.height = g.height;
+		this.minTL = g.minTL;
+		this.maxTL = g.maxTL;
+		this.minActiveTL = g.minActiveTL;
+		this.maxActiveTL = g.maxActiveTL;
+		this.turnMoves = g.turnMoves;
+		this.turnTLs = g.turnTLs;
+	}
+	
 	public GameState(Board start) {
 		multiverse = new ArrayList<Timeline>();
 		multiverse.add(new Timeline(start, true, 1, 0));
@@ -195,7 +211,7 @@ public class GameState {
 	}
 	
 	
-	private boolean isInCheck() {
+	protected boolean isInCheck() {
 		
 		// TODO Auto-generated method stub
 		return false;
@@ -370,7 +386,7 @@ public class GameState {
 	/**
 	 * this function changes the object to reflect which TL are 'active'
 	 */
-	private void determineActiveTLS() {
+	protected void determineActiveTLS() {
 		// case 1 -- black has branched more.
 		if (maxTL < Math.abs(minTL)) {
 			maxActiveTL = maxTL;
@@ -389,7 +405,7 @@ public class GameState {
 
 	}
 
-	private boolean calcPresent() {
+	protected boolean calcPresent() {
 		int presentTime = getTimeline(minActiveTL).Tend;
 		boolean presentColor = getTimeline(minActiveTL).colorPlayable;
 		for (int i = minActiveTL; i <= maxActiveTL; i++) {
@@ -408,7 +424,7 @@ public class GameState {
 	}
 
 	public boolean coordIsPlayable(CoordFive c) {
-		if(c == null )
+		if(c == null || !layerExists(c.L))
 			return false;
 		return getTimeline(c.L).isMostRecentTime(c.T, c.color);
 	}

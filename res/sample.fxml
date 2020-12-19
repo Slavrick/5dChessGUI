@@ -48,6 +48,7 @@
 				</ListView>
 			</HBox>
 			<Button layoutX="126" layoutY="150" text="Load" fx:id="Login" onAction="#handleButtonAction" />
+			<Label fx:id="statusLabel"/>
 		</VBox>
 	</bottom>
 </BorderPane>

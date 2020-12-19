@@ -193,9 +193,14 @@ public class FENParser {
 		return t;
 	}
 
+	
+	//recieve String in form such as KQkq for full castling rights.
 	public static void populateCastlingRights(Board b, String castlingrights) {
-
-	}// TODO
+		b.wkingSideCastle = castlingrights.contains("K");
+		b.wqueenSideCastle = castlingrights.contains("Q");
+		b.bkingSideCastle = castlingrights.contains("k");
+		b.bqueenSideCastle = castlingrights.contains("q");
+	}
 
 	// Recive string (a,b,c,d) return int[] {a,b,c,d} or coordFIVE
 	public static CoordFour stringtoCoord(String coord) {
