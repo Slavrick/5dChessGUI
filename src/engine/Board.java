@@ -10,7 +10,7 @@ public class Board {
 	/*
 	 * public int time; public int layer;
 	 */
-	public int color;
+	public boolean color;
 	public boolean brdColor;
 	public boolean wkingSideCastle;
 	public boolean wqueenSideCastle;
@@ -18,10 +18,6 @@ public class Board {
 	public boolean bqueenSideCastle;
 
 	public static final int numTypes = 21;
-
-	public static enum pieceColor {
-		NONE, WHITE, BLACK
-	}
 
 	public static enum piece {
 		EMPTY, WPAWN, WKNIGHT, WBISHOP, WROOK, WPRINCESS, WQUEEN, WKING, WUNICORN, WDRAGON, WBRAWN, BPAWN, BKNIGHT,
@@ -85,17 +81,6 @@ public class Board {
 			return -1;
 	}
 
-	// this func is depricated
-	public static pieceColor getColor(int pieceCode) {
-		if (pieceCode == piece.EMPTY.ordinal()) {
-			return pieceColor.NONE;
-		}
-		if (pieceCode >= piece.BPAWN.ordinal()) {
-			return pieceColor.BLACK;
-		}
-		return pieceColor.WHITE;
-	}
-
 	/**
 	 * Gets the color of the piececode that was sent(as defined above in the piece
 	 * enum above).
@@ -153,6 +138,12 @@ public class Board {
 		return temp;
 	}
 
+	/** TODO maybe this should be in the Timeline class?
+	 * Casltes a king on the present board by checking if it is possible and then swapping the pieces.
+	 * @param color the color to swap
+	 * @param side the side to swap to( queen or king -- false or true respectively)
+	 * @return whether or not the caslte happened.
+	 */
 	public boolean CastleKing(boolean color, boolean side) {
 		if(color) {
 			if(side && wkingSideCastle) {

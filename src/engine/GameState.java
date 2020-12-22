@@ -210,14 +210,36 @@ public class GameState {
 		return false;
 	}
 	
-	
+	//Determine if we started the turn in check, by passing on all active timelines.
 	protected boolean isInCheck() {
-		
-		// TODO Auto-generated method stub
-		return false;
+		ArrayList<Integer> nullmoves = new ArrayList<Integer>();
+		for(int i = minActiveTL; i < maxActiveTL; i++) {
+			Timeline t = getTimeline(i);
+			if(t.colorPlayable == color) {				
+				t.addNullMove();
+				nullmoves.add(i);
+			}
+		}
+		boolean inCheck = opponentCanCaptureKing();
+		for(int i : nullmoves) {
+			getTimeline(i).undoMove();
+		}
+		System.out.println("Check Status: " + inCheck);
+		return inCheck;
 	}
 
+	//Determine if the opponent can immediatly capture our king without null moves,
+	//IE this will be used to determine if a move is legal, and also determine
+	//if an we start turn in check TODO test this.
 	private boolean opponentCanCaptureKing() {
+		for(int i = minTL; i <= maxTL; i++) {
+			Timeline t = getTimeline(i);
+			if(t.colorPlayable != color) {
+				ArrayList<CoordFour> attackingPieces = MoveGenerator.getCheckingPieces(this, new CoordFive(0,0,t.Tend,i, !this.color));
+				if(attackingPieces.size() != 0)
+					return true;
+			}
+		}
 		return false;
 	}
 	
@@ -427,6 +449,10 @@ public class GameState {
 		if(c == null || !layerExists(c.L))
 			return false;
 		return getTimeline(c.L).isMostRecentTime(c.T, c.color);
+	}
+
+	public Board getBoard(CoordFive temporalCoord) {
+		return getBoard(temporalCoord, temporalCoord.color);
 	}
 
 	

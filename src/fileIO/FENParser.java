@@ -59,20 +59,34 @@ public class FENParser {
 			return null;
 		}
 		if (splitString[3].charAt(0) == 'w') {
-			b.color = Board.pieceColor.BLACK.ordinal();
+			b.color = true;
 		}
-		if (splitString[3].charAt(0) == 'w') {
-			b.color = Board.pieceColor.BLACK.ordinal();
+		if (splitString[3].charAt(0) == 'b') {
+			b.color = false;
 		}
 		return b;
 	}
 
 	/*
-	 * reference string as follows: >4;4;2;0;b >
-	 * >r2k/4/4/P2K;;-;w1;3;(1,1,1,0)(1,2,1,0);(1,4,1,0)(3,4,1,0);(4,1,2,0)(3,2,1,0)
-	 * > >r2k/4/2K1/P2K;;-;b1;2;(1,4,1,1)(1,2,1,1);(3,2,2,1)(2,3,2,1) 0 -- fen
-	 * pieces 1 -- casling rights 2 -- en passent 3 -- time start 4 -- number of
-	 * moves 5+ -- moves
+	 * reference string as follows: 
+	 * Header:
+	 * 4;4;2;0;b 
+	 * 0 -- width
+	 * 1 -- height
+	 * 2 -- num timelines
+	 * 3 -- min timeline
+	 * 4 -- turn color(b or w)
+	 * 5 -- +-0 status
+	 * 
+	 * Timelines:
+	 * r2k/4/4/P2K;;-;w1;3;(1,1,1,0)(1,2,1,0);(1,4,1,0)(3,4,1,0);(4,1,2,0)(3,2,1,0)
+	 * r2k/4/2K1/P2K;;-;b1;2;(1,4,1,1)(1,2,1,1);(3,2,2,1)(2,3,2,1) 
+	 * 0 -- fen pieces
+	 * 1 -- casling rights 
+	 * 2 -- en passent 
+	 * 3 -- time start 
+	 * 4 -- number of moves 
+	 * 5+ -- moves
 	 */
 
 	/**

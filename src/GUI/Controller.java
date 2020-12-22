@@ -82,7 +82,6 @@ public class Controller {
 		canvasbox.addEventHandler(MouseEvent.MOUSE_RELEASED, new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent t) {
-				//System.out.println("Release");
 				if(dragging) {
 					dragging = false;
 					release = true;
@@ -97,7 +96,6 @@ public class Controller {
 		canvasbox.addEventHandler(MouseEvent.MOUSE_DRAGGED, new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent e) {
-				// System.out.println("DragEvent");
 				PointerInfo mouse = MouseInfo.getPointerInfo();
 				Point mousePt = mouse.getLocation();
 				if (!dragging) {
@@ -105,7 +103,6 @@ public class Controller {
 					startDragx = mousePt.x;
 					startDragy = mousePt.y;
 				}
-				// gc.clearRect(e.getX() - 2, e.getY() - 2, 5, 5);
 				xchange = (mousePt.x - startDragx) * 1.1;
 				ychange = (mousePt.y - startDragy) * 1.1;
 				drawStage(xchange,ychange);
@@ -117,7 +114,6 @@ public class Controller {
 		canvasbox.addEventHandler(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent e) {
-				//System.out.println((e.getX() + screenX) + ", " + (e.getY() + screenY));
 				if (e.getButton() == MouseButton.SECONDARY) {
 					selectedSquare = null;
 					destinations = null;
@@ -126,7 +122,6 @@ public class Controller {
 					CoordFive clickedCoord = getCoordClicked((int) e.getX(), (int) e.getY(), g.width, g.height);
 					if (destinations != null && clickedCoord != null && clickedCoord.color == selectedSquare.color && alContains(destinations, clickedCoord)) {
 						Move selectedMove = new Move(selectedSquare, clickedCoord);
-						System.out.println(selectedMove);
 						g.makeMove(selectedMove);
 						selectedSquare = null;
 						destinations = null;
@@ -167,7 +162,7 @@ public class Controller {
 
 	@FXML
 	public void handleSubmitButton(ActionEvent e) {
-		System.out.println(g.submitMoves());
+		g.submitMoves();
 		setStatusLabel();
 	}
 
@@ -216,7 +211,12 @@ public class Controller {
 	}
 	
 	private void setStatusLabel() {
-		String status = g.color + " " + g.present;
+		String status = " Present:" + g.present;
+		if(g.color) {
+			status = "White's Turn, " + status;
+		}else {
+			status = "Blacks's Turn, " + status;
+		}
 		statusLabel.setText(status);
 	}
 
@@ -227,7 +227,6 @@ public class Controller {
 		y += screenY;
 		if (x < 0 || y < 0)
 			return null;
-		
 		int L = y / ((h * ChessDrawer.squarewidth) + ChessDrawer.padding);
 		int pxrank = y % ((h * ChessDrawer.squarewidth) + ChessDrawer.padding);
 		if (pxrank <= 50)
@@ -237,7 +236,6 @@ public class Controller {
 		int pxFile = x % ((w * ChessDrawer.squarewidth) + ChessDrawer.padding);
 		int file = ((pxFile - 50) / 32);
 		CoordFive cf = new CoordFive(file, rank, (T / 2) + 1, L + g.minTL, (T % 2 == 0));
-		// System.out.println(cf);
 		return cf;
 	}
 
@@ -255,7 +253,7 @@ public class Controller {
 		gc.clearRect(0, 0, 8000, 8000);
 		ChessDrawer.drawMultiverseV(canvasbox.getGraphicsContext2D(), (int) screenX, (int) screenY, g);
 		if (destinations != null) {
-			ChessDrawer.drawAllSquaresV(gc, Color.AQUAMARINE, destinations, selectedSquare.color, g.width, g.height, g.minTL, (int)screenX, (int)screenY);
+			ChessDrawer.drawAllSquaresV(gc, new Color(1f,0f,0f,.5f ), destinations, selectedSquare.color, g.width, g.height, g.minTL, (int)screenX, (int)screenY);
 		}
 	}
 
@@ -266,18 +264,29 @@ public class Controller {
 		gc.clearRect(0, 0, 8000, 8000);
 		ChessDrawer.drawMultiverseV(canvasbox.getGraphicsContext2D(), (int)(screenX - changex), (int)(screenY - changey), g);
 		if (destinations != null) {
-			ChessDrawer.drawAllSquaresV(gc, Color.AQUAMARINE, destinations, selectedSquare.color, g.width, g.height, g.minTL, (int)(screenX - changex), (int)(screenY- changey));
+			ChessDrawer.drawAllSquaresV(gc, new Color(1f,0f,0f,.5f ), destinations, selectedSquare.color, g.width, g.height, g.minTL, (int)(screenX - changex), (int)(screenY- changey));
 			
 		}
 
 	}
 
+	/**
+	 * This was created because I couldn't understand why the arraylist.contains was not working properly
+	 * It is supposed to call the .equals function, but i think that it checking if two objects were the same memory, not the same contents.
+	 * @param al
+	 * @param target
+	 * @return
+	 */
 	public static boolean alContains(ArrayList<CoordFour> al, CoordFour target) {
 		for (CoordFour c : al) {
 			if (c.equals(target))
 				return true;
 		}
 		return false;
+	}
+	
+	private static void panToBoard(int T, int L) {
+		
 	}
 
 }
