@@ -4,7 +4,7 @@ public class Move {
 
 	public CoordFour origin;
 	public CoordFour dest;
-	//1 for spatial, 2 for jumping or branching.
+	//0 for either branching or jumping(not determined), 1 for spatial, 2 for jumping, 3 for branching.
 	public int type;
 	
 	public Move(CoordFour coordorigin, CoordFour coorddest) {
@@ -14,7 +14,7 @@ public class Move {
 			type = 1;
 		}
 		else{
-			type = 2;
+			type = 0;
 		}
 		
 	}

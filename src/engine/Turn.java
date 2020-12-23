@@ -33,7 +33,7 @@ public class Turn {
 		this.tls = new int[count];
 		count = 0;
 		for(Move m : this.moves) {
-			if(m.type != 1){
+			if(m.type != 1){//TODO this is wrong, impossible to tell if a move branches without the given gameState.
 				tls[count] = m.origin.L;
 				count++;
 				tls[count] = m.dest.L;

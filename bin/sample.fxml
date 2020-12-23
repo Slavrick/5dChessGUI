@@ -18,9 +18,9 @@
 		    </Menu>
 	        <Menu text="Edit" onAction="#handleMenu">
 	        </Menu>
-	       	<Menu text="Options" onAction="#handleMenu">
+	       	<Menu text="Options">
 		       	<MenuItem text="   Notation Options "/>
-		       	<MenuItem text="   Properties       "/>
+		       	<MenuItem text="   Properties       "  onAction="#setProperties"/>
 		       	<MenuItem text="   About            "/>
 	       	</Menu>
 	    </MenuBar>
@@ -36,10 +36,10 @@
 	</right>
 	<bottom>
 		<VBox>
-			<HBox>
-				<Button layoutX="126" layoutY="150" text="Submit Turn" onAction="#handleSubmitButton" />	
-				<Button layoutX="126" layoutY="150" text="Undo Turn" onAction="#handleUndoButton" />
-				<Button layoutX="126" layoutY="150" text="Undo Move" onAction="#handleButtonAction" />
+			<HBox Alignment="CENTER_LEFT" spacing="50" >
+				<Button text="Submit Turn" onAction="#handleSubmitButton" />	
+				<Button text="Undo Turn" onAction="#handleUndoButton" />
+				<Button text="Undo Move" />
 			</HBox>
 			<HBox>
 				<ListView maxHeight="50">
@@ -47,7 +47,6 @@
 				<ListView maxHeight="50">
 				</ListView>
 			</HBox>
-			<Button layoutX="126" layoutY="150" text="Load" fx:id="Login" onAction="#handleButtonAction" />
 			<Label fx:id="statusLabel"/>
 		</VBox>
 	</bottom>

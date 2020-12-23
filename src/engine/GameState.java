@@ -27,6 +27,7 @@ public class GameState {
 	// therefore in the above example, you would have 2 timeline start. starters
 	// would be 0,1 and handicap would be 1.
 	// without this, the +2 TL would be inactive.
+	//TODO fix this, much of the assumptions may be wrong because of this..... also we need to take into consideration parsing of coords
 	public int tlHandicap;
 
 	//Copies, but not in the best way, the end results in 2 which point to the same arrays. But it will work for certain purposes, ie. for a subclass.
@@ -43,6 +44,7 @@ public class GameState {
 		this.maxActiveTL = g.maxActiveTL;
 		this.turnMoves = g.turnMoves;
 		this.turnTLs = g.turnTLs;
+		this.tlHandicap = g.tlHandicap;
 	}
 	
 	public GameState(Board start) {
@@ -53,6 +55,7 @@ public class GameState {
 		tlHandicap = 0;
 		this.width = start.width;
 		this.height = start.height;
+		present = 1;
 		startPresent = 1;
 	}
 
@@ -68,6 +71,7 @@ public class GameState {
 		this.width = b.width;
 		this.height = b.height;
 		startPresent = starter.Tend;
+		present = startPresent;
 	}
 
 	public GameState(Timeline[] starters, int minTL, int maxTL) {
@@ -96,6 +100,8 @@ public class GameState {
 		this.maxTL = maxTL;
 		tlHandicap = 0;
 		color = true;
+		calcPresent();
+		startPresent = present;
 	}
 
 	public GameState(ArrayList<Timeline> starters, int minTL, int maxTL, int handicap) {
@@ -108,6 +114,8 @@ public class GameState {
 		this.maxTL = maxTL;
 		tlHandicap = handicap;
 		color = true;
+		calcPresent();
+		startPresent = present;
 	}
 
 	private void initVals() {
@@ -172,7 +180,7 @@ public class GameState {
 				return false;
 			}
 		}
-		// TODO validate origin.
+		// TODO validate origin, or not.
 		Timeline originT = getTimeline(m.origin.L);
 		Timeline destT = getTimeline(m.dest.L);
 		if (originT == null || destT == null) {
@@ -184,15 +192,19 @@ public class GameState {
 		int pieceMoved = originT.addJumpingMove(m.origin, color);
 		// TODO validate piece
 		Board b = destT.addJumpingMoveDest(m.dest, color, pieceMoved);
-		if (b == null) { // means no branching
+		//This part sets the type on the move to convey information to other functions.
+		if (b == null) { 
 			turnTLs.add(m.origin.L);
 			turnTLs.add(m.dest.L);
 			turnMoves.add(m);
+			m.type = 2;
 		} else {
 			turnTLs.add(m.origin.L);
 			turnTLs.add(this.addTimeline(b, m.dest.T));
 			turnMoves.add(m);
+			m.type = 3;
 		}
+		determineActiveTLS();
 		return true;
 	}
 	// make sure to add the move iff there was a move added, and never if not.
@@ -200,17 +212,18 @@ public class GameState {
 	public boolean submitMoves() {
 		determineActiveTLS();
 		boolean presColor = calcPresent();
-		if(!isInCheck() && !(present == startPresent && presColor == color)) {
+		if(!isInCheck() && !(presColor == color)) {//TODO i think instead of is in check, I may want to change it to opponent can cap king;
 			turnTLs.clear();
 			turnMoves.clear();
 			color =! color;
 			startPresent = present;
 			return true;
 		}
+		System.out.println("BadTurn: " + presColor + " " + color + " " + present + " " + startPresent);
 		return false;
 	}
 	
-	//Determine if we started the turn in check, by passing on all active timelines.
+	//Determine if we started the turn in check, by passing on all active timelines. FIXME This is wrong, because we should only pass on timelines present.
 	protected boolean isInCheck() {
 		ArrayList<Integer> nullmoves = new ArrayList<Integer>();
 		for(int i = minActiveTL; i < maxActiveTL; i++) {
@@ -243,13 +256,43 @@ public class GameState {
 		return false;
 	}
 	
+	
+	//Validates turn without adding the moves to the gameState.
 	private boolean validateTurn(Move[] turn, boolean nextPlayer) {
-		for (int i = minActiveTL - minTL; i < maxActiveTL; i++) {
-			if (multiverse.get(i).colorPlayable == color && multiverse.get(i).Tend <= present) {
-				return false;
+		ArrayList<Integer> affectedTimelines = new ArrayList<Integer>();
+		for(Move m: turn) {
+			//TODO refactor this, only need to check type after making the move not before.
+			if(m.type == 1) {
+				if(makeMove(m)) {
+					affectedTimelines.add(m.origin.L);
+				}else {
+					break;
+				}
+			}else {
+				if(makeMove(m)) {
+					affectedTimelines.add(m.origin.L);
+					if(m.type == 2) {
+						affectedTimelines.add(m.dest.L);
+					}
+					else {
+						if(color) {
+							affectedTimelines.add(maxTL);
+						}
+						else {
+							affectedTimelines.add(minTL);
+						}
+					}
+				}else {
+					break;
+				}
 			}
 		}
-		return true;
+		boolean result = false;
+		if(calcPresent() != color && !opponentCanCaptureKing()) {
+			result = true;
+		}
+		this.undoTurn(affectedTimelines);
+		return result;
 	}
 
 	public boolean isInBounds(CoordFour c, boolean boardColor) {
@@ -270,6 +313,14 @@ public class GameState {
 		return (layer >= minTL && layer <= maxTL);
 	}
 
+	//This assumes that the activeness has been calculated //TODO make sure it present calculated at the right time.
+	public boolean layerIsActive(int layer) {
+		if(layer < minActiveTL || layer > maxActiveTL) {
+			return false;
+		}
+		return true;
+	}
+	
 	public Timeline getTimeline(int layer) {
 		if (!layerExists(layer)) {
 			return null;
@@ -378,6 +429,28 @@ public class GameState {
 				}
 			}
 		}
+		determineActiveTLS(); //TODO make sure present works correctly.
+		color = !color;
+		return true;
+	}
+	
+	//same as above, for ArrayList
+	public boolean undoTurn(ArrayList<Integer> tlmoved) {
+		if(tlmoved.size() == 0)
+			return false;
+		for(int i : tlmoved) {
+			if(getTimeline(i).undoMove()) {
+				//this means that the timeline had only one board.
+				multiverse.remove(GameState.getTLIndex(i, this.minTL));
+				if(color) { //TODO this assumption may not be true -- same for the next function(ie. a deleted timeline may not be on the edge of the multiverse.
+					maxTL--;
+				}
+				else {
+					minTL++;
+				}
+			}
+		}
+		determineActiveTLS(); //TODO make sure present works correctly.
 		color = !color;
 		return true;
 	}
@@ -397,6 +470,7 @@ public class GameState {
 				}
 			}
 		}
+		determineActiveTLS();
 		turnTLs.clear();
 	}
 
@@ -444,15 +518,39 @@ public class GameState {
 		this.present = presentTime;
 		return presentColor;
 	}
+	
+	//return true if a branch will be active, this is for checkmate detection.(ie. if we can branch, check for easy moves that may take us out of check)
+	private boolean canActiveBranch() { 
+		if(color) {
+			return maxActiveTL <= (tlHandicap - minActiveTL);
+		}else {
+			return (minActiveTL * -1) <= (maxActiveTL + tlHandicap);
+		}
+	}
 
 	public boolean coordIsPlayable(CoordFive c) {
 		if(c == null || !layerExists(c.L))
 			return false;
 		return getTimeline(c.L).isMostRecentTime(c.T, c.color);
-	}
+	}//TODO check if x,y are legit
+	
 
 	public Board getBoard(CoordFive temporalCoord) {
 		return getBoard(temporalCoord, temporalCoord.color);
+	}
+	
+	//TODO set this to return a turn so we can hint, check if this moves properly.
+	public boolean isMated() {
+		determineActiveTLS();
+		
+		//1st pass, try to solve spatially.
+		
+		//2nd pass, try to do a simply branch
+		if(canActiveBranch()) {
+			
+		}
+		//FIXME finish this.
+		return true;
 	}
 
 	

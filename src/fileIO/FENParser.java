@@ -15,6 +15,7 @@ import engine.Move;
 import engine.Timeline;
 
 public class FENParser {
+	//TODO fix this to handle the new format.
 
 	//This is somewhat not used TODO handle this.
 	public static Board getBoardFromString(String FENFormat) {

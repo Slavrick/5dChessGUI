@@ -25,7 +25,7 @@ public class CoordFive extends CoordFour{
 	}
 	
 	public CoordFive clone() {
-		return new CoordFive(this.clone(),this.color);
+		return new CoordFive(super.clone(),this.color);
 	}
 	
 	public String toString() {

@@ -6,6 +6,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.scene.control.TextField;
@@ -51,6 +52,8 @@ public class Controller {
 
 	GameState g;
 
+	static final double MAX_FONT_SIZE = 20.0;
+	
 	// Canvas Constants
 	double lastX = 0;
 	double lastY = 0;
@@ -141,10 +144,13 @@ public class Controller {
 		notationList.setItems(Notations);
 		Notations.add("TestThing");
 		drawStage();
+		 // define max font size you need
+		statusLabel.setFont(new Font(MAX_FONT_SIZE));
 		setStatusLabel();
 		g.printMultiverse();
 	}
 
+	//===========================Event Functions=========================================================================
 	@FXML
 	private void handleButtonAction(ActionEvent event) {
 		GraphicsContext gc = canvasbox.getGraphicsContext2D();
@@ -157,6 +163,8 @@ public class Controller {
 	@FXML
 	public void handleUndoButton(ActionEvent e) {
 		g.undoTempMoves();
+		selectedSquare = null;
+		destinations = null;
 		drawStage();
 	}
 
@@ -167,9 +175,8 @@ public class Controller {
 	}
 
 	@FXML
-	private void handleMove(ActionEvent event) {
+	private void handleMove(ActionEvent event) { //TODO get rid of this if not needed
 		CoordFive c = new CoordFive(FENParser.stringtoCoord(movefield.getText()), true);
-		ChessDrawer.drawSquare(canvasbox.getGraphicsContext2D(), g.width, g.height, g.minTL, c, Color.AQUA);
 	}
 
 	@FXML
@@ -199,8 +206,15 @@ public class Controller {
 			drawStage();
 		}
 	}
+	
+	@FXML
+	private void setProperties(ActionEvent e) {
+		//Popup p = new Popup();
+		//FIXME finish this.
+	}
 
-
+	//================================================================================================================
+	
 	private File getFile() {
 		Popup p = new Popup();
 		FileChooser fileChooser = new FileChooser();
@@ -221,7 +235,7 @@ public class Controller {
 	}
 
 	// =========================================Canvas Functions=========================================
-
+	//This is the worst.....
 	public CoordFive getCoordClicked(int x, int y, int w, int h) {
 		x += screenX;
 		y += screenY;
@@ -229,12 +243,12 @@ public class Controller {
 			return null;
 		int L = y / ((h * ChessDrawer.squarewidth) + ChessDrawer.padding);
 		int pxrank = y % ((h * ChessDrawer.squarewidth) + ChessDrawer.padding);
-		if (pxrank <= 50)
+		if (pxrank <= ChessDrawer.padding)
 			return null;
-		int rank = h - ((pxrank - 50) / 32) - 1;
+		int rank = h - ((pxrank - ChessDrawer.padding) / ChessDrawer.squarewidth) - 1;
 		int T = x / ((w * ChessDrawer.squarewidth) + ChessDrawer.padding);
 		int pxFile = x % ((w * ChessDrawer.squarewidth) + ChessDrawer.padding);
-		int file = ((pxFile - 50) / 32);
+		int file = ((pxFile - ChessDrawer.padding) / ChessDrawer.squarewidth);
 		CoordFive cf = new CoordFive(file, rank, (T / 2) + 1, L + g.minTL, (T % 2 == 0));
 		return cf;
 	}
@@ -252,7 +266,7 @@ public class Controller {
 		GraphicsContext gc = canvasbox.getGraphicsContext2D();
 		gc.clearRect(0, 0, 8000, 8000);
 		ChessDrawer.drawMultiverseV(canvasbox.getGraphicsContext2D(), (int) screenX, (int) screenY, g);
-		if (destinations != null) {
+		if (destinations != null && destinations.size() > 0) {
 			ChessDrawer.drawAllSquaresV(gc, new Color(1f,0f,0f,.5f ), destinations, selectedSquare.color, g.width, g.height, g.minTL, (int)screenX, (int)screenY);
 		}
 	}
@@ -263,7 +277,7 @@ public class Controller {
 		GraphicsContext gc = canvasbox.getGraphicsContext2D();
 		gc.clearRect(0, 0, 8000, 8000);
 		ChessDrawer.drawMultiverseV(canvasbox.getGraphicsContext2D(), (int)(screenX - changex), (int)(screenY - changey), g);
-		if (destinations != null) {
+		if (destinations != null && destinations.size() > 0) {
 			ChessDrawer.drawAllSquaresV(gc, new Color(1f,0f,0f,.5f ), destinations, selectedSquare.color, g.width, g.height, g.minTL, (int)(screenX - changex), (int)(screenY- changey));
 			
 		}

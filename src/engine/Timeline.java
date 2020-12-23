@@ -97,7 +97,7 @@ public class Timeline {
 		return true;
 	}
 
-	// this func sucks im debating on adding implicit checks here
+	//TODO no validation here(Only that the supposed color is right, ie we play on a timeline when it is our turn)
 	public boolean addSpatialMove(Move m, boolean moveColor) {
 		if (moveColor != colorPlayable)
 			return false;

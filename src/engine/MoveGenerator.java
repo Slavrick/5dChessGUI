@@ -238,7 +238,7 @@ public class MoveGenerator {
 	public static ArrayList<CoordFour>[] getRiderMovesAndCaps(GameState g, boolean color, CoordFour sourceCoord,
 			CoordFour[] movementVec) {
 		ArrayList<CoordFour> moveList = new ArrayList<CoordFour>();
-		ArrayList<CoordFour> capList = new ArrayList<CoordFour>(); // TODO group by board so we dont have more accesses.
+		ArrayList<CoordFour> capList = new ArrayList<CoordFour>(); //TODO group by board so we dont have more accesses.
 		for (CoordFour cf : movementVec) {
 			if (cf.isSpatial()) {
 				ArrayList[] list = MoveGenerator.getSpatialRiderMovesAndCaptures(g, color, sourceCoord, cf);
