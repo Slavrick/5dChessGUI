@@ -80,7 +80,7 @@ public class FENParser {
 						col++;
 					} else if (c <= '9' && c >= '1') {
 						for (int i = 0; i < (int) (c) - 48; i++) {
-							b.brd[row][col] = indexOfElement(Board.pieceChars, '_');
+							b.brd[height - row - 1][col] = indexOfElement(Board.pieceChars, '_');
 							col++;
 						}
 					} else {
