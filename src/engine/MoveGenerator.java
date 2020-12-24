@@ -12,6 +12,7 @@ public class MoveGenerator {
 	public static final int BKING = 17;
 
 	// TODO return some sort of map on informatino of that piece? test this.
+	// TODO return moves rather than coords.
 	public static ArrayList<CoordFour> getCheckingPieces(GameState g, CoordFive spatialCoord) {
 		ArrayList<CoordFour> attackingPieces = new ArrayList<CoordFour>();
 		Board b = g.getBoard(spatialCoord);
@@ -24,9 +25,6 @@ public class MoveGenerator {
 				int piece = b.getSquare(x, y);
 				if (piece != 0 && Board.getColorBool(piece) == spatialCoord.color) {
 					CoordFive currSquare = new CoordFive(x, y, spatialCoord.T, spatialCoord.L, spatialCoord.color);
-					if(spatialCoord.color && x == 3) {
-						System.out.println("infiniteLoop");
-					}
 					ArrayList<CoordFour> currSquareCaps = getCaptures(piece, g, currSquare);
 					for (CoordFour square : currSquareCaps) {
 						int attackedPiece = g.getSquare(square, spatialCoord.color);
@@ -35,7 +33,7 @@ public class MoveGenerator {
 						} // Yes, this will put say a queen who is checking like a spatial rook and a
 							// temporal bishop in the list twice. Im trying to think if this is bad
 					}
-				} // TODO test this.
+				} 
 			}
 		}
 
@@ -192,7 +190,6 @@ public class MoveGenerator {
 		return moveList;
 	}
 
-	// TODO test this.
 	private static CoordFour getSpatialRiderCapture(GameState g, boolean color, CoordFive source,
 			CoordFour movementVec) {
 		if (!movementVec.isSpatial()) {

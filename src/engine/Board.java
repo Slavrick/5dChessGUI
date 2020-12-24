@@ -16,6 +16,7 @@ public class Board {
 	public boolean wqueenSideCastle;
 	public boolean bkingSideCastle;
 	public boolean bqueenSideCastle;
+	CoordFour enPassentSquare;
 
 	public static final int numTypes = 21;
 

@@ -1,2 +1,5 @@
 SideBar, Notation and mover
 	Possibly a tree like notation thingy for sidelines
+Refactor--- alot
+Figure out UCI, and add it to the thing
+Checkmate detection

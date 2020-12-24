@@ -55,12 +55,10 @@ public class GameState {
 		tlHandicap = 0;
 		this.width = start.width;
 		this.height = start.height;
-		present = 1;
-		startPresent = 1;
+		initVals();
 	}
 
 	public GameState(Timeline starter) {
-		initVals();
 		multiverse = new ArrayList<Timeline>();
 		multiverse.add(starter);
 		minTL = 0;
@@ -70,12 +68,10 @@ public class GameState {
 		Board b = starter.getPlayableBoard();
 		this.width = b.width;
 		this.height = b.height;
-		startPresent = starter.Tend;
-		present = startPresent;
+		initVals();
 	}
 
 	public GameState(Timeline[] starters, int minTL, int maxTL) {
-		initVals();
 		Board b = starters[0].getPlayableBoard();
 		this.width = b.width;
 		this.height = b.height;
@@ -86,12 +82,10 @@ public class GameState {
 		this.maxTL = maxTL;
 		tlHandicap = 0;
 		color = true;
-		calcPresent();
-		startPresent = present;
+		initVals();
 	}
 
 	public GameState(ArrayList<Timeline> starters, int minTL, int maxTL) {
-		initVals();
 		Board b = starters.get(0).getPlayableBoard();
 		this.width = b.width;
 		this.height = b.height;
@@ -100,12 +94,10 @@ public class GameState {
 		this.maxTL = maxTL;
 		tlHandicap = 0;
 		color = true;
-		calcPresent();
-		startPresent = present;
+		initVals();
 	}
 
 	public GameState(ArrayList<Timeline> starters, int minTL, int maxTL, int handicap) {
-		initVals();
 		Board b = starters.get(0).getPlayableBoard();
 		this.width = b.width;
 		this.height = b.height;
@@ -114,13 +106,60 @@ public class GameState {
 		this.maxTL = maxTL;
 		tlHandicap = handicap;
 		color = true;
-		calcPresent();
-		startPresent = present;
+		initVals();
+	}
+	
+	//This function is used by the FEN which is why it is so beefy.
+	public GameState(Timeline[] origins, int width, int height, boolean evenStart, boolean color, int minTL, Move[] moves) {
+		
+		multiverse = new ArrayList<Timeline>();
+		this.width = width;
+		this.height = height;
+		this.minTL = minTL;
+		this.maxTL = minTL + origins.length - 1;
+		this.color = color;
+		if(evenStart) {
+			tlHandicap = 1;
+		}else {
+			tlHandicap = 0;
+		}
+		for( Timeline t : origins) {
+			multiverse.add(t);
+		}
+		if(moves == null) {
+			initVals();
+			return;
+		}
+		for(Move m : moves) {
+			Timeline origin = this.getTimeline(m.origin.L);
+			boolean moveColor = origin.colorPlayable;
+			if(m.type == 1) {
+				origin.addSpatialMove(m, origin.colorPlayable );
+			}else {
+				Timeline dest = this.getTimeline(m.dest.L);
+				int piece = origin.addJumpingMove(m.origin, origin.colorPlayable);
+				Board branch = dest.addJumpingMoveDest(m.dest, dest.colorPlayable, piece);
+				if(branch != null) {
+					if(moveColor) {
+						multiverse.add(new Timeline(branch,!moveColor,m.dest.T,maxTL));
+						maxTL++;
+					}
+					else {
+						multiverse.add(0,new Timeline(branch,!moveColor,m.dest.T+1,minTL));
+						minTL--;
+					}
+				}
+			}
+		}
+		initVals();
 	}
 
 	private void initVals() {
 		turnMoves = new ArrayList<Move>();
 		turnTLs = new ArrayList<Integer>();
+		determineActiveTLS();
+		calcPresent();
+		startPresent = present;
 	}
 
 	public boolean makeTurn(Move move) {
@@ -128,36 +167,14 @@ public class GameState {
 		return makeTurn(moves);
 	}
 
-	// TODO Redo This
 	public boolean makeTurn(Move[] moves) {
-		/*
-		for (Move m : moves) {
-			if (m.type == 1) { // if the move is spatial
-				getTimeline(m.origin.L).addSpatialMove(m, color);
-			} else {
-				// need to add validation to this TODO add validation
-				Timeline tlOrigin = getTimeline(m.origin.L);
-				Timeline tldest = getTimeline(m.dest.L);
-				int pieceMoved = tlOrigin.addJumpingMove(m.origin, color);
-				Board b = tldest.addJumpingMoveDest(m.dest, color, pieceMoved);
-				if (b != null) { // means that the move branches.
-					if (color) { // TODO remove activeness on TL/ this function.
-						maxTL++;
-						Timeline branch = new Timeline(b, !color, m.dest.T, maxTL);
-						branch.active = (maxTL <= ((minTL * -1) + 1 + tlHandicap));
-						multiverse.add(branch);
-					} else {
-						minTL--;
-						Timeline branch = new Timeline(b, !color, m.dest.T + 1, minTL);
-						branch.active = ((-1 * minTL) <= (maxTL + 1 + tlHandicap));
-						multiverse.add(0, branch);
-
-					}
-				}
-			}
+		for(Move m: moves) {
+			makeMove(m);
 		}
-		*/
-		
+		if(!submitMoves()) {
+			undoTempMoves();
+			return false;
+		}
 		color = !color;
 		return true;
 	}
@@ -209,6 +226,46 @@ public class GameState {
 	}
 	// make sure to add the move iff there was a move added, and never if not.
 
+	/**
+	 * make a move without submitting turn, or effecting the temp move data structures.
+	 * (In other words, it becomes up to the caller to handle undo's and other features.
+	 * 
+	 * @param m move to submit
+	 * @return boolean whether the move was made or not
+	 */
+	private boolean makeSilentMove(Move m) {
+		if (m.type == 1) {
+			boolean moveResult = getTimeline(m.origin.L).addSpatialMove(m, color);
+			if(moveResult) {
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
+		// TODO validate origin, or not.
+		Timeline originT = getTimeline(m.origin.L);
+		Timeline destT = getTimeline(m.dest.L);
+		if (originT == null || destT == null) {
+			return false;
+		}
+		if (!originT.colorPlayable == this.color) {
+			return false;
+		}
+		int pieceMoved = originT.addJumpingMove(m.origin, color);
+		// TODO validate piece
+		Board b = destT.addJumpingMoveDest(m.dest, color, pieceMoved);
+		//This part sets the type on the move to convey information to other functions.
+		if (b == null) {
+			m.type = 2;
+		} else {
+			this.addTimeline(b, m.dest.T);
+			m.type = 3;
+		}
+		determineActiveTLS();
+		return true;
+	}
+	
 	public boolean submitMoves() {
 		determineActiveTLS();
 		boolean presColor = calcPresent();
@@ -219,7 +276,6 @@ public class GameState {
 			startPresent = present;
 			return true;
 		}
-		System.out.println("BadTurn: " + presColor + " " + color + " " + present + " " + startPresent);
 		return false;
 	}
 	
@@ -261,30 +317,23 @@ public class GameState {
 	private boolean validateTurn(Move[] turn, boolean nextPlayer) {
 		ArrayList<Integer> affectedTimelines = new ArrayList<Integer>();
 		for(Move m: turn) {
-			//TODO refactor this, only need to check type after making the move not before.
-			if(m.type == 1) {
-				if(makeMove(m)) {
+			if(makeSilentMove(m)) {
+				if(m.type == 1) { //Spatial
 					affectedTimelines.add(m.origin.L);
-				}else {
-					break;
-				}
-			}else {
-				if(makeMove(m)) {
+				}else if (m.type == 2) { //Jumping
 					affectedTimelines.add(m.origin.L);
-					if(m.type == 2) {
-						affectedTimelines.add(m.dest.L);
+					affectedTimelines.add(m.dest.L);
+				}else { //Branching.
+					affectedTimelines.add(m.origin.L);
+					if(color) {
+						affectedTimelines.add(maxTL);
 					}
 					else {
-						if(color) {
-							affectedTimelines.add(maxTL);
-						}
-						else {
-							affectedTimelines.add(minTL);
-						}
+						affectedTimelines.add(minTL);
 					}
-				}else {
-					break;
 				}
+			}else {
+				break;
 			}
 		}
 		boolean result = false;
@@ -421,7 +470,7 @@ public class GameState {
 			if(getTimeline(i).undoMove()) {
 				//this means that the timeline had only one board.
 				multiverse.remove(GameState.getTLIndex(i, this.minTL));
-				if(color) { //TODO this assumption may not be true -- same for the next function(ie. a deleted timeline may not be on the edge of the multiverse.
+				if(color) {
 					maxTL--;
 				}
 				else {
@@ -442,7 +491,7 @@ public class GameState {
 			if(getTimeline(i).undoMove()) {
 				//this means that the timeline had only one board.
 				multiverse.remove(GameState.getTLIndex(i, this.minTL));
-				if(color) { //TODO this assumption may not be true -- same for the next function(ie. a deleted timeline may not be on the edge of the multiverse.
+				if(color) {
 					maxTL--;
 				}
 				else {
@@ -529,11 +578,10 @@ public class GameState {
 	}
 
 	public boolean coordIsPlayable(CoordFive c) {
-		if(c == null || !layerExists(c.L))
+		if(c == null || !layerExists(c.L) || c.x < 0 || c.x > this.width || c.y < 0 || c.y > this.height)
 			return false;
 		return getTimeline(c.L).isMostRecentTime(c.T, c.color);
-	}//TODO check if x,y are legit
-	
+	}
 
 	public Board getBoard(CoordFive temporalCoord) {
 		return getBoard(temporalCoord, temporalCoord.color);
@@ -542,7 +590,6 @@ public class GameState {
 	//TODO set this to return a turn so we can hint, check if this moves properly.
 	public boolean isMated() {
 		determineActiveTLS();
-		
 		//1st pass, try to solve spatially.
 		
 		//2nd pass, try to do a simply branch
@@ -552,6 +599,5 @@ public class GameState {
 		//FIXME finish this.
 		return true;
 	}
-
 	
 }

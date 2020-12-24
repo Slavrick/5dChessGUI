@@ -75,7 +75,7 @@ public class Controller {
 
 	// This func is called in the very start of initialization of this class
 	public Controller() {
-		g = FENParser.FENtoGS("res/Standard.FEN.txt");
+		g = FENParser.FENtoGSNew("res/Standard.FEN.txt");
 	}
 
 	// This func is called after all initializations from the FXML parser.
@@ -175,11 +175,6 @@ public class Controller {
 	}
 
 	@FXML
-	private void handleMove(ActionEvent event) { //TODO get rid of this if not needed
-		CoordFive c = new CoordFive(FENParser.stringtoCoord(movefield.getText()), true);
-	}
-
-	@FXML
 	private void handleMenu(ActionEvent event) {
 		if (event.getSource() instanceof Menu)
 			System.out.println("Got Menu Event!");
@@ -187,10 +182,6 @@ public class Controller {
 			System.out.println("Got Menu Event!");
 			System.out.println(((MenuItem) event.getSource()).getId());
 		}
-		File selectedFile = getFile();
-		if (selectedFile != null) {
-			System.out.println(selectedFile.toString());
-		} // TODO add game loading
 	}
 
 	@FXML
@@ -202,14 +193,15 @@ public class Controller {
 	private void loadGame(ActionEvent event) {
 		File selectedFile = getFile();
 		if (selectedFile != null) {
-			g = FENParser.FENtoGS(selectedFile);
+			g = FENParser.FENtoGSNew(selectedFile);
 			drawStage();
+			setStatusLabel();
 		}
 	}
 	
 	@FXML
 	private void setProperties(ActionEvent e) {
-		//Popup p = new Popup();
+		Popup p = new Popup();
 		//FIXME finish this.
 	}
 
@@ -225,7 +217,7 @@ public class Controller {
 	}
 	
 	private void setStatusLabel() {
-		String status = " Present:" + g.present;
+		String status = " Present:" + g.startPresent;
 		if(g.color) {
 			status = "White's Turn, " + status;
 		}else {
