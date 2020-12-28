@@ -1,2 +1,2 @@
-8;8;1;0;w;F
-rqbnkbnr/pppppppp/8/8/8/8/PPPPPPPP/RQBNKBNR;KQkq;-;w1;0;
+8;8;0;1;0;w
+rqbnkbnr/pppppppp/8/8/8/8/PPPPPPPP/RQBNKBNR;KQkq;-;w1

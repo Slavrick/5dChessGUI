@@ -22,26 +22,14 @@ public class Turn {
 	}
 	
 	//This will do no validation as of yet.
-	public Turn(Move[] tmoves) {
-		this.moves = tmoves;//TODO make sure this line works as intended, IE copies each and not just the ref to the array.
+	public Turn(ArrayList<Move> turnMoves , ArrayList<Integer> tlEffected) {
+		this.moves = new Move[turnMoves.size()];
+		this.moves = turnMoves.toArray(this.moves);
+		tls = new int[tlEffected.size()];
 		int count = 0;
-		for(Move m : this.moves) {
+		for(int i : tlEffected) {
+			tls[count] = i;
 			count++;
-			if(m.type != 1)
-				count++;
-		}
-		this.tls = new int[count];
-		count = 0;
-		for(Move m : this.moves) {
-			if(m.type != 1){//TODO this is wrong, impossible to tell if a move branches without the given gameState.
-				tls[count] = m.origin.L;
-				count++;
-				tls[count] = m.dest.L;
-				count++;
-			}else {
-				tls[count] = m.dest.L;
-				count++;
-			}
 		}
 		mode = notationMode.RAW;
 		pre = prefixMode.NONE;

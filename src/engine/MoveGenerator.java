@@ -106,7 +106,17 @@ public class MoveGenerator {
 		}
 		return destCoords;
 	}
-
+	
+	public boolean canCaptureSquare(GameState g, boolean color, CoordFour origin, CoordFour target, int pieceType) {
+		boolean rider = Board.getColorBool(pieceType);
+		if(pieceType <= 0 || pieceType > Board.numTypes) {
+			return false;
+		}
+		CoordFour vectorTo = CoordFour.sub(origin, target);
+		//FIXME finish this function.
+		return false;
+	}
+	
 	/**
 	 * gets a leapers moves, but only on the captures, used for pawn movement
 	 * mainly.
@@ -228,7 +238,6 @@ public class MoveGenerator {
 			}
 			currSquare.add(movementVec);
 		}
-		// TODO Auto-generated method stub
 		return null;
 	}
 

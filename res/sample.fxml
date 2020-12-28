@@ -13,15 +13,11 @@
 		<MenuBar fx:id="menuBar">
 	        <Menu text="File">
 		       	<MenuItem text="   Open file        " fx:id="open" onAction="#loadGame"/>
-		       	<MenuItem text="   Save file        "/>
-		       	<MenuItem text="   Close file       "/>
 		    </Menu>
 	        <Menu text="Edit" onAction="#handleMenu">
 	        </Menu>
 	       	<Menu text="Options">
-		       	<MenuItem text="   Notation Options "/>
 		       	<MenuItem text="   Properties       "  onAction="#setProperties"/>
-		       	<MenuItem text="   About            "/>
 	       	</Menu>
 	    </MenuBar>
 	</top>
@@ -39,13 +35,6 @@
 			<HBox Alignment="CENTER_LEFT" spacing="50" >
 				<Button text="Submit Turn" onAction="#handleSubmitButton" />	
 				<Button text="Undo Turn" onAction="#handleUndoButton" />
-				<Button text="Undo Move" />
-			</HBox>
-			<HBox>
-				<ListView maxHeight="50">
-				</ListView>
-				<ListView maxHeight="50">
-				</ListView>
 			</HBox>
 			<Label fx:id="statusLabel"/>
 		</VBox>

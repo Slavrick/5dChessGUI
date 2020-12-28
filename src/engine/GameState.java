@@ -110,8 +110,7 @@ public class GameState {
 	}
 	
 	//This function is used by the FEN which is why it is so beefy.
-	public GameState(Timeline[] origins, int width, int height, boolean evenStart, boolean color, int minTL, Move[] moves) {
-		
+	public GameState(Timeline[] origins, int width, int height, boolean evenStart, boolean color, int minTL, Move[] moves) {	
 		multiverse = new ArrayList<Timeline>();
 		this.width = width;
 		this.height = height;
@@ -269,7 +268,7 @@ public class GameState {
 	public boolean submitMoves() {
 		determineActiveTLS();
 		boolean presColor = calcPresent();
-		if(!isInCheck() && !(presColor == color)) {//TODO i think instead of is in check, I may want to change it to opponent can cap king;
+		if(!opponentCanCaptureKing() && !(presColor == color)) {
 			turnTLs.clear();
 			turnMoves.clear();
 			color =! color;
@@ -279,12 +278,13 @@ public class GameState {
 		return false;
 	}
 	
-	//Determine if we started the turn in check, by passing on all active timelines. FIXME This is wrong, because we should only pass on timelines present.
+	//Determine if we started the turn in check, by passing on all active timelines. 
+	//For this to work, we assume that the Present and active timelines are already calculated.
 	protected boolean isInCheck() {
 		ArrayList<Integer> nullmoves = new ArrayList<Integer>();
 		for(int i = minActiveTL; i < maxActiveTL; i++) {
 			Timeline t = getTimeline(i);
-			if(t.colorPlayable == color) {				
+			if(t.colorPlayable == color && t.Tend == startPresent) {				
 				t.addNullMove();
 				nullmoves.add(i);
 			}
@@ -293,14 +293,13 @@ public class GameState {
 		for(int i : nullmoves) {
 			getTimeline(i).undoMove();
 		}
-		System.out.println("Check Status: " + inCheck);
 		return inCheck;
 	}
 
 	//Determine if the opponent can immediatly capture our king without null moves,
 	//IE this will be used to determine if a move is legal, and also determine
 	//if an we start turn in check TODO test this.
-	private boolean opponentCanCaptureKing() {
+	protected boolean opponentCanCaptureKing() {
 		for(int i = minTL; i <= maxTL; i++) {
 			Timeline t = getTimeline(i);
 			if(t.colorPlayable != color) {

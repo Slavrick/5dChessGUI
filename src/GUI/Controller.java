@@ -1,6 +1,8 @@
 package GUI;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
@@ -28,6 +30,7 @@ import engine.Board;
 import engine.CoordFive;
 import engine.CoordFour;
 import engine.GameState;
+import engine.GameStateManager;
 import engine.Move;
 import engine.MoveGenerator;
 import fileIO.FENParser;
@@ -48,9 +51,9 @@ public class Controller {
 	@FXML
 	Label statusLabel;
 
-	ObservableList<String> Notations;
+	ObservableList<String> notationStringArray;
 
-	GameState g;
+	GameStateManager g;
 
 	static final double MAX_FONT_SIZE = 20.0;
 	
@@ -75,7 +78,7 @@ public class Controller {
 
 	// This func is called in the very start of initialization of this class
 	public Controller() {
-		g = FENParser.FENtoGSNew("res/Standard.FEN.txt");
+		g = new GameStateManager(FENParser.FENtoGSNew("res/Standard.FEN.txt"));
 	}
 
 	// This func is called after all initializations from the FXML parser.
@@ -139,10 +142,8 @@ public class Controller {
 			}
 		});
 		//---------------------------------------------------------------------------------------------------------------------------
-		Notations = FXCollections.observableArrayList();
-		Notations.add("23w T31.Ne3 Qf3");
-		notationList.setItems(Notations);
-		Notations.add("TestThing");
+		notationStringArray = FXCollections.observableArrayList();
+		notationList.setItems(notationStringArray);
 		drawStage();
 		 // define max font size you need
 		statusLabel.setFont(new Font(MAX_FONT_SIZE));
@@ -172,6 +173,7 @@ public class Controller {
 	public void handleSubmitButton(ActionEvent e) {
 		g.submitMoves();
 		setStatusLabel();
+		notationStringArray.add(g.turns.get(g.turns.size() - 1).toString());//Sometimes one move will show a phantom move TODO fix that.
 	}
 
 	@FXML
@@ -193,15 +195,17 @@ public class Controller {
 	private void loadGame(ActionEvent event) {
 		File selectedFile = getFile();
 		if (selectedFile != null) {
-			g = FENParser.FENtoGSNew(selectedFile);
+			g =  new GameStateManager(FENParser.FENtoGSNew(selectedFile));
 			drawStage();
 			setStatusLabel();
+			screenX = 0;
+			screenY = 0;
 		}
 	}
 	
 	@FXML
 	private void setProperties(ActionEvent e) {
-		Popup p = new Popup();
+		
 		//FIXME finish this.
 	}
 
@@ -292,7 +296,7 @@ public class Controller {
 	}
 	
 	private static void panToBoard(int T, int L) {
-		
+		//TODO finish this function.
 	}
 
 }

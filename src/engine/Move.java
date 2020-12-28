@@ -30,4 +30,5 @@ public class Move {
 		moveStr += dest.toString();
 		return moveStr;
 	}
+	
 }

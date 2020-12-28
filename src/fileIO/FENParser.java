@@ -16,7 +16,6 @@ import engine.Timeline;
 
 public class FENParser {
 
-	//TODO link google doc in reposatory documentation to the current FEN format.
 	public static GameState FENtoGSNew(String fileLoc) {
 		File file = new File(fileLoc);
 		return FENtoGSNew(file);
@@ -66,7 +65,7 @@ public class FENParser {
 		return game;
 	}
 	
-	private static Timeline getTimelineFromString(String Timeline, int layer, int width, int height) {
+	public static Timeline getTimelineFromString(String Timeline, int layer, int width, int height) {
 		String[] fields = Timeline.split(";");
 		String[] rows = fields[0].split("/");
 		Board b = new Board(width, height);

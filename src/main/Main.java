@@ -1,7 +1,9 @@
 package main;
 
+import test.FENExporterTester;
 import test.FENParserTest;
 import test.MoveTester;
+import test.TimeLineTest;
 import javafx.stage.Stage;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -13,6 +15,7 @@ public class Main extends Application {
 	
 	public static void main(String[] args) {
 		//runTests();
+		FENExporterTester.testExporter();
 		launch();
 	}
 
