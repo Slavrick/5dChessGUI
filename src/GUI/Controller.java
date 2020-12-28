@@ -171,9 +171,11 @@ public class Controller {
 
 	@FXML
 	public void handleSubmitButton(ActionEvent e) {
-		g.submitMoves();
+		boolean submitted = g.submitMoves();
 		setStatusLabel();
-		notationStringArray.add(g.turns.get(g.turns.size() - 1).toString());//Sometimes one move will show a phantom move TODO fix that.
+		if(submitted) {			
+			notationStringArray.add(g.turns.get(g.turns.size() - 1).toString());//Sometimes one move will show a phantom move TODO fix that.
+		}
 	}
 
 	@FXML

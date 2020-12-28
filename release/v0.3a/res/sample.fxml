@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.canvas.Canvas?>
+
+
+<BorderPane fx:id="innerLayout" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.Controller">
+	<top>
+		<MenuBar fx:id="menuBar">
+	        <Menu text="File">
+		       	<MenuItem text="   Open file        " fx:id="open" onAction="#loadGame"/>
+		    </Menu>
+	        <Menu text="Edit" onAction="#handleMenu">
+	        </Menu>
+	       	<Menu text="Options">
+		       	<MenuItem text="   Properties       "  onAction="#setProperties"/>
+	       	</Menu>
+	    </MenuBar>
+	</top>
+	<center>
+		<ScrollPane>
+				<Canvas fx:id="canvasbox" width="2000" height="2000"/>
+		</ScrollPane>
+	</center>
+	<right>
+		<ListView fx:id="notationList" minWidth="200" maxWidth="300" prefWidth="200">
+		</ListView>
+	</right>
+	<bottom>
+		<VBox>
+			<HBox Alignment="CENTER_LEFT" spacing="50" >
+				<Button text="Submit Turn" onAction="#handleSubmitButton" />	
+				<Button text="Undo Turn" onAction="#handleUndoButton" />
+			</HBox>
+			<Label fx:id="statusLabel"/>
+		</VBox>
+	</bottom>
+</BorderPane>
+
+

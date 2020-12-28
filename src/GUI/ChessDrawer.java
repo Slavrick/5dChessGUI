@@ -39,9 +39,8 @@ public class ChessDrawer {
 			int yoffset = (layerCTR * (boardHeight + padding));
 			if(yoffset - screeny < 0 - (boardHeight + padding + 20)) {
 				//Excludes Items too high to see.
-				continue;
 			}
-			if(game.layerIsActive(i)) {
+			else if(game.layerIsActive(i)) {
 				drawTimelineV(gc, padding + xoffset, padding + yoffset, screenx, screeny, game.width, t, true);				
 			}else {
 				drawTimelineV(gc, padding + xoffset, padding + yoffset, screenx, screeny, game.width, t, false);
