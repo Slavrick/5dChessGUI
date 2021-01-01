@@ -83,23 +83,6 @@ public class Board {
 	}
 
 	/**
-	 * Gets the color of the piececode that was sent(as defined above in the piece
-	 * enum above).
-	 * 
-	 * @param pieceCode integer that matches the enum
-	 * @return true for white false for black and false for empty.
-	 */
-	public static boolean getColorBool(int pieceCode) {
-		if (pieceCode == piece.EMPTY.ordinal()) {
-			return false;
-		}
-		if (pieceCode >= piece.BPAWN.ordinal()) {
-			return GameState.BLACK;
-		}
-		return GameState.WHITE;
-	}
-
-	/**
 	 * Determine whether a coordinate is in bounds
 	 * 
 	 * @param x the 'file' to check. Starts at 0, so a=0, h=7
@@ -122,21 +105,6 @@ public class Board {
 	 */
 	public boolean isInBounds(CoordFour cf) {
 		return isInBounds(cf.x, cf.y);
-	}
-
-	/**
-	 * Gets a string representation of the board. this string starts with the 1st
-	 * rank, and each rank is a line of text.
-	 */
-	public String toString() {
-		String temp = "";
-		for (int x = 0; x < this.width; x++) {
-			for (int y = 0; y < this.height; y++) {
-				temp += pieceChars[brd[x][y]];
-			}
-			temp += "\n";
-		}
-		return temp;
 	}
 
 	/** TODO maybe this should be in the Timeline class?
@@ -165,6 +133,38 @@ public class Board {
 		}else {
 			return false;
 		}
+	}
+
+	/**
+	 * Gets a string representation of the board. this string starts with the 1st
+	 * rank, and each rank is a line of text.
+	 */
+	public String toString() {
+		String temp = "";
+		for (int x = 0; x < this.width; x++) {
+			for (int y = 0; y < this.height; y++) {
+				temp += pieceChars[brd[x][y]];
+			}
+			temp += "\n";
+		}
+		return temp;
+	}
+
+	/**
+	 * Gets the color of the piececode that was sent(as defined above in the piece
+	 * enum above).
+	 * 
+	 * @param pieceCode integer that matches the enum
+	 * @return true for white false for black and false for empty.
+	 */
+	public static boolean getColorBool(int pieceCode) {
+		if (pieceCode == piece.EMPTY.ordinal()) {
+			return false;
+		}
+		if (pieceCode >= piece.BPAWN.ordinal()) {
+			return GameState.BLACK;
+		}
+		return GameState.WHITE;
 	}
 
 

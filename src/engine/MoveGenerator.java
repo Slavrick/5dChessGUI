@@ -11,6 +11,27 @@ public class MoveGenerator {
 	public static final int WKING = 7;
 	public static final int BKING = 17;
 
+	public boolean canCaptureSquare(GameState g, boolean color, CoordFour origin, CoordFour target, int pieceType) {
+		boolean rider = Board.getColorBool(pieceType);
+		if(pieceType <= 0 || pieceType > Board.numTypes) {
+			return false;
+		}
+		CoordFour vectorTo = CoordFour.sub(origin, target);
+		//FIXME finish this function.
+		return false;
+	}
+
+	public static ArrayList<CoordFour> getAllCheckingPieces(GameState g){
+		ArrayList<CoordFour> attackingPieces = new ArrayList<CoordFour>();
+		for(Timeline t : g.multiverse) {
+			if(t.colorPlayable != g.color) {
+				attackingPieces.addAll(getCheckingPieces(g,new CoordFive(0,0,0,t.Tend,!g.color)));
+			}
+		}
+		return attackingPieces;
+	}
+	
+	// TODO make this based off of layer rather than abs board.
 	// TODO return some sort of map on informatino of that piece? test this.
 	// TODO return moves rather than coords.
 	public static ArrayList<CoordFour> getCheckingPieces(GameState g, CoordFive spatialCoord) {
@@ -105,16 +126,6 @@ public class MoveGenerator {
 			}
 		}
 		return destCoords;
-	}
-	
-	public boolean canCaptureSquare(GameState g, boolean color, CoordFour origin, CoordFour target, int pieceType) {
-		boolean rider = Board.getColorBool(pieceType);
-		if(pieceType <= 0 || pieceType > Board.numTypes) {
-			return false;
-		}
-		CoordFour vectorTo = CoordFour.sub(origin, target);
-		//FIXME finish this function.
-		return false;
 	}
 	
 	/**

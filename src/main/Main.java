@@ -5,6 +5,7 @@ import test.FENParserTest;
 import test.MoveTester;
 import test.TimeLineTest;
 import javafx.stage.Stage;
+import engine.CoordFour;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -15,7 +16,7 @@ public class Main extends Application {
 	
 	public static void main(String[] args) {
 		//runTests();
-		FENExporterTester.testExporter();
+
 		launch();
 	}
 
@@ -24,6 +25,7 @@ public class Main extends Application {
 		FENParserTest.testFENFileParser();
 		FENParserTest.testMoveParser();
 		MoveTester.TestBishopMoves();
+		FENExporterTester.testExporter();
 		System.out.println("Done.");
 	}
 

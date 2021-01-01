@@ -26,17 +26,25 @@ public class CoordFour {
 		return new CoordFour(this.x, this.y, this.T, this.L);
 	}
 	
-	//add
-	public static CoordFour add(CoordFour c1, CoordFour c2) {
-		CoordFour sum = new CoordFour( c2.x + c1.x, c2.y +c1.y, c2.T + c1.T, c2.L + c1.L);
-		return sum;
+	/**
+	 * A comparison function to compare this coordinate and another.
+	 * 
+	 * 
+	 * @param c coordinate to compare to.
+	 * @return true if the two coordinates are the same.
+	 */
+	public boolean equals(CoordFour c) {
+		return this.x == c.x && this.y == c.y && this.T == c.T && this.L == c.L;
 	}
-	
-	//sub
-	public static CoordFour sub(CoordFour c1, CoordFour c2) {
-		return new CoordFour( c2.x - c1.x, c2.y - c1.y, c2.T - c1.T, c2.L - c1.L);
+
+	/**
+	 * 
+	 * @return true if the coordinate is pure spatial, and false otherwise.
+	 */
+	public boolean isSpatial() {
+		return this.T == 0 && this.L == 0;
 	}
-	
+
 	/**
 	 * This function takes a 5d coord and adds another coordinates values to it.
 	 * 
@@ -65,6 +73,8 @@ public class CoordFour {
 		}
 	}
 	
+	//TODO make a func that flattents the vector ie. 2,2,2,2 would be 1,1,1,1 but something like 2,4,0,0 would be 1,2,0,0 not 1,1,0,0
+	
 	//gets the n-diagonal that a vector is
 	public int getNagonal(){
 		int nagonal = 0;
@@ -79,25 +89,6 @@ public class CoordFour {
 		return nagonal;
 	}
 	
-	/**
-	 * 
-	 * @return true if the coordinate is pure spatial, and false otherwise.
-	 */
-	public boolean isSpatial() {
-		return this.T == 0 && this.L == 0;
-	}
-	
-	/**
-	 * A comparison function to compare this coordinate and another.
-	 * 
-	 * 
-	 * @param c coordinate to compare to.
-	 * @return true if the two coordinates are the same.
-	 */
-	public boolean equals(CoordFour c) {
-		return this.x == c.x && this.y == c.y && this.T == c.T && this.L == c.L;
-	}
-
 	public String toString() {
 		return "(" + L + "L." + "T" + T + "." + intToFile(x) + "" + (y + 1) + ")";
 	}
@@ -118,12 +109,23 @@ public class CoordFour {
 		return intToFile(this.x) + "" + (this.y +1);
 	}
 	
+	//add
+	public static CoordFour add(CoordFour c1, CoordFour c2) {
+		CoordFour sum = new CoordFour( c2.x + c1.x, c2.y +c1.y, c2.T + c1.T, c2.L + c1.L);
+		return sum;
+	}
+
+	//sub
+	public static CoordFour sub(CoordFour c1, CoordFour c2) {
+		return new CoordFour( c2.x - c1.x, c2.y - c1.y, c2.T - c1.T, c2.L - c1.L);
+	}
+
 	/**
 	 * returns the corrisponding file from the int file sent, 0 indexed so a is 0 b is 1 and so on.
 	 * @param file file to get char for
 	 * @return char corrisponding to sent file.
 	 */
-	public static char intToFile(int file) {
+	protected static char intToFile(int file) {
 		return (char) (file + 97);
 	}
 }

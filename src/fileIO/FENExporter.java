@@ -32,7 +32,6 @@ public class FENExporter {
 	
 	public static String BoardToString(Board b, boolean color, int tStart) {
 		String FEN = "";
-		//TODO write this to pop the main part;
 		int count = 0;
 		for(int y = 0; y < b.height ; y++) {
 			for(int x = 0; x < b.width ; x++) {

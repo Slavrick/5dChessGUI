@@ -98,7 +98,14 @@ public class FENParser {
 			return null;
 		}
 		FENParser.populateCastlingRights(b, fields[1]);
-		//TODO get en passent right
+		if(fields[2].equals("-")) {
+			b.enPassentSquare = null;
+		}
+		else {
+			int file = (int)fields[2].charAt(0) - 97;
+			int rank = (int)fields[2].charAt(1) - 49;
+			b.enPassentSquare = new CoordFour(file,rank,0,0);
+		}
 		boolean color = fields[3].charAt(0) == 'w';
 		int timeStart = Integer.parseInt(fields[3].substring(1, fields[3].length()));
 		Timeline t = new Timeline(b,color,timeStart,layer);

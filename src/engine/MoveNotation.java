@@ -415,7 +415,7 @@ public class MoveNotation {
 		}
 	}
 	
-	//this is depricated, due to the above function.
+	//this is not very useful, but may be used if i find something for it.
 	public static ArrayList<CoordFour> getMultiMoveset(int[] moveAxes){
 		ArrayList<CoordFour> moveset = new ArrayList<CoordFour>();
 		for(int i: moveAxes) {
@@ -423,7 +423,6 @@ public class MoveNotation {
 		}
 		return moveset;
 	}	
-	
 	
 	//this is probably not useful.
 	public static ArrayList<CoordFour> getMoveset(int moveAxi){

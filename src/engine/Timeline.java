@@ -62,6 +62,10 @@ public class Timeline {
 		return true;
 	}
 
+	public boolean isMostRecentTime(int t, boolean color) {
+		return colorPlayable == color && t == Tend;
+	}
+
 	// gets the board on the timeline at time T and color C
 	public Board getBoard(int t, boolean boardColor) {
 		if (!timeExists(t, boardColor)) {
@@ -83,21 +87,14 @@ public class Timeline {
 		}
 	}
 
-	// add a board to the end of the timeline.
-	private boolean addMove(Board b) {
-		if (colorPlayable) {
-			bboards.add(b);
-			blackEnd++;
-		} else {
-			wboards.add(b);
-			whiteEnd++;
-			Tend++;
+	public int getSquare(CoordFour c, boolean color) {
+		Board b = getBoard(c.T, color);
+		if (b != null) {
+			return b.getSquare(c);
 		}
-		colorPlayable = !colorPlayable;
-		return true;
+		return -1;
 	}
 
-	//TODO no validation here(Only that the supposed color is right, ie we play on a timeline when it is our turn)
 	public boolean addSpatialMove(Move m, boolean moveColor) {
 		if (moveColor != colorPlayable)
 			return false;
@@ -140,6 +137,37 @@ public class Timeline {
 		addMove(getPlayableBoard());
 	}
 
+	// add a board to the end of the timeline.
+	private boolean addMove(Board b) {
+		if (colorPlayable) {
+			bboards.add(b);
+			blackEnd++;
+		} else {
+			wboards.add(b);
+			whiteEnd++;
+			Tend++;
+		}
+		colorPlayable = !colorPlayable;
+		return true;
+	}
+
+	// will pop off the last board to 'undo'
+	public boolean undoMove() {
+		if (colorPlayable) {
+			wboards.remove(wboards.size() - 1);
+			whiteEnd--;
+			Tend--;
+		} else {
+			bboards.remove(bboards.size() - 1);
+			blackEnd--;
+		}
+		colorPlayable = !colorPlayable;
+		if (wboards.size() == 0 && bboards.size() == 0) {
+			return true;
+		}
+		return false;
+	}
+
 	// prints the board in a primative way
 	public void printTimleline() {
 		int lastWindex = wboards.size();
@@ -167,34 +195,5 @@ public class Timeline {
 				}
 			}
 		}
-	}
-
-	// will pop off the last board to 'undo'
-	public boolean undoMove() {
-		if (colorPlayable) {
-			wboards.remove(wboards.size() - 1);
-			whiteEnd--;
-			Tend--;
-		} else {
-			bboards.remove(bboards.size() - 1);
-			blackEnd--;
-		}
-		colorPlayable = !colorPlayable;
-		if (wboards.size() == 0 && bboards.size() == 0) {
-			return true;
-		}
-		return false;
-	}
-
-	public int getSquare(CoordFour c, boolean color) {
-		Board b = getBoard(c.T, color);
-		if (b != null) {
-			return b.getSquare(c);
-		}
-		return -1;
-	}
-	
-	public boolean isMostRecentTime(int t, boolean color) {
-		return colorPlayable == color && t == Tend;
 	}
 }
