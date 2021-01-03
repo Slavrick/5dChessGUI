@@ -88,7 +88,6 @@ public class ChessDrawer {
 		}
 	}
 	
-	//TODO fix loading of file.
 	public static void drawFullBoardV(GraphicsContext gc, Board b, boolean color, boolean playable, int x, int y, int screenx, int screeny) {
 		if (piecesprites == null) {
 			try {

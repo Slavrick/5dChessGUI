@@ -33,6 +33,7 @@ import engine.GameState;
 import engine.GameStateManager;
 import engine.Move;
 import engine.MoveGenerator;
+import fileIO.FENExporter;
 import fileIO.FENParser;
 
 public class Controller {
@@ -78,7 +79,7 @@ public class Controller {
 
 	// This func is called in the very start of initialization of this class
 	public Controller() {
-		g = new GameStateManager(FENParser.FENtoGSNew("res/Standard.FEN.txt"));
+		g = FENParser.FENtoGSM("res/Standard.FEN.txt");
 	}
 
 	// This func is called after all initializations from the FXML parser.
@@ -174,10 +175,23 @@ public class Controller {
 		boolean submitted = g.submitMoves();
 		setStatusLabel();
 		if(submitted) {			
-			notationStringArray.add(g.turns.get(g.turns.size() - 1).toString());//Sometimes one move will show a phantom move TODO fix that.
+			notationStringArray.add(g.turns.get(g.turns.size() - 1).toString());
 		}
 	}
-
+	
+	@FXML
+	private void handlePanButton(ActionEvent event) {
+		System.out.println("Pan");
+	}
+	
+	@FXML
+	private void handleListEvent(MouseEvent event) {
+		System.out.println("Chagne");
+		//TODO set this -- test this
+		int turnIndex = 0;
+		//g.setTurn(turnIndex);
+	}
+	
 	@FXML
 	private void handleMenu(ActionEvent event) {
 		if (event.getSource() instanceof Menu)
@@ -197,12 +211,22 @@ public class Controller {
 	private void loadGame(ActionEvent event) {
 		File selectedFile = getFile();
 		if (selectedFile != null) {
-			g =  new GameStateManager(FENParser.FENtoGSNew(selectedFile));
+			g = FENParser.FENtoGSM(selectedFile);
 			drawStage();
 			setStatusLabel();
 			screenX = 0;
 			screenY = 0;
 		}
+	}
+	
+	@FXML
+	private void saveGameState(ActionEvent event) {
+		Popup p = new Popup();
+		FileChooser fileChooser = new FileChooser();
+		fileChooser.setInitialDirectory(new File(new File("").getAbsolutePath()));
+		fileChooser.setTitle("Open Resource File");
+		File selectedFile = fileChooser.showSaveDialog(p.getOwnerWindow());
+		FENExporter.exportString(selectedFile, FENExporter.GameStateToFEN(this.g));
 	}
 	
 	@FXML
@@ -297,8 +321,11 @@ public class Controller {
 		return false;
 	}
 	
-	private static void panToBoard(int T, int L) {
-		//TODO finish this function.
+	private void panToBoard(int T, int L) {
+		int pany = L * (ChessDrawer.padding + (ChessDrawer.squarewidth * g.height)) + 100;
+		int panx = T * (ChessDrawer.padding + (ChessDrawer.squarewidth * g.width)) + 100;
+		screenX = panx;
+		screenY = pany;
 	}
 
 }

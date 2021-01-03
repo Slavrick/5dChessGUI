@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import engine.Board;
 import engine.CoordFour;
 import engine.GameState;
+import engine.GameStateManager;
 import engine.Move;
 import engine.Timeline;
 
@@ -62,6 +63,55 @@ public class FENParser {
 			}
 		}
 		GameState game = new GameState(origins,width,height,evenTimelines,color,minTL,moves);
+		return game;
+	}
+	
+	public static GameStateManager FENtoGSM(String fileLoc) {
+		File file = new File(fileLoc);
+		return FENtoGSM(file);
+	}
+	
+	public static GameStateManager FENtoGSM(File file) {
+		ArrayList<String> lines = new ArrayList<String>();
+		try {
+			FileReader fr = new FileReader(file);
+			BufferedReader br = new BufferedReader(fr);
+			String line;
+			while ((line = br.readLine()) != null) {
+				lines.add(line);
+			}
+			br.close();
+		} catch (IOException e) {
+			System.out.println("File Cound not be opened for reading: " + file.getAbsolutePath());
+			return null;
+		}
+		if (lines.size() < 2) {
+			return null;
+		}
+		String[] firstLine = lines.get(0).split(";");
+		int width = Integer.parseInt(firstLine[0]);
+		int height = Integer.parseInt(firstLine[1]);
+		boolean evenTimelines = firstLine[2].charAt(0) == '1';
+		int numOrigins = Integer.parseInt(firstLine[3]);
+		int minTL = Integer.parseInt(firstLine[4]);
+		boolean color = firstLine[5].charAt(0) == 'w';
+		Timeline[] origins = new Timeline[numOrigins];
+		for (int i = 1; i <= numOrigins; i++) {
+			String tlString = lines.get(i);
+			origins[i-1] = getTimelineFromString(tlString,i-minTL,width,height);
+		}
+		Move[] moves;
+		if(lines.size() == 1 + numOrigins) {
+			moves = null;
+		}
+		else {
+			String[] movestr = lines.get(lines.size() - 1).split(";");
+			moves = new Move[movestr.length];			
+			for(int i = 0; i < movestr.length; i++) {
+				moves[i] = FENParser.stringToMove(movestr[i]);
+			}
+		}
+		GameStateManager game = new GameStateManager(origins,width,height,evenTimelines,color,minTL,moves);
 		return game;
 	}
 	

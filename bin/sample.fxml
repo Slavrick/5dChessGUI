@@ -13,6 +13,7 @@
 		<MenuBar fx:id="menuBar">
 	        <Menu text="File">
 		       	<MenuItem text="   Open file        " fx:id="open" onAction="#loadGame"/>
+		       	<MenuItem text="   Save Game        " onAction="#saveGameState"/>
 		    </Menu>
 	        <Menu text="Edit" onAction="#handleMenu">
 	        </Menu>
@@ -27,14 +28,14 @@
 		</ScrollPane>
 	</center>
 	<right>
-		<ListView fx:id="notationList" minWidth="200" maxWidth="300" prefWidth="200">
-		</ListView>
+		<ListView fx:id="notationList" minWidth="200" maxWidth="300" prefWidth="200" onMouseClicked="#handleListEvent" />
 	</right>
 	<bottom>
 		<VBox>
 			<HBox Alignment="CENTER_LEFT" spacing="50" >
 				<Button text="Submit Turn" onAction="#handleSubmitButton" />	
 				<Button text="Undo Turn" onAction="#handleUndoButton" />
+				<Button text="~~" onAction="#handlePanButton" />
 			</HBox>
 			<Label fx:id="statusLabel"/>
 		</VBox>

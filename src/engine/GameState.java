@@ -530,20 +530,21 @@ public class GameState {
 		turnMoves.clear();
 	}
 
-	// TODO add handicap to this.
+	
 	/**
 	 * this function changes the object to reflect which TL are 'active'
+	 * Uses 'handicap' for even tl things -- May be wrong but we will see.
 	 */
 	protected void determineActiveTLS() {
 		// case 1 -- black has branched more.
 		if (maxTL < Math.abs(minTL)) {
 			maxActiveTL = maxTL;
-			minActiveTL = -1 - maxActiveTL;
+			minActiveTL = Math.max(-1 - maxActiveTL + tlHandicap, minTL);
 		}
 		// case 2 -- white has branched more.
 		else if (Math.abs(minTL) < maxTL) {
 			minActiveTL = minTL;
-			maxActiveTL = 1 + Math.abs(minActiveTL);
+			maxActiveTL = Math.min(1 + Math.abs(minActiveTL) + tlHandicap, maxTL);
 		}
 		// case 3 -- they have branched the same # of times
 		else {

@@ -1,5 +1,6 @@
 package main;
 
+import test.CoordTester;
 import test.FENExporterTester;
 import test.FENParserTest;
 import test.MoveTester;
@@ -15,8 +16,7 @@ import javafx.scene.Parent;
 public class Main extends Application {
 	
 	public static void main(String[] args) {
-		//runTests();
-
+		runTests();
 		launch();
 	}
 
@@ -24,8 +24,9 @@ public class Main extends Application {
 		System.out.println("Starting Tests");
 		FENParserTest.testFENFileParser();
 		FENParserTest.testMoveParser();
-		MoveTester.TestBishopMoves();
-		FENExporterTester.testExporter();
+		CoordTester.testAllCoordFourFuncs();
+		//MoveTester.TestBishopMoves();
+		//FENExporterTester.testExporter();
 		System.out.println("Done.");
 	}
 

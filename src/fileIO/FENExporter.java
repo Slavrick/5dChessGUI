@@ -1,5 +1,9 @@
 package fileIO;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
 import engine.Board;
 import engine.GameState;
 import engine.GameStateManager;
@@ -7,6 +11,19 @@ import engine.Move;
 import engine.Turn;
 
 public class FENExporter {
+	
+	public static void exportString(File saveFile, String export) {
+		try {
+		      FileWriter myWriter = new FileWriter(saveFile);
+		      myWriter.write(export);
+		      myWriter.close();
+		      System.out.println("Successfully wrote to the file.");
+		} catch (IOException e) {
+		      System.out.println("An error occurred while saving file.");
+		      e.printStackTrace();
+		}
+	}
+	
 	public static String GameStateToFEN(GameStateManager game) {
 		String header = "";
 		header +=  game.width + ";" + game.height + ";" + game.tlHandicap + ";" + game.originBoards.length + ";" + game.startminTL + ";";
@@ -21,6 +38,7 @@ public class FENExporter {
 			origins += '\n';
 		}
 		String moves = "";
+		//if(game.turns != null)
 		for(Turn t: game.turns) {
 			for(Move m : t.getMoves()) {
 				moves += m.rawMoveNotation() + ";";

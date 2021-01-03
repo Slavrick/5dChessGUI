@@ -2,9 +2,8 @@ package engine;
 
 public class CoordFour {
 	/*
-	 * X represents file ie. a,b,c... files
-	 * y represents rank
-	 * T/L represent their raw coordinates as per 5d chess rules
+	 * X represents file ie. a,b,c... files y represents rank T/L represent their
+	 * raw coordinates as per 5d chess rules
 	 */
 	public int x;
 	public int y;
@@ -25,7 +24,7 @@ public class CoordFour {
 	public CoordFour clone() {
 		return new CoordFour(this.x, this.y, this.T, this.L);
 	}
-	
+
 	/**
 	 * A comparison function to compare this coordinate and another.
 	 * 
@@ -56,45 +55,62 @@ public class CoordFour {
 		T += c.T;
 		L += c.L;
 	}
-	
-	//turns a coord into a vector, or a coord with only 1/0's
+
+	public void sub(CoordFour c) {
+			x -= c.x;
+			y -= c.y;
+			T -= c.T;
+			L -= c.L;
+	}
+
+	// turns a coord into a vector, or a coord with only 1/0's
 	public void makeVector() {
-		if(this.x != 0) {
+		if (this.x != 0) {
 			this.x = 1;
 		}
-		if(this.y != 0) {
+		if (this.y != 0) {
 			this.y = 1;
 		}
-		if(this.T != 0) {
+		if (this.T != 0) {
 			this.T = 1;
 		}
-		if(this.L != 0) {
+		if (this.L != 0) {
 			this.L = 1;
 		}
 	}
-	
-	//TODO make a func that flattents the vector ie. 2,2,2,2 would be 1,1,1,1 but something like 2,4,0,0 would be 1,2,0,0 not 1,1,0,0
-	
-	//gets the n-diagonal that a vector is
-	public int getNagonal(){
+
+	public void flatten() {
+		int gcd = GCD(GCD(Math.abs(x),Math.abs(y)), GCD(Math.abs(T),Math.abs(L)));
+		if(gcd == 0) {			
+			return;
+		}
+		this.x = this.x / gcd;
+		this.y = this.y / gcd;
+		this.T = this.T / gcd;
+		this.L = this.L / gcd;
+	}
+
+	// gets the n-diagonal that a vector is
+	public int getNagonal() {
 		int nagonal = 0;
-		if(this.x != 0)
+		if (this.x != 0)
 			nagonal++;
-		if(this.y != 0)
+		if (this.y != 0)
 			nagonal++;
-		if(this.T != 0)
+		if (this.T != 0)
 			nagonal++;
-		if(this.L != 0)
+		if (this.L != 0)
 			nagonal++;
 		return nagonal;
 	}
-	
+
 	public String toString() {
 		return "(" + L + "L." + "T" + T + "." + intToFile(x) + "" + (y + 1) + ")";
 	}
-	
+
 	/**
 	 * gets a string raw representation of this.
+	 * 
 	 * @return raw coord string
 	 */
 	public String rawCoordString() {
@@ -103,25 +119,40 @@ public class CoordFour {
 
 	/**
 	 * get a SAN 2d coord of the given object such as a1 e4 ....
+	 * 
 	 * @return String SAN representation
 	 */
 	public String SANString() {
-		return intToFile(this.x) + "" + (this.y +1);
+		return intToFile(this.x) + "" + (this.y + 1);
+	}
+
+	public static int GCD(int num1, int num2) {
+		while(num1 > 0 && num2 > 0) {
+			if(num1 > num2) {
+				num1 -= num2;
+			}
+			else {
+				num2 -= num1;
+			}
+		}
+		return num1 + num2;
+	}
+
+	// sub
+	public static CoordFour sub(CoordFour c1, CoordFour c2) {
+		return new CoordFour(c2.x - c1.x, c2.y - c1.y, c2.T - c1.T, c2.L - c1.L);
 	}
 	
-	//add
+	// add
 	public static CoordFour add(CoordFour c1, CoordFour c2) {
-		CoordFour sum = new CoordFour( c2.x + c1.x, c2.y +c1.y, c2.T + c1.T, c2.L + c1.L);
+		CoordFour sum = new CoordFour(c2.x + c1.x, c2.y + c1.y, c2.T + c1.T, c2.L + c1.L);
 		return sum;
 	}
 
-	//sub
-	public static CoordFour sub(CoordFour c1, CoordFour c2) {
-		return new CoordFour( c2.x - c1.x, c2.y - c1.y, c2.T - c1.T, c2.L - c1.L);
-	}
-
 	/**
-	 * returns the corrisponding file from the int file sent, 0 indexed so a is 0 b is 1 and so on.
+	 * returns the corrisponding file from the int file sent, 0 indexed so a is 0 b
+	 * is 1 and so on.
+	 * 
 	 * @param file file to get char for
 	 * @return char corrisponding to sent file.
 	 */

@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 public class Turn {
 	
-	private Move[] moves;
-	private int[] tls;
+	public Move[] moves;
+	public int[] tls;
 	public int numTL;
 	public boolean color;
 	public int turnNum;
