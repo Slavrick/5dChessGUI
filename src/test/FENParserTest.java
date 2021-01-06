@@ -10,14 +10,14 @@ import fileIO.FENParser;
 public class FENParserTest {
 
 	public static void testMoveParser() {
-		System.out.println("    Testing Move Parser: ");
+		System.out.print("    Testing Move Parser: ");
 		CoordFour x = FENParser.stringtoCoord("(0,0,0,0)");
 		assert new CoordFour(0,0,0,0).equals(x) : x;
 		x = FENParser.stringtoCoord("(10,5,10,5)");
 		assert new CoordFour(10,5,10,5).equals(x) : x;
 		x = FENParser.stringtoCoord("(-10,-5,-2,-1)");
 		assert new CoordFour(-10,-5,-2,-1).equals(x) : x;
-		System.out.println("    Done.");
+		System.out.println("passed.");
 	}
 	
 	public static void testFENFileParser() {

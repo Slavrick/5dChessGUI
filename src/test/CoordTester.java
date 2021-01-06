@@ -20,6 +20,8 @@ public class CoordTester {
 		CoordFour sub1 = new CoordFour(4,4,1,0);
 		sub1.sub(new CoordFour(5,5,1,0));
 		testCoord(sub1, -1, -1, 0, 0);
+		testCoord(CoordFour.sub(new CoordFour(4,4,1,0), new CoordFour(2,6,2,-1)), 2, -2, -1, 1);
+		
 		assert sub1.getNagonal() == 2;
 		System.out.println(" passed.");
 	}

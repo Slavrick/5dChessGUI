@@ -18,6 +18,7 @@ import javafx.event.*;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Popup;
 
 import java.awt.MouseInfo;
@@ -146,10 +147,8 @@ public class Controller {
 		notationStringArray = FXCollections.observableArrayList();
 		notationList.setItems(notationStringArray);
 		drawStage();
-		 // define max font size you need
 		statusLabel.setFont(new Font(MAX_FONT_SIZE));
 		setStatusLabel();
-		g.printMultiverse();
 	}
 
 	//===========================Event Functions=========================================================================
@@ -224,8 +223,12 @@ public class Controller {
 		Popup p = new Popup();
 		FileChooser fileChooser = new FileChooser();
 		fileChooser.setInitialDirectory(new File(new File("").getAbsolutePath()));
-		fileChooser.setTitle("Open Resource File");
+		fileChooser.setTitle("Save Game");
+		fileChooser.getExtensionFilters().addAll(new ExtensionFilter("Text File", "*.txt"));
 		File selectedFile = fileChooser.showSaveDialog(p.getOwnerWindow());
+		if(selectedFile == null) {
+			return;
+		}
 		FENExporter.exportString(selectedFile, FENExporter.GameStateToFEN(this.g));
 	}
 	

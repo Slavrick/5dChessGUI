@@ -16,7 +16,7 @@ public class MoveGenerator {
 		if(pieceType <= 0 || pieceType > Board.numTypes) {
 			return false;
 		}
-		CoordFour vectorTo = CoordFour.sub(origin, target);
+		CoordFour vectorTo = CoordFour.sub(target, origin);
 		//FIXME finish this function.
 		return false;
 	}

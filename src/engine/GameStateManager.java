@@ -4,9 +4,8 @@ import java.util.ArrayList;
 
 public class GameStateManager extends GameState{
 	
-	//TODO make this more good so it can be exportable etc.
 	public Move[] preMoves;
-	public Board originBoards[];
+	public Timeline[] originsTL;
 	public int startminTL;
 
 	//TODO make this into a tree, that way we can have diff lines.
@@ -17,15 +16,8 @@ public class GameStateManager extends GameState{
 	public GameStateManager(Timeline[] origins, int width, int height, boolean evenStart, boolean color, int minTL, Move[] moves) {
 		super(origins, width, height, evenStart, color, minTL, moves);
 		this.preMoves = moves;
-		originBoards = new Board[origins.length];
+		originsTL = origins;
 		this.turns = new ArrayList<Turn>();
-		for(int i = 0; i < origins.length ; i++){
-			if(origins[i].colorStart) {
-				originBoards[i] = origins[i].wboards.get(0);
-			}else {
-				originBoards[i] = origins[i].bboards.get(0);
-			}
-		}
 	}
 	
 	public boolean submitMoves() {

@@ -8,6 +8,7 @@ import engine.Board;
 import engine.GameState;
 import engine.GameStateManager;
 import engine.Move;
+import engine.Timeline;
 import engine.Turn;
 
 public class FENExporter {
@@ -17,7 +18,7 @@ public class FENExporter {
 		      FileWriter myWriter = new FileWriter(saveFile);
 		      myWriter.write(export);
 		      myWriter.close();
-		      System.out.println("Successfully wrote to the file.");
+		      //System.out.println("Successfully wrote to the file.");
 		} catch (IOException e) {
 		      System.out.println("An error occurred while saving file.");
 		      e.printStackTrace();
@@ -26,19 +27,25 @@ public class FENExporter {
 	
 	public static String GameStateToFEN(GameStateManager game) {
 		String header = "";
-		header +=  game.width + ";" + game.height + ";" + game.tlHandicap + ";" + game.originBoards.length + ";" + game.startminTL + ";";
+		header +=  game.width + ";" + game.height + ";" + game.tlHandicap + ";" + game.originsTL.length + ";" + game.startminTL + ";";
 		if(game.color) {
 			header += 'w';
 		}else {
 			header += 'b';
 		}
 		String origins = "";
-		for( Board b : game.originBoards ) {
-			origins += BoardToString(b, false, 0);//TODO figure out how to get start time into this better.
+		for( Timeline t : game.originsTL) {
+			if(t.colorStart) {
+				origins += BoardToString(t.wboards.get(0), t.colorStart, t.Tstart);				
+			}else {
+				origins += BoardToString(t.bboards.get(0), t.colorStart, t.Tstart);		
+			}
 			origins += '\n';
 		}
 		String moves = "";
-		//if(game.turns != null)
+		for(Move m: game.preMoves) {
+			moves += m.rawMoveNotation() + ";";
+		}
 		for(Turn t: game.turns) {
 			for(Move m : t.getMoves()) {
 				moves += m.rawMoveNotation() + ";";

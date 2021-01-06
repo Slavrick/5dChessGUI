@@ -140,7 +140,7 @@ public class CoordFour {
 
 	// sub
 	public static CoordFour sub(CoordFour c1, CoordFour c2) {
-		return new CoordFour(c2.x - c1.x, c2.y - c1.y, c2.T - c1.T, c2.L - c1.L);
+		return new CoordFour(c1.x - c2.x, c1.y - c2.y, c1.T - c2.T, c1.L - c2.L);
 	}
 	
 	// add

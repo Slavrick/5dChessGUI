@@ -9,11 +9,11 @@ import fileIO.FENParser;
 
 public class BranchTester {
 	public static void testMultiverse() {
-		//TODO reWrite This
+		GameState g = getTestGS();
+		
 	}
 
 	public static GameState getTestGS() {
-		//TODO reWrite This
-		return null;
+		return FENParser.FENtoGSNew("res/exampleGame.txt");
 	}
 }
