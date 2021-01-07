@@ -17,15 +17,41 @@ import javafx.scene.canvas.GraphicsContext;
 public class ChessDrawer {
 
 	public static Image piecesprites;
+	public static Color darkColor = Color.DARKGOLDENROD;
+	public static Color lightColor = Color.TAN;
+	public static Color multiverseLight = Color.ANTIQUEWHITE;
+	public static Color multiverseDark = Color.SILVER;
+
 	private static final int SPRITEWIDTH = 32;
 	private static final int SPRITESHEETWIDTH = 10;
-	public static Color lightColor = Color.TAN;
-	public static Color darkColor = Color.DARKGOLDENROD;
 	public static int squarewidth = 32;
 	public static int padding = 50;
+	public static int halfPadding = padding / 2;
+	
 		
 //===================================Virtual New Methods====================================================================================================================================
+	
+	public static void drawMultiverseGrid(GraphicsContext gc, int screenx, int screeny, GameState game) {
+		
+		int squareWidth = (squarewidth * game.width) * 2 + (2 * padding);
+		int squareHeight = squarewidth * game.height + padding;
+		for(int L = -2; L <= game.maxTL - game.minTL + 2; L++) {
+				for(int T = -2; T < 20; T++) {
+				if((T + L) % 2 != 0) {
+					gc.setFill(multiverseLight);
+				}
+				else{
+					gc.setFill(multiverseDark);
+				}
+				gc.fillRect((T * squareWidth) - screenx + halfPadding,(L * squareHeight) - screeny + halfPadding, squareWidth, squareHeight);
+				gc.setFill(Color.BLACK);
+				gc.fillText( (L + game.minTL) + "L, " + T + "T", (T * squareWidth) - screenx + halfPadding, (L * squareHeight) - screeny + halfPadding + 10);
+			}
+		}
+	}
+	
 	public static void drawMultiverseV(GraphicsContext gc, int screenx, int screeny, GameState game) {
+		drawMultiverseGrid(gc,screenx,screeny,game);
 		int layerCTR = 0;
 		int boardwidth = squarewidth * game.width;
 		int boardHeight = squarewidth * game.height;

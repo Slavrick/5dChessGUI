@@ -25,6 +25,7 @@ import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.PointerInfo;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import engine.Board;
@@ -233,8 +234,8 @@ public class Controller {
 	}
 	
 	@FXML
-	private void setProperties(ActionEvent e) {
-		
+	private void setProperties(ActionEvent e) throws IOException {
+		Popup p = new Popup();
 		//FIXME finish this.
 	}
 
