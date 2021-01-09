@@ -6,8 +6,6 @@ public class Timeline {
 	/* the white and black boards on the timeline. */
 	public ArrayList<Board> wboards;
 	public ArrayList<Board> bboards;
-	/* the layer of the timeline (Im not sure this is nessesary */
-	int layer;
 	/* the absolute start and end time of both white or black */
 	public int Tstart;
 	public int Tend;

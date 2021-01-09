@@ -317,6 +317,9 @@ public class GameState {
 	private boolean validateTurn(Move[] turn, boolean nextPlayer) {
 		ArrayList<Integer> affectedTimelines = new ArrayList<Integer>();
 		for(Move m: turn) {
+			if(m == null) {
+				continue;
+			}
 			if(makeSilentMove(m)) {
 				if(m.type == 1) { //Spatial
 					affectedTimelines.add(m.origin.L);
@@ -333,7 +336,7 @@ public class GameState {
 					}
 				}
 			}else {
-				break;
+				continue;
 			}
 		}
 		boolean result = false;
@@ -534,6 +537,9 @@ public class GameState {
 	/**
 	 * this function changes the object to reflect which TL are 'active'
 	 * Uses 'handicap' for even tl things -- May be wrong but we will see.
+	 * 
+	 * Should calculate this after every move, and at the end of the turn -- and therefore all calculations should be working with correct numbers
+	 * TODO make sure the above line is achieved.
 	 */
 	protected void determineActiveTLS() {
 		// case 1 -- black has branched more.
@@ -594,6 +600,60 @@ public class GameState {
 		return true;
 	}
 
+	//returns true if the position is checkmate.
+	public boolean bruteForceMateDetection() {
+		determineActiveTLS();//TODO figure out if this is needed.
+		if(opponentCanCaptureKing()) {
+			return true;
+		}
+		//This looks like it should be hacky and bad, i should change it.
+		ArrayList<ArrayList<Move>> allMoves = new ArrayList<ArrayList<Move>>();
+		for(int i = minTL; i <= maxTL; i++) {
+			ArrayList<Move> tlMoves = new ArrayList<Move>();
+			Timeline t = getTimeline(i);
+			if(t.colorPlayable != color) {
+				continue;
+			}
+			if(i < minActiveTL || i > maxActiveTL) {
+				tlMoves.add(null);
+			}
+			tlMoves.addAll(MoveGenerator.getAllMoves(this, color, t.Tend, i));
+			allMoves.add(tlMoves);
+		}
+		int sum = 0;
+		for(ArrayList<Move> one: allMoves) {
+			sum += one.size();
+		}
+		System.out.println("Generating " + sum + " Turns");
+		int curMove[] = new int[allMoves.size()];
+		while(curMove[0] < allMoves.get(0).size()){//TODO fix this
+			Move[] moves = new Move[curMove.length];
+			for(int getM = 0; getM < curMove.length; getM++) {
+				moves[getM] = allMoves.get(getM).get(curMove[getM]);
+			}
+			if(this.validateTurn(moves, false)) {
+				return false;
+			}
+			while(true) {
+				int cursor = 0;
+				curMove[cursor]++;
+				if(curMove[cursor] >= allMoves.get(cursor).size()) {
+					curMove[cursor] = 0;
+					cursor++;
+					if(cursor >= curMove.length) {
+						return true;
+					}
+				}
+				else {
+					break;
+				}
+			}
+			
+		}
+		//FIXME finish this.
+		return true;
+	}
+	
 	public static int getTLIndex(int layer, int minTL) {
 		return layer + (-1 * minTL);
 	}

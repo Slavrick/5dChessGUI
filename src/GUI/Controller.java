@@ -83,7 +83,7 @@ public class Controller {
 	public Controller() {
 		g = FENParser.FENtoGSM("res/Standard.FEN.txt");
 	}
-
+	
 	// This func is called after all initializations from the FXML parser.
 	@FXML
 	void initialize() {
@@ -150,6 +150,7 @@ public class Controller {
 		drawStage();
 		statusLabel.setFont(new Font(MAX_FONT_SIZE));
 		setStatusLabel();
+		
 	}
 
 	//===========================Event Functions=========================================================================
@@ -176,18 +177,24 @@ public class Controller {
 		setStatusLabel();
 		if(submitted) {			
 			notationStringArray.add(g.turns.get(g.turns.size() - 1).toString());
+			//System.out.println(g.bruteForceMateDetection());
 		}
 	}
 	
 	@FXML
 	private void handlePanButton(ActionEvent event) {
-		System.out.println("Pan");
+		for(int i = g.minTL; i <= g.maxTL; i++) {
+			if(g.getTimeline(i).colorPlayable == g.color) {				
+				panToBoard(g.getTimeline(i).Tend,i);
+			}
+		}
+		drawStage();
 	}
 	
 	@FXML
 	private void handleListEvent(MouseEvent event) {
 		System.out.println("Chagne");
-		//TODO set this -- test this
+		//XXX set this -- test this
 		int turnIndex = 0;
 		//g.setTurn(turnIndex);
 	}
@@ -326,8 +333,8 @@ public class Controller {
 	}
 	
 	private void panToBoard(int T, int L) {
-		int pany = L * (ChessDrawer.padding + (ChessDrawer.squarewidth * g.height)) + 100;
-		int panx = T * (ChessDrawer.padding + (ChessDrawer.squarewidth * g.width)) + 100;
+		int pany = (L - g.minTL) * (ChessDrawer.padding + (ChessDrawer.squarewidth * g.height)) - 30;
+		int panx = (T - 1) * (ChessDrawer.padding + (ChessDrawer.squarewidth * g.width)) - 30;
 		screenX = panx;
 		screenY = pany;
 	}

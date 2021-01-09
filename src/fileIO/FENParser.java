@@ -17,6 +17,7 @@ import engine.Timeline;
 
 public class FENParser {
 
+	//TODO this stuff doesnt work for - or + 0
 	public static GameState FENtoGSNew(String fileLoc) {
 		File file = new File(fileLoc);
 		return FENtoGSNew(file);

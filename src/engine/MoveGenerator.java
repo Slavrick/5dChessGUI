@@ -7,6 +7,9 @@ import sun.awt.KeyboardFocusManagerPeerImpl;
 
 public class MoveGenerator {
 
+	//TODO promotion
+	//TODO castling.
+	
 	public static final int EMPTYSQUARE = Board.piece.EMPTY.ordinal();
 	public static final int WKING = 7;
 	public static final int BKING = 17;
@@ -60,7 +63,29 @@ public class MoveGenerator {
 
 		return attackingPieces;
 	}
-
+	
+	//TODO finish
+	public static ArrayList<Move> getAllMoves(GameState g, boolean color, int T, int L){
+		ArrayList<Move> moves = new ArrayList<Move>();
+		Board b = g.getBoard(new CoordFive(0,0,T,L,color));
+		for(int x = 0; x < g.width; x++) {
+			for(int y = 0; y < g.height; y++) {
+				int piece = b.getSquare(x,y);
+				if(Board.getColorBool(piece) == color) {
+					CoordFour srcLocation = new CoordFour(x,y,T,L);
+					ArrayList<CoordFour> moveLocations = getMoves(piece,g,new CoordFive(srcLocation,color));
+					if(moveLocations == null) {
+						continue;
+					}
+					for(CoordFour dest: moveLocations) {
+						moves.add(new Move(srcLocation,dest));
+					}
+				}
+			}
+		}
+		return moves;
+	}
+	
 	public static ArrayList<CoordFour> getMoves(int piece, GameState g, CoordFive source) {
 		if (piece == 0)
 			return null;
@@ -68,7 +93,7 @@ public class MoveGenerator {
 			return getPawnMoves(piece, g, source);
 		}
 		if (piece == 7 || piece == 17) {
-			// piece is a king, and potentially can castle.
+			return MoveGenerator.getLeaperMovesandCaptures(g, source.color, source, MoveNotation.getMoveVectors(piece));
 		}
 		if (MoveNotation.pieceIsRider(piece)) {
 			return MoveGenerator.getRiderMoves(g, source.color, source, MoveNotation.getMoveVectors(piece));
@@ -218,8 +243,11 @@ public class MoveGenerator {
 		}
 		Board b = g.getBoard(source, color);
 		CoordFour currSquare = CoordFour.add(source, movementVec);
-		while (b.isInBounds(currSquare)) {
-			int currPiece = b.getSquare(currSquare); // TODO this can be optimized, getsquare has bounds checking now
+		while (true) {
+			int currPiece = b.getSquare(currSquare);
+			if(currPiece == -1) {
+				break;
+			}
 			if (currPiece != EMPTYSQUARE) {
 				boolean currColor = Board.getColorBool(currPiece);
 				if (currColor == color) {

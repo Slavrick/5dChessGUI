@@ -2,16 +2,13 @@ package engine;
 
 public class Board {
 
+	//TODO possibly make this hold the position of pieces.
+	
 	// make this board private, so incorrect indexing doesnt happen
 	public int[][] brd;
 	public int height;
 	public int width;
 	// The board has no need for its location within the multiverse
-	/*
-	 * public int time; public int layer;
-	 */
-	public boolean color;
-	public boolean brdColor;
 	public boolean wkingSideCastle;
 	public boolean wqueenSideCastle;
 	public boolean bkingSideCastle;

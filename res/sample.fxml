@@ -24,7 +24,7 @@
 	</top>
 	<center>
 		<ScrollPane>
-				<Canvas fx:id="canvasbox" width="2000" height="2000"/>
+				<Canvas fx:id="canvasbox" width="2000" height="2000" />
 		</ScrollPane>
 	</center>
 	<right>

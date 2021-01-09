@@ -27,10 +27,7 @@ public class ChessDrawer {
 	public static int squarewidth = 32;
 	public static int padding = 50;
 	public static int halfPadding = padding / 2;
-	
 		
-//===================================Virtual New Methods====================================================================================================================================
-	
 	public static void drawMultiverseGrid(GraphicsContext gc, int screenx, int screeny, GameState game) {
 		
 		int squareWidth = (squarewidth * game.width) * 2 + (2 * padding);
