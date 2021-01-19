@@ -64,7 +64,6 @@ public class Turn {
 		return this.moves;
 	}
 	
-	//TODO make string based off of notation System.
 	public String toString() {
 		String temp = "";
 		switch(pre) {
@@ -86,5 +85,16 @@ public class Turn {
 			break;
 		}
 		return temp;
+	}
+	
+	private static class ShadNotation{
+		public static String MovesToString(Turn t) {
+			//Sort array First...
+			String temp = "";
+			for(Move m : t.getMoves()) {
+				
+			}//XXX finish this later
+			return temp;
+		}
 	}
 }

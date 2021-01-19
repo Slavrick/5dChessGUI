@@ -22,7 +22,7 @@ public class FENParserTest {
 	
 	public static void testFENFileParser() {
 		System.out.print("    Testing Parsing Rookie.FEN.txt:");
-		GameState g = FENParser.FENtoGSNew("res/RookTactics4.FEN.txt");
+		GameState g = FENParser.FENToGS("res/RookTactics4.FEN.txt");
 		assert g != null : g;
 		assert g.getColor() == false;
 		assert g.minTL == 0;

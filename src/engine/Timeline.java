@@ -99,6 +99,9 @@ public class Timeline {
 		Board b = getPlayableBoard();
 		Board newBoard = new Board(b);
 		int piece = newBoard.getSquare(m.origin);
+		if(piece < 0) {
+			piece *= -1;
+		}
 		newBoard.setSquare(m.origin, Board.piece.EMPTY.ordinal());
 		newBoard.setSquare(m.dest, piece);
 		return addMove(newBoard);
@@ -110,8 +113,8 @@ public class Timeline {
 			return -1;
 		Board b = getPlayableBoard();
 		Board newBoard = new Board(b);
-		int piece = newBoard.brd[origin.y][origin.x];
-		newBoard.brd[origin.y][origin.x] = Board.piece.EMPTY.ordinal();
+		int piece =  newBoard.getSquare(origin);
+		newBoard.setSquare(origin, Board.piece.EMPTY.ordinal());
 		addMove(newBoard);
 		return piece;
 	}
@@ -121,7 +124,7 @@ public class Timeline {
 	public Board addJumpingMoveDest(CoordFour dest, boolean moveColor, int piece) {
 		Board b = getBoard(dest.T, moveColor);
 		Board newBoard = new Board(b);
-		newBoard.brd[dest.y][dest.x] = piece;
+		newBoard.setSquare(dest, piece);
 		if (dest.T != Tend || moveColor != colorPlayable) {
 			return newBoard;
 		}

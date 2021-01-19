@@ -37,7 +37,10 @@
 				<Button text="Undo Turn" onAction="#handleUndoButton" />
 				<Button text="~~" onAction="#handlePanButton" />
 			</HBox>
-			<Label fx:id="statusLabel"/>
+			<HBox>
+				<Label fx:id="statusLabel"/>
+				<Label fx:id="infoLabel"/>
+			</HBox>
 		</VBox>
 	</bottom>
 </BorderPane>

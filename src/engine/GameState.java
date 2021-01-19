@@ -279,7 +279,24 @@ public class GameState {
 	// make sure to add the move iff there was a move added, and never if not.
 	
 	public boolean promote(Move m, int promotionType) {
+		if(m.type != 1 || m.dest.y != 0 || m.dest.y != this.height - 1 || Board.getColorBool(promotionType) != this.color || promotionType == 0) {
+			return false;
+		}
+		int targetPiece = this.getSquare(m.origin,this.color);
+		if(targetPiece == 1 || targetPiece == 11) {
+			getTimeline(m.origin.L);
+			return true;
+		}
 		return false;
+		//FIXME
+	}
+	
+	public boolean castle(CoordFour boardcoord, boolean side) {
+		Timeline t = getTimeline(boardcoord.L);
+		if( t == null || t.Tend != boardcoord.T || t.colorPlayable != this.color) {
+			return false;
+		}
+		return t.getPlayableBoard().CastleKing(this.color, side);
 		//FIXME
 	}
 	

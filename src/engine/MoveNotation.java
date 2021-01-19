@@ -355,6 +355,36 @@ public class MoveNotation {
 			new CoordFour(0,0,1,1),
 			new CoordFour(0,0,-1,1)
 	};
+
+	
+	public static final CoordFour[] whiteBrawnattack = {
+			//Pawn Captures
+			new CoordFour(1,1,0,0),
+			new CoordFour(-1,1,0,0),
+			new CoordFour(0,0,1,-1),
+			new CoordFour(0,0,-1,-1),
+			//Brawn Specific Captures
+			new CoordFour(0,1,-1,0),
+			new CoordFour(0,1,1,0),
+			new CoordFour(0,1,0,-1),
+			new CoordFour(1,0,0,-1),
+			new CoordFour(-1,0,0,-1),
+	};
+	
+	public static final CoordFour[] blackBrawnattack = {
+			//Pawn Captures
+			new CoordFour(1,-1,0,0),
+			new CoordFour(-1,-1,0,0),
+			new CoordFour(0,0,1,1),
+			new CoordFour(0,0,-1,1),
+			//Brawn Captures
+			new CoordFour(0,-1,-1,0),
+			new CoordFour(0,-1,1,0),
+			new CoordFour(0,-1,0,1),
+			new CoordFour(1,0,0,1),
+			new CoordFour(-1,0,0,1),
+			
+	};
 	
 	/**
 	 * Take a piece and turns it into an array of movement vectors,
@@ -394,6 +424,10 @@ public class MoveNotation {
 		case 9:
 		case 9 + 10:
 			return DragonMoveset;
+		case 10:
+			return whitePawnMovement;
+		case 20:
+			return blackPawnMovement;
 		case 0:
 		default:
 			return NULLMOVESET;

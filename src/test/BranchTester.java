@@ -14,6 +14,6 @@ public class BranchTester {
 	}
 
 	public static GameState getTestGS() {
-		return FENParser.FENtoGSNew("res/exampleGame.txt");
+		return FENParser.FENToGS("res/exampleGame.txt");
 	}
 }

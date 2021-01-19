@@ -91,10 +91,11 @@ public class MoveGenerator {
 		boolean unMoved = false;
 		if(piece < 0) {
 			unMoved = true;
+			piece *= -1;
 		}
 		if (piece == 0)
 			return null;
-		if (piece == 1 || piece == 11) {//TODO add unmoved.
+		if (piece == 1 || piece == 11 || piece == 10 || piece == 20) {//TODO add unmoved.
 			return getPawnMoves(piece, g, source);
 		}
 		if (piece == 7 || piece == 17) {//TODO add unmoved.
@@ -109,11 +110,22 @@ public class MoveGenerator {
 
 	// TODO possibly make a function for only king captures.
 	public static ArrayList<CoordFour> getCaptures(int piece, GameState g, CoordFive source) {
+		boolean unMoved = false;
+		if(piece < 0) {
+			unMoved = true;
+			piece *= -1;
+		}
 		if (piece == 1) {
 			return getLeaperCaptures(g, source.color, source, MoveNotation.whitePawnattack);
 		}
 		if (piece == 11) {
 			return getLeaperCaptures(g, source.color, source, MoveNotation.blackPawnattack);
+		}
+		if(piece == 10) {
+			return getLeaperCaptures(g, source.color, source, MoveNotation.whiteBrawnattack);
+		}
+		if(piece == 20) {
+			return getLeaperCaptures(g, source.color, source, MoveNotation.blackBrawnattack);
 		}
 		if (MoveNotation.pieceIsRider(piece)) {
 			return MoveGenerator.getRiderCaptures(g, source.color, source, MoveNotation.getMoveVectors(piece));

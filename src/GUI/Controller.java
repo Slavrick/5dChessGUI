@@ -255,7 +255,7 @@ public class Controller {
 	@FXML
 	private void setProperties(ActionEvent e) throws IOException {
 		Popup p = new Popup();
-		//FIXME finish this.
+		//XXX finish this later
 	}
 
 	//================================================================================================================

@@ -17,13 +17,13 @@ import engine.Timeline;
 
 public class FENParser {
 
-	//TODO this stuff doesnt work for - or + 0
-	public static GameState FENtoGSNew(String fileLoc) {
+	// TODO this stuff doesnt work for - or + 0
+	public static GameState FENToGS(String fileLoc) {
 		File file = new File(fileLoc);
-		return FENtoGSNew(file);
+		return FENToGS(file);
 	}
-	
-	public static GameState FENtoGSNew(File file) {
+
+	public static GameState FENToGS(File file) {
 		ArrayList<String> lines = new ArrayList<String>();
 		try {
 			FileReader fr = new FileReader(file);
@@ -50,28 +50,27 @@ public class FENParser {
 		Timeline[] origins = new Timeline[numOrigins];
 		for (int i = 1; i <= numOrigins; i++) {
 			String tlString = lines.get(i);
-			origins[i-1] = getTimelineFromString(tlString,i-minTL,width,height);
+			origins[i - 1] = getTimelineFromString(tlString, i - minTL, width, height);
 		}
 		Move[] moves;
-		if(lines.size() == 1 + numOrigins) {
+		if (lines.size() == 1 + numOrigins) {
 			moves = null;
-		}
-		else {
+		} else {
 			String[] movestr = lines.get(lines.size() - 1).split(";");
-			moves = new Move[movestr.length];			
-			for(int i = 0; i < movestr.length; i++) {
+			moves = new Move[movestr.length];
+			for (int i = 0; i < movestr.length; i++) {
 				moves[i] = FENParser.stringToMove(movestr[i]);
 			}
 		}
-		GameState game = new GameState(origins,width,height,evenTimelines,color,minTL,moves);
+		GameState game = new GameState(origins, width, height, evenTimelines, color, minTL, moves);
 		return game;
 	}
-	
+
 	public static GameStateManager FENtoGSM(String fileLoc) {
 		File file = new File(fileLoc);
 		return FENtoGSM(file);
 	}
-	
+
 	public static GameStateManager FENtoGSM(File file) {
 		ArrayList<String> lines = new ArrayList<String>();
 		try {
@@ -99,23 +98,45 @@ public class FENParser {
 		Timeline[] origins = new Timeline[numOrigins];
 		for (int i = 1; i <= numOrigins; i++) {
 			String tlString = lines.get(i);
-			origins[i-1] = getTimelineFromString(tlString,i-minTL,width,height);
+			origins[i - 1] = getTimelineFromString(tlString, i - minTL, width, height);
 		}
 		Move[] moves;
-		if(lines.size() == 1 + numOrigins) {
+		if (lines.size() == 1 + numOrigins) {
 			moves = null;
-		}
-		else {
+		} else {
 			String[] movestr = lines.get(lines.size() - 1).split(";");
-			moves = new Move[movestr.length];			
-			for(int i = 0; i < movestr.length; i++) {
+			moves = new Move[movestr.length];
+			for (int i = 0; i < movestr.length; i++) {
 				moves[i] = FENParser.stringToMove(movestr[i]);
 			}
 		}
-		GameStateManager game = new GameStateManager(origins,width,height,evenTimelines,color,minTL,moves);
+		GameStateManager game = new GameStateManager(origins, width, height, evenTimelines, color, minTL, moves);
 		return game;
 	}
-	
+
+	public static GameStateManager shadSTDGSM(File file) {
+		ArrayList<String> lines = new ArrayList<String>();
+		try {
+			FileReader fr = new FileReader(file);
+			BufferedReader br = new BufferedReader(fr);
+			String line;
+			while ((line = br.readLine()) != null) {
+				lines.add(line);
+			}
+			br.close();
+		} catch (IOException e) {
+			System.out.println("File Cound not be opened for reading: " + file.getAbsolutePath());
+			return null;
+		}
+		// Parse Header
+		// Parse FEN States
+		// Parse Moves
+		// GameStateManager game = new
+		// GameStateManager(origins,width,height,evenTimelines,color,minTL,moves);
+		// return game;
+		return null;
+	}
+
 	public static Timeline getTimelineFromString(String Timeline, int layer, int width, int height) {
 		String[] fields = Timeline.split(";");
 		String[] rows = fields[0].split("/");
@@ -124,9 +145,15 @@ public class FENParser {
 		int col = 0;
 		try {
 			for (String s : rows) {
-				for (char c : s.toCharArray()) {
+				for (int charat = 0; charat < s.length(); charat++) {
+					char c = s.charAt(charat);
 					if (c >= 'A') {
-						b.brd[height - row - 1][col] = indexOfElement(Board.pieceChars, c);
+						int piece = indexOfElement(Board.pieceChars, c);
+						if(charat < s.length() - 1 && s.charAt(charat+1) == '*') {
+							piece *= -1;
+							charat++;
+						}
+						b.brd[height - row - 1][col] = piece;
 						col++;
 					} else if (c <= '9' && c >= '1') {
 						for (int i = 0; i < (int) (c) - 48; i++) {
@@ -149,17 +176,16 @@ public class FENParser {
 			return null;
 		}
 		FENParser.populateCastlingRights(b, fields[1]);
-		if(fields[2].equals("-")) {
+		if (fields[2].equals("-")) {
 			b.enPassentSquare = null;
-		}
-		else {
-			int file = (int)fields[2].charAt(0) - 97;
-			int rank = (int)fields[2].charAt(1) - 49;
-			b.enPassentSquare = new CoordFour(file,rank,0,0);
+		} else {
+			int file = (int) fields[2].charAt(0) - 97;
+			int rank = (int) fields[2].charAt(1) - 49;
+			b.enPassentSquare = new CoordFour(file, rank, 0, 0);
 		}
 		boolean color = fields[3].charAt(0) == 'w';
 		int timeStart = Integer.parseInt(fields[3].substring(1, fields[3].length()));
-		Timeline t = new Timeline(b,color,timeStart,layer);
+		Timeline t = new Timeline(b, color, timeStart, layer);
 		return t;
 	}
 

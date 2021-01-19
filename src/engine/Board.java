@@ -136,6 +136,10 @@ public class Board {
 		}
 	}
 
+	public boolean canCastle() {
+		return false;
+	}
+
 	/**
 	 * Gets a string representation of the board. this string starts with the 1st
 	 * rank, and each rank is a line of text.
@@ -159,6 +163,9 @@ public class Board {
 	 * @return true for white false for black and false for empty.
 	 */
 	public static boolean getColorBool(int pieceCode) {
+		if(pieceCode < 0) {
+			pieceCode *= -1;
+		}
 		if (pieceCode == piece.EMPTY.ordinal()) {
 			return false;
 		}
