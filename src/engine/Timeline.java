@@ -98,9 +98,9 @@ public class Timeline {
 			return false;
 		Board b = getPlayableBoard();
 		Board newBoard = new Board(b);
-		int piece = newBoard.brd[m.origin.y][m.origin.x];
-		newBoard.brd[m.origin.y][m.origin.x] = Board.piece.EMPTY.ordinal();
-		newBoard.brd[m.dest.y][m.dest.x] = piece;
+		int piece = newBoard.getSquare(m.origin);
+		newBoard.setSquare(m.origin, Board.piece.EMPTY.ordinal());
+		newBoard.setSquare(m.dest, piece);
 		return addMove(newBoard);
 	}
 

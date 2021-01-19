@@ -78,6 +78,8 @@ public class Controller {
 	
 	CoordFive selectedSquare;
 	ArrayList<CoordFour> destinations;
+	
+	boolean prompt = false;
 
 	// This func is called in the very start of initialization of this class
 	public Controller() {
@@ -177,7 +179,17 @@ public class Controller {
 		setStatusLabel();
 		if(submitted) {			
 			notationStringArray.add(g.turns.get(g.turns.size() - 1).toString());
-			//System.out.println(g.bruteForceMateDetection());
+			boolean mated = g.bruteForceMateDetection();
+			System.out.println(mated);
+			if(mated) {
+				String color;
+				if(g.color) {
+					color = "Black";
+				}else {
+					color = "White";
+				}
+				statusLabel.setText("Game Over - " + color + " wins!" );
+			}
 		}
 	}
 	
@@ -334,7 +346,7 @@ public class Controller {
 	
 	private void panToBoard(int T, int L) {
 		int pany = (L - g.minTL) * (ChessDrawer.padding + (ChessDrawer.squarewidth * g.height)) - 30;
-		int panx = (T - 1) * (ChessDrawer.padding + (ChessDrawer.squarewidth * g.width)) - 30;
+		int panx = ((T - 1) * 2) * (ChessDrawer.padding + (ChessDrawer.squarewidth * g.width)) - 30;
 		screenX = panx;
 		screenY = pany;
 	}

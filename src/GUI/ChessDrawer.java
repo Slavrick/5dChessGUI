@@ -28,6 +28,10 @@ public class ChessDrawer {
 	public static int padding = 50;
 	public static int halfPadding = padding / 2;
 		
+	public static void drawPromotionPrompt() {
+		
+	}
+	
 	public static void drawMultiverseGrid(GraphicsContext gc, int screenx, int screeny, GameState game) {
 		
 		int squareWidth = (squarewidth * game.width) * 2 + (2 * padding);

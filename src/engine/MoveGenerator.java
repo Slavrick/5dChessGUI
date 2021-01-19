@@ -64,7 +64,7 @@ public class MoveGenerator {
 		return attackingPieces;
 	}
 	
-	//TODO finish
+	//Generates all moves from a given board.
 	public static ArrayList<Move> getAllMoves(GameState g, boolean color, int T, int L){
 		ArrayList<Move> moves = new ArrayList<Move>();
 		Board b = g.getBoard(new CoordFive(0,0,T,L,color));
@@ -86,13 +86,18 @@ public class MoveGenerator {
 		return moves;
 	}
 	
+	
 	public static ArrayList<CoordFour> getMoves(int piece, GameState g, CoordFive source) {
+		boolean unMoved = false;
+		if(piece < 0) {
+			unMoved = true;
+		}
 		if (piece == 0)
 			return null;
-		if (piece == 1 || piece == 11) {
+		if (piece == 1 || piece == 11) {//TODO add unmoved.
 			return getPawnMoves(piece, g, source);
 		}
-		if (piece == 7 || piece == 17) {
+		if (piece == 7 || piece == 17) {//TODO add unmoved.
 			return MoveGenerator.getLeaperMovesandCaptures(g, source.color, source, MoveNotation.getMoveVectors(piece));
 		}
 		if (MoveNotation.pieceIsRider(piece)) {
