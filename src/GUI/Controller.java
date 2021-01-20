@@ -15,6 +15,7 @@ import javafx.scene.control.TextField;
 import javafx.collections.ObservableList;
 import javafx.collections.FXCollections;
 import javafx.event.*;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
@@ -39,8 +40,6 @@ import fileIO.FENExporter;
 import fileIO.FENParser;
 
 public class Controller {
-	@FXML
-	AnchorPane rootAnchor;
 	@FXML
 	BorderPane innerLayout;
 	@FXML
@@ -146,6 +145,20 @@ public class Controller {
 
 			}
 		});
+		
+		innerLayout.setOnKeyPressed(new EventHandler<KeyEvent>() {
+			public void handle(KeyEvent event) {
+				switch(event.getCode()) {
+				case S:
+					handleSubmitButton(null);
+					break;
+				case D:
+					handleUndoButton(null);
+				default:
+					break;
+				}
+			}
+		});
 		//---------------------------------------------------------------------------------------------------------------------------
 		notationStringArray = FXCollections.observableArrayList();
 		notationList.setItems(notationStringArray);
@@ -231,10 +244,10 @@ public class Controller {
 		File selectedFile = getFile();
 		if (selectedFile != null) {
 			g = FENParser.FENtoGSM(selectedFile);
-			drawStage();
 			setStatusLabel();
 			screenX = 0;
 			screenY = 0;
+			drawStage();
 		}
 	}
 	

@@ -393,7 +393,7 @@ public class MoveNotation {
 	 * @return an array of vectors, or empty array if nothing is found.
 	 */
 	public static CoordFour[] getMoveVectors(int piece) {
-		//@TODO add brawns to this list
+		piece = piece < 0 ? piece * -1 : piece;
 		switch(piece) {
 		case 1:
 			return whitePawnMovement;
@@ -436,6 +436,7 @@ public class MoveNotation {
 	
 	//returns whether piece is a leaper or no
 	public static boolean pieceIsRider(int piece) {
+		piece = piece < 0 ? piece * -1 : piece;
 		switch(piece) {
 		case 1 + 10:
 		case 1:

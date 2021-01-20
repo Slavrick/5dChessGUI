@@ -15,8 +15,9 @@ public class Board {
 	public boolean bqueenSideCastle;
 	public CoordFour enPassentSquare;
 
-	public static final int numTypes = 21;
-
+	public static final int numTypes = 10;
+	public static final int ERRORSQUARE = -63;
+	
 	public static enum piece {
 		EMPTY, WPAWN, WKNIGHT, WBISHOP, WROOK, WPRINCESS, WQUEEN, WKING, WUNICORN, WDRAGON, WBRAWN, BPAWN, BKNIGHT,
 		BBISHOP, BROOK, BPRINCESS, BQUEEN, BKING, BUNICORN, BDRAGON, BBRAWN
@@ -55,13 +56,13 @@ public class Board {
 	 * 
 	 * @param x the 'file' to get. Starts at 0, so a=0, h=7
 	 * @param y the 'rank' to get. Starts at 0, so 0 would be the first rank.
-	 * @return an integer piece defined in the enum above, or -1 if the coord is out
+	 * @return an integer piece defined in the enum above, or errorSquare if the coord is out
 	 *         of bounds.
 	 */
 	public int getSquare(int x, int y) {
 		if (isInBounds(x, y))
 			return brd[y][x];
-		return -1;
+		return ERRORSQUARE;
 	}
 
 	/**
@@ -76,7 +77,7 @@ public class Board {
 		if (isInBounds(c))
 			return brd[c.y][c.x];
 		else
-			return -1;
+			return ERRORSQUARE;
 	}
 
 	public void setSquare(CoordFour c, int piece) {
@@ -148,7 +149,9 @@ public class Board {
 		String temp = "";
 		for (int x = 0; x < this.width; x++) {
 			for (int y = 0; y < this.height; y++) {
-				temp += pieceChars[brd[x][y]];
+				int piece = brd[x][y];
+				piece = piece < 0 ? piece * -1 : piece;
+				temp += pieceChars[piece];
 			}
 			temp += "\n";
 		}
@@ -163,9 +166,7 @@ public class Board {
 	 * @return true for white false for black and false for empty.
 	 */
 	public static boolean getColorBool(int pieceCode) {
-		if(pieceCode < 0) {
-			pieceCode *= -1;
-		}
+		pieceCode = pieceCode < 0 ? pieceCode * -1 : pieceCode;
 		if (pieceCode == piece.EMPTY.ordinal()) {
 			return false;
 		}

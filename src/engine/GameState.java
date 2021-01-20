@@ -234,6 +234,11 @@ public class GameState {
 		}
 		int pieceMoved = this.getSquare(m.origin, this.color);
 		int movedTo = this.getSquare(m.dest, this.color);
+		if((pieceMoved == -7 && movedTo == -4) || (pieceMoved == -7 - Board.numTypes && movedTo == -4 - Board.numTypes)) {
+			getTimeline(m.origin.L).castleKing(m);
+			turnTLs.add(m.origin.L);
+			turnMoves.add(m);
+		}
 		if (pieceMoved == 0 || Board.getColorBool(pieceMoved) != color) {
 			return false;
 		}
@@ -472,7 +477,7 @@ public class GameState {
 	public int getSquare(CoordFour c, boolean color) {
 		if (layerExists(c.L))
 			return getTimeline(c.L).getSquare(c, color);
-		return -1;
+		return Board.ERRORSQUARE;
 	}
 
 	public boolean getColor() {
@@ -503,10 +508,10 @@ public class GameState {
 	public boolean undoTurn(int[] tlmoved) {
 		if (tlmoved.length == 0)
 			return false;
-		for (int i : tlmoved) {
-			if (getTimeline(i).undoMove()) {
+		for(int index = tlmoved.length - 1; index >= 0; index--) {
+			if (getTimeline(tlmoved[index]).undoMove()) {
 				// this means that the timeline had only one board.
-				multiverse.remove(GameState.getTLIndex(i, this.minTL));
+				multiverse.remove(GameState.getTLIndex(tlmoved[index], this.minTL));
 				if (color) {
 					maxTL--;
 				} else {
@@ -514,7 +519,6 @@ public class GameState {
 				}
 			}
 		}
-
 		determineActiveTLS();
 		color = !color;
 		calcPresent();
@@ -522,14 +526,15 @@ public class GameState {
 		return true;
 	}
 
+	//FIXME all of these undo functions need to do in reverse order.
 	// same as above, for ArrayList
 	public boolean undoTurn(ArrayList<Integer> tlmoved) {
 		if (tlmoved.size() == 0)
 			return false;
-		for (int i : tlmoved) {
-			if (getTimeline(i).undoMove()) {
+		for(int index = tlmoved.size() - 1; index >= 0; index--) {
+			if (getTimeline(tlmoved.get(index)).undoMove()) {
 				// this means that the timeline had only one board.
-				multiverse.remove(GameState.getTLIndex(i, this.minTL));
+				multiverse.remove(GameState.getTLIndex(tlmoved.get(index), this.minTL));
 				if (color) {
 					maxTL--;
 				} else {
@@ -547,10 +552,10 @@ public class GameState {
 	public void undoTempMoves() {
 		if (turnTLs.size() <= 0)
 			return;
-		for (int i : turnTLs) {
-			if (getTimeline(i).undoMove()) {
+		for(int index = turnTLs.size() - 1; index >= 0; index--) {
+			if (getTimeline(turnTLs.get(index)).undoMove()) {
 				// this means that the timeline had only one board.
-				multiverse.remove(GameState.getTLIndex(i, this.minTL));
+				multiverse.remove(GameState.getTLIndex(turnTLs.get(index), this.minTL));
 				if (color) {
 					maxTL--;
 				} else {

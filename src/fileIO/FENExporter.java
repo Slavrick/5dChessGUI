@@ -68,7 +68,12 @@ public class FENExporter {
 						FEN += count;
 						count = 0;
 					}
-					FEN += Board.pieceChars[piece];
+					if(piece < 0) {
+						FEN += Board.pieceChars[piece * -1] + '*';
+						
+					}else {
+						FEN += Board.pieceChars[piece];						
+					}
 				}
 			}
 			if(count > 0) {

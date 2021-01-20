@@ -128,9 +128,7 @@ public class ChessDrawer {
 		for (int squarex = 0; squarex < b.width; squarex++) {
 			for (int squarey = 0; squarey < b.height; squarey++) {
 				int piecenum = b.getSquare(squarex,squarey);
-				if(piecenum < 0 ) {
-					piecenum *= -1;
-				}
+				piecenum = piecenum < 0 ? piecenum * -1 : piecenum;
 				int xoffset = (squarewidth * squarex);
 				int yoffset = (squarewidth * (b.height - squarey - 1));
 				gc.drawImage(piecesprites, (piecenum % SPRITESHEETWIDTH) * SPRITEWIDTH, (piecenum / SPRITESHEETWIDTH) * SPRITEWIDTH, SPRITEWIDTH,

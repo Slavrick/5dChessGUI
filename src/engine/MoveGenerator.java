@@ -3,103 +3,117 @@ package engine;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import GUI.Controller;
 import sun.awt.KeyboardFocusManagerPeerImpl;
 
 public class MoveGenerator {
 
-	//TODO promotion
-	//TODO castling.
-	
+	// TODO promotion
+
 	public static final int EMPTYSQUARE = Board.piece.EMPTY.ordinal();
 	public static final int WKING = 7;
 	public static final int BKING = 17;
+	public static final int UNMOVEDROOK = -4;
 
 	public boolean canCaptureSquare(GameState g, boolean color, CoordFour origin, CoordFour target, int pieceType) {
 		boolean rider = Board.getColorBool(pieceType);
-		if(pieceType <= 0 || pieceType > Board.numTypes) {
+		if (pieceType <= 0 || pieceType > (Board.numTypes) * 3) {
 			return false;
 		}
 		CoordFour vectorTo = CoordFour.sub(target, origin);
-		//FIXME finish this function.
+		// FIXME finish this function.
 		return false;
 	}
 
-	public static ArrayList<CoordFour> getAllCheckingPieces(GameState g){
+	public static ArrayList<CoordFour> getAllCheckingPieces(GameState g) {
 		ArrayList<CoordFour> attackingPieces = new ArrayList<CoordFour>();
-		for(Timeline t : g.multiverse) {
-			if(t.colorPlayable != g.color) {
-				attackingPieces.addAll(getCheckingPieces(g,new CoordFive(0,0,0,t.Tend,!g.color)));
+		for (Timeline t : g.multiverse) {
+			if (t.colorPlayable != g.color) {
+				attackingPieces.addAll(getCheckingPieces(g, new CoordFive(0, 0, 0, t.Tend, !g.color)));
 			}
 		}
 		return attackingPieces;
 	}
-	
+
 	// TODO make this based off of layer rather than abs board.
 	// TODO return some sort of map on informatino of that piece? test this.
 	// TODO return moves rather than coords.
 	public static ArrayList<CoordFour> getCheckingPieces(GameState g, CoordFive spatialCoord) {
 		ArrayList<CoordFour> attackingPieces = new ArrayList<CoordFour>();
 		Board b = g.getBoard(spatialCoord);
-		if(b == null) {
+		if (b == null) {
 			System.out.println("Error: " + spatialCoord);
 			return attackingPieces;
 		}
 		for (int x = 0; x < g.width; x++) {
 			for (int y = 0; y < g.height; y++) {
-				int piece = b.getSquare(x, y);
+				int piece = b.getSquare(x, y);// TODO this doesnt work with negative numners :/
 				if (piece != 0 && Board.getColorBool(piece) == spatialCoord.color) {
 					CoordFive currSquare = new CoordFive(x, y, spatialCoord.T, spatialCoord.L, spatialCoord.color);
 					ArrayList<CoordFour> currSquareCaps = getCaptures(piece, g, currSquare);
 					for (CoordFour square : currSquareCaps) {
 						int attackedPiece = g.getSquare(square, spatialCoord.color);
+						attackedPiece = attackedPiece < 0 ? attackedPiece * -1 : attackedPiece;
 						if (attackedPiece == WKING || attackedPiece == BKING) {
 							attackingPieces.add(currSquare);
 						} // Yes, this will put say a queen who is checking like a spatial rook and a
 							// temporal bishop in the list twice. Im trying to think if this is bad
 					}
-				} 
+				}
 			}
 		}
 
 		return attackingPieces;
 	}
-	
-	//Generates all moves from a given board.
-	public static ArrayList<Move> getAllMoves(GameState g, boolean color, int T, int L){
+
+	// Generates all moves from a given board.
+	public static ArrayList<Move> getAllMoves(GameState g, boolean color, int T, int L) {
 		ArrayList<Move> moves = new ArrayList<Move>();
-		Board b = g.getBoard(new CoordFive(0,0,T,L,color));
-		for(int x = 0; x < g.width; x++) {
-			for(int y = 0; y < g.height; y++) {
-				int piece = b.getSquare(x,y);
-				if(Board.getColorBool(piece) == color) {
-					CoordFour srcLocation = new CoordFour(x,y,T,L);
-					ArrayList<CoordFour> moveLocations = getMoves(piece,g,new CoordFive(srcLocation,color));
-					if(moveLocations == null) {
+		Board b = g.getBoard(new CoordFive(0, 0, T, L, color));
+		for (int x = 0; x < g.width; x++) {
+			for (int y = 0; y < g.height; y++) {
+				int piece = b.getSquare(x, y);// TODO fix for negative numbers
+				if (Board.getColorBool(piece) == color) {
+					CoordFour srcLocation = new CoordFour(x, y, T, L);
+					ArrayList<CoordFour> moveLocations = getMoves(piece, g, new CoordFive(srcLocation, color));
+					if (moveLocations == null) {
 						continue;
 					}
-					for(CoordFour dest: moveLocations) {
-						moves.add(new Move(srcLocation,dest));
+					for (CoordFour dest : moveLocations) {
+						moves.add(new Move(srcLocation, dest));
 					}
 				}
 			}
 		}
 		return moves;
 	}
-	
-	
+
 	public static ArrayList<CoordFour> getMoves(int piece, GameState g, CoordFive source) {
 		boolean unMoved = false;
-		if(piece < 0) {
+		if (piece < 0) {
 			unMoved = true;
 			piece *= -1;
 		}
 		if (piece == 0)
 			return null;
-		if (piece == 1 || piece == 11 || piece == 10 || piece == 20) {//TODO add unmoved.
-			return getPawnMoves(piece, g, source);
+		if (piece == 1 || piece == 11 || piece == 10 || piece == 20) {// TODO add brawn Movement.
+			return getPawnMoves(piece, g, source, unMoved);
 		}
-		if (piece == 7 || piece == 17) {//TODO add unmoved.
-			return MoveGenerator.getLeaperMovesandCaptures(g, source.color, source, MoveNotation.getMoveVectors(piece));
+		if (piece == 7 || piece == 17) {
+			ArrayList<CoordFour> moves = new ArrayList<CoordFour>();
+			if (unMoved) {
+				CoordFour rookLocq = kingCanCastle(g.getBoard(source), source, true);
+				CoordFour rookLock = kingCanCastle(g.getBoard(source), source, false);
+				if (rookLocq != null) {
+					moves.add(rookLocq);
+				}
+				if (rookLock != null) {
+					moves.add(rookLock);
+				}
+			}
+			moves.addAll(MoveGenerator.getLeaperMovesandCaptures(g, source.color, source,
+					MoveNotation.getMoveVectors(piece)));
+			return moves;
 		}
 		if (MoveNotation.pieceIsRider(piece)) {
 			return MoveGenerator.getRiderMoves(g, source.color, source, MoveNotation.getMoveVectors(piece));
@@ -111,7 +125,7 @@ public class MoveGenerator {
 	// TODO possibly make a function for only king captures.
 	public static ArrayList<CoordFour> getCaptures(int piece, GameState g, CoordFive source) {
 		boolean unMoved = false;
-		if(piece < 0) {
+		if (piece < 0) {
 			unMoved = true;
 			piece *= -1;
 		}
@@ -121,10 +135,10 @@ public class MoveGenerator {
 		if (piece == 11) {
 			return getLeaperCaptures(g, source.color, source, MoveNotation.blackPawnattack);
 		}
-		if(piece == 10) {
+		if (piece == 10) {
 			return getLeaperCaptures(g, source.color, source, MoveNotation.whiteBrawnattack);
 		}
-		if(piece == 20) {
+		if (piece == 20) {
 			return getLeaperCaptures(g, source.color, source, MoveNotation.blackBrawnattack);
 		}
 		if (MoveNotation.pieceIsRider(piece)) {
@@ -134,10 +148,10 @@ public class MoveGenerator {
 		}
 	}
 
-	private static ArrayList<CoordFour> getPawnMoves(int piece, GameState g, CoordFive source) {
+	private static ArrayList<CoordFour> getPawnMoves(int piece, GameState g, CoordFive source, boolean unmoved) {
 		ArrayList<CoordFour> destCoords = new ArrayList<CoordFour>();
 		// Checks whether to go one or 2 squares.
-		if (source.y <= 1 || source.y >= g.height - 2) {
+		if (unmoved) {
 			destCoords.addAll(getSliderMoves(g, source.color, source, MoveNotation.getMoveVectors(piece), 2));
 		} else {
 			destCoords.addAll(getLeaperMoves(g, source.color, source, MoveNotation.getMoveVectors(piece)));
@@ -158,7 +172,7 @@ public class MoveGenerator {
 		ArrayList<CoordFour> destCoords = new ArrayList<CoordFour>();
 		for (CoordFour leap : movementVec) {
 			int piece = g.getSquare(CoordFour.add(sourceCoord, leap), color);
-			if (piece == -1) {
+			if (piece == Board.ERRORSQUARE) {
 				continue;
 			}
 			if (piece == EMPTYSQUARE) {
@@ -169,7 +183,7 @@ public class MoveGenerator {
 		}
 		return destCoords;
 	}
-	
+
 	/**
 	 * gets a leapers moves, but only on the captures, used for pawn movement
 	 * mainly.
@@ -185,7 +199,7 @@ public class MoveGenerator {
 		ArrayList<CoordFour> destCoords = new ArrayList<CoordFour>();
 		for (CoordFour leap : movementVec) {
 			int piece = g.getSquare(CoordFour.add(sourceCoord, leap), color);
-			if (piece == -1 || piece == 0) {
+			if (piece == EMPTYSQUARE || piece == Board.ERRORSQUARE) {
 				continue;
 			} else if (Board.getColorBool(piece) != color) {
 				destCoords.add(CoordFour.add(sourceCoord, leap));
@@ -199,7 +213,7 @@ public class MoveGenerator {
 		ArrayList<CoordFour> destCoords = new ArrayList<CoordFour>();
 		for (CoordFour leap : movementVec) {
 			int piece = g.getSquare(CoordFour.add(sourceCoord, leap), color);
-			if (piece == -1) {
+			if (piece == Board.ERRORSQUARE) {
 				continue;
 			}
 			if (piece == EMPTYSQUARE) {
@@ -261,9 +275,9 @@ public class MoveGenerator {
 		Board b = g.getBoard(source, color);
 		CoordFour currSquare = CoordFour.add(source, movementVec);
 		while (true) {
-			int currPiece = b.getSquare(currSquare);
-			if(currPiece == -1) {
-				break;
+			int currPiece = b.getSquare(currSquare);// TODO handle negative
+			if (currPiece == Board.ERRORSQUARE) {
+				return null;
 			}
 			if (currPiece != EMPTYSQUARE) {
 				boolean currColor = Board.getColorBool(currPiece);
@@ -274,7 +288,6 @@ public class MoveGenerator {
 			}
 			currSquare.add(movementVec);
 		}
-		return null;
 	}
 
 	private static CoordFour getTemporalRiderCaptures(GameState g, boolean color, CoordFive source,
@@ -282,7 +295,7 @@ public class MoveGenerator {
 		CoordFour currSquare = CoordFour.add(source, movementVec);
 		while (true) {
 			int currPiece = g.getSquare(currSquare, color);
-			if (currPiece == -1) {
+			if (currPiece == Board.ERRORSQUARE) {
 				break;
 			}
 			if (currPiece != EMPTYSQUARE) {
@@ -300,7 +313,7 @@ public class MoveGenerator {
 	public static ArrayList<CoordFour>[] getRiderMovesAndCaps(GameState g, boolean color, CoordFour sourceCoord,
 			CoordFour[] movementVec) {
 		ArrayList<CoordFour> moveList = new ArrayList<CoordFour>();
-		ArrayList<CoordFour> capList = new ArrayList<CoordFour>(); //TODO group by board so we dont have more accesses.
+		ArrayList<CoordFour> capList = new ArrayList<CoordFour>(); // TODO group by board so we dont have more accesses.
 		for (CoordFour cf : movementVec) {
 			if (cf.isSpatial()) {
 				ArrayList[] list = MoveGenerator.getSpatialRiderMovesAndCaptures(g, color, sourceCoord, cf);
@@ -364,7 +377,7 @@ public class MoveGenerator {
 		Board b = g.getBoard(sourceCoord, color);
 		CoordFour currSquare = CoordFour.add(sourceCoord, movementVec);
 		while (b.isInBounds(currSquare)) {
-			int currPiece = b.getSquare(currSquare); // @TODO this can be optimized, getsquare has bounds checking now
+			int currPiece = b.getSquare(currSquare); // TODO this can be optimized, getsquare has bounds checking now
 			if (currPiece != EMPTYSQUARE) {
 				boolean currColor = Board.getColorBool(currPiece);
 				if (currColor == color) {
@@ -398,7 +411,7 @@ public class MoveGenerator {
 		ArrayList<CoordFour> destCoords = new ArrayList<CoordFour>();
 		CoordFour currSquare = CoordFour.add(sourceCoord, movementVec);
 		int currPiece = g.getSquare(currSquare, color);
-		while (currPiece != -1) {
+		while (currPiece != Board.ERRORSQUARE) {
 			if (currPiece == EMPTYSQUARE) {
 				destCoords.add(currSquare.clone());
 			} else {
@@ -421,7 +434,7 @@ public class MoveGenerator {
 		ArrayList<CoordFour> capCoords = new ArrayList<CoordFour>();
 		CoordFour currSquare = CoordFour.add(sourceCoord, movementVec);
 		int currPiece = g.getSquare(currSquare, color);
-		while (currPiece != -1) {
+		while (currPiece != Board.ERRORSQUARE) {
 			if (currPiece == EMPTYSQUARE) {
 				destCoords.add(currSquare.clone());
 			} else {
@@ -458,5 +471,107 @@ public class MoveGenerator {
 			}
 		}
 		return destCoords;
+	}
+
+	public static CoordFour kingCanCastle(Board b, CoordFive kingSquare, boolean kside) {
+		int unmvdRk = UNMOVEDROOK;
+		if (!kingSquare.color) {
+			unmvdRk -= Board.numTypes;
+		}
+		if (kside) {
+			// Check For Clearance.
+			CoordFour left = new CoordFour(-1, 0, 0, 0);
+			CoordFour index = CoordFour.add(kingSquare, left);
+			while (b.getSquare(index) == EMPTYSQUARE) {
+				index.add(left);
+			}
+			int firstNonEmpty = b.getSquare(index);
+			if (firstNonEmpty != unmvdRk) {
+				return null;
+			}
+			// Check For check
+			CoordFive target = kingSquare.clone();
+			if (MoveGenerator.isSquareAttacked(b, target)) {
+				return null;
+			}
+			target.add(left);
+			if (MoveGenerator.isSquareAttacked(b, target)) {
+				return null;
+			}
+			target.add(left);
+			if (MoveGenerator.isSquareAttacked(b, target)) {
+				return null;
+			}
+			return index;
+		} else {
+			// Check For Clearance.
+			CoordFour right = new CoordFour(1, 0, 0, 0);
+			CoordFour index = CoordFour.add(kingSquare, right);
+			while (b.getSquare(index) == EMPTYSQUARE) {
+				index.add(right);
+			}
+			int firstNonEmpty = b.getSquare(index);
+			if (firstNonEmpty != unmvdRk) {
+				return null;
+			}
+			// Check For check
+			CoordFive target = kingSquare.clone();
+			if (MoveGenerator.isSquareAttacked(b, target)) {
+				return null;
+			}
+			target.add(right);
+			if (MoveGenerator.isSquareAttacked(b, target)) {
+				return null;
+			}
+			target.add(right);
+			if (MoveGenerator.isSquareAttacked(b, target)) {
+				return null;
+			}
+			return index;
+		}
+	}
+
+	// For now, somewhat counterIntuitively this checks for pieces of opposite CF
+	// color,
+	private static boolean isSquareAttacked(Board b, CoordFive target) {
+		// TODO Auto-generated method stub
+		for (int x = 0; x < b.width; x++) {
+			for (int y = 0; y < b.height; y++) {
+				int piece = b.getSquare(x, y);
+				if (piece != EMPTYSQUARE && Board.getColorBool(piece) != target.color) {
+					Move attack = new Move(new CoordFour(x, y, 0, 0), target);
+					if (MoveGenerator.validateSpatialPath(b, piece, attack)) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	private static boolean validateSpatialPath(Board b, int piece, Move attack) {
+		CoordFour attackVector = CoordFour.sub(attack.origin, attack.dest);
+		attackVector.flatten();
+		if (!arrContains(MoveNotation.getMoveVectors(piece), attackVector)) {
+			return false;
+		}
+		CoordFour index = attack.origin.clone();
+		index.add(attackVector);
+		while (!index.equals(attack.dest)) {
+			if (b.getSquare(index) != EMPTYSQUARE) {
+				return false;
+			}
+			index.add(attackVector);
+		}
+		return true;
+	}
+
+	public static boolean arrContains(CoordFour[] array, CoordFour target) {
+		for (CoordFour element : array) {
+			if (element.equals(target)) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

@@ -85,12 +85,12 @@ public class Timeline {
 		}
 	}
 
-	public int getSquare(CoordFour c, boolean color) {
+	public int getSquare(CoordFour c, boolean color) {//TODO handle this for negative numbers
 		Board b = getBoard(c.T, color);
 		if (b != null) {
 			return b.getSquare(c);
 		}
-		return -1;
+		return Board.ERRORSQUARE;
 	}
 
 	public boolean addSpatialMove(Move m, boolean moveColor) {
@@ -99,11 +99,29 @@ public class Timeline {
 		Board b = getPlayableBoard();
 		Board newBoard = new Board(b);
 		int piece = newBoard.getSquare(m.origin);
-		if(piece < 0) {
-			piece *= -1;
-		}
+		piece = piece < 0 ? piece * -1 : piece;
 		newBoard.setSquare(m.origin, Board.piece.EMPTY.ordinal());
 		newBoard.setSquare(m.dest, piece);
+		return addMove(newBoard);
+	}
+	
+	//Absolutely no validation here, must be done in gamestate
+	public boolean castleKing(Move m) {
+		Board b = getPlayableBoard();
+		Board newBoard = new Board(b);
+		int king = newBoard.getSquare(m.origin) * -1;
+		int rook = newBoard.getSquare(m.dest) * -1;
+		if(m.origin.x - m.dest.x > 0) {
+			newBoard.setSquare(CoordFour.add(m.origin,new CoordFour(-2,0,0,0)), king );
+			newBoard.setSquare(CoordFour.add(m.origin,new CoordFour(-1,0,0,0)), rook);
+			newBoard.setSquare(m.origin,0);
+			newBoard.setSquare(m.dest,0);
+		}else {
+			newBoard.setSquare(CoordFour.add(m.origin,new CoordFour(2,0,0,0)), king );
+			newBoard.setSquare(CoordFour.add(m.origin,new CoordFour(1,0,0,0)), rook);
+			newBoard.setSquare(m.origin,0);
+			newBoard.setSquare(m.dest,0);
+		}
 		return addMove(newBoard);
 	}
 
@@ -114,6 +132,7 @@ public class Timeline {
 		Board b = getPlayableBoard();
 		Board newBoard = new Board(b);
 		int piece =  newBoard.getSquare(origin);
+		piece = piece < 0 ? piece * -1 : piece;
 		newBoard.setSquare(origin, Board.piece.EMPTY.ordinal());
 		addMove(newBoard);
 		return piece;
