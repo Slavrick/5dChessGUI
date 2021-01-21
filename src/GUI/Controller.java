@@ -3,6 +3,7 @@ package GUI;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
@@ -21,6 +22,9 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Popup;
+import javafx.stage.PopupWindow;
+import javafx.stage.Stage;
+import javafx.stage.Window;
 
 import java.awt.MouseInfo;
 import java.awt.Point;
@@ -39,6 +43,7 @@ import engine.MoveGenerator;
 import fileIO.FENExporter;
 import fileIO.FENParser;
 
+
 public class Controller {
 	@FXML
 	BorderPane innerLayout;
@@ -55,6 +60,8 @@ public class Controller {
 
 	ObservableList<String> notationStringArray;
 
+	
+	
 	GameStateManager g;
 
 	static final double MAX_FONT_SIZE = 20.0;
@@ -268,6 +275,19 @@ public class Controller {
 	@FXML
 	private void setProperties(ActionEvent e) throws IOException {
 		Popup p = new Popup();
+		Parent root = FXMLLoader.load(getClass().getResource("/Properties.fxml"));
+		Scene properties = new Scene(root, 200, 200);
+		Stage stage = new Stage();
+		stage.setScene(properties);
+		stage.setResizable(false);
+		stage.show();
+		/*
+		p.getContent().add(root);
+		p.setX(500);
+        p.setY(500);
+		System.out.println("Got Resource, Will Show Now");
+        Window w = new Window();
+		*/
 		//XXX finish this later
 	}
 

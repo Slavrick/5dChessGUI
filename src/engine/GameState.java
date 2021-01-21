@@ -401,7 +401,7 @@ public class GameState {
 
 	// Determine if the opponent can immediatly capture our king without null moves,
 	// IE this will be used to determine if a move is legal, and also determine
-	// if an we start turn in check TODO test this.
+	// if an we start turn in check
 	protected boolean opponentCanCaptureKing() {
 		for (int i = minTL; i <= maxTL; i++) {
 			Timeline t = getTimeline(i);

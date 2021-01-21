@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.canvas.Canvas?>
+
+
+<AnchorPane fx:id="innerLayout" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.PropertiesPane">
+	<VBox layoutX="10" layoutY="10">
+		<HBox>
+			<Label text="SquareWidth"/>
+			<TextField prefWidth="100" text="32" fx:id="squareWidth"/>
+		</HBox>
+		<Button text="Submit" onAction="#handleSubmitButton"/>
+	</VBox>
+</AnchorPane>
+
+
