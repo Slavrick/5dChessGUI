@@ -109,38 +109,6 @@ public class Board {
 		return isInBounds(cf.x, cf.y);
 	}
 
-	/** TODO maybe this should be in the Timeline class?
-	 * Casltes a king on the present board by checking if it is possible and then swapping the pieces.
-	 * @param color the color to swap
-	 * @param side the side to swap to( queen or king -- false or true respectively)
-	 * @return whether or not the caslte happened.
-	 */
-	public boolean CastleKing(boolean color, boolean side) {
-		if(color) {
-			if(side && wkingSideCastle) {
-				wkingSideCastle = false;
-				wqueenSideCastle = false;
-				//TODO add code swapping pieces.
-				return true;
-			}
-			else if(!side && wqueenSideCastle) {
-				bkingSideCastle = false;
-				bqueenSideCastle = false;
-				return false;
-			}else {
-				return false;
-			}
-		}else if (!color) {
-			return false;
-		}else {
-			return false;
-		}
-	}
-
-	public boolean canCastle() {
-		return false;
-	}
-
 	/**
 	 * Gets a string representation of the board. this string starts with the 1st
 	 * rank, and each rank is a line of text.
@@ -175,8 +143,4 @@ public class Board {
 		}
 		return GameState.WHITE;
 	}
-
-
-
-
 }

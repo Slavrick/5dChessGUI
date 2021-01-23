@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.canvas.Canvas?>
+
+
+<AnchorPane fx:id="innerLayout" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.PromotionPrompt">
+	<Button layoutX="10" layoutY="10" prefWidth="75" text="Queen" onAction="#handleSubmitButton" />
+	<Button layoutX="90" layoutY="10" prefWidth="75" text="Rook" onAction="#handleSubmitButton"  />
+	<Button layoutX="10" layoutY="40" prefWidth="75" text="Bishop" onAction="#handleSubmitButton"  />
+	<Button layoutX="90" layoutY="40" prefWidth="75" text="Knight" onAction="#handleSubmitButton" />
+	<Button layoutX="10" layoutY="70" prefWidth="75" text="Unicorn" onAction="#handleSubmitButton" />
+	<Button layoutX="90" layoutY="70" prefWidth="75" text="Dragon" onAction="#handleSubmitButton" />
+</AnchorPane>
+
+

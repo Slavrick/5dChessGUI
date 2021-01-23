@@ -7,6 +7,7 @@ public class GameStateManager extends GameState{
 	public Move[] preMoves;
 	public Timeline[] originsTL;
 	public int startminTL;
+	public int turnNum;
 
 	//TODO make this into a tree, that way we can have diff lines.
 	public ArrayList<Turn> turns;
@@ -18,6 +19,7 @@ public class GameStateManager extends GameState{
 		this.preMoves = moves;
 		originsTL = origins;
 		this.turns = new ArrayList<Turn>();
+		turnNum = 1;
 	}
 	
 	public boolean submitMoves() {
@@ -25,9 +27,11 @@ public class GameStateManager extends GameState{
 		boolean presColor = calcPresent();
 		if(!opponentCanCaptureKing() && !(presColor == color)) {
 			turns.add(new Turn( turnMoves, turnTLs));
+			turns.get(turns.size()-1).turnNum = turnNum;
 			currTurn++;
 			turnTLs.clear();
 			turnMoves.clear();
+			turnNum = !color ? turnNum + 1 : turnNum; 
 			color =! color;
 			startPresent = present;
 			return true;

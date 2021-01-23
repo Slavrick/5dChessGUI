@@ -44,7 +44,7 @@ import fileIO.FENExporter;
 import fileIO.FENParser;
 
 
-public class Controller {
+public class Controller implements MessageListener{
 	@FXML
 	BorderPane innerLayout;
 	@FXML
@@ -57,12 +57,7 @@ public class Controller {
 	TextField movefield;
 	@FXML
 	Label statusLabel;
-
 	ObservableList<String> notationStringArray;
-
-	
-	
-	GameStateManager g;
 
 	static final double MAX_FONT_SIZE = 20.0;
 	
@@ -73,17 +68,17 @@ public class Controller {
 	double screenY = 0;
 	double canvasWidth = 8000;
 	double canvasHeight = 8000;
-
 	double startDragx;
 	double startDragy;
 	double xchange;
 	double ychange;
-
 	boolean dragging = false;
 	boolean release = false;
 	
+	GameStateManager g;
 	CoordFive selectedSquare;
 	ArrayList<CoordFour> destinations;
+	Move promotionMoveBuffer;
 	
 	boolean prompt = false;
 
@@ -136,10 +131,28 @@ public class Controller {
 					destinations = null;
 					drawStage();
 				} else if (e.getButton() == MouseButton.PRIMARY) {
+					if(promotionMoveBuffer != null) {
+						return;
+					}
 					CoordFive clickedCoord = getCoordClicked((int) e.getX(), (int) e.getY(), g.width, g.height);
 					if (destinations != null && clickedCoord != null && clickedCoord.color == selectedSquare.color && alContains(destinations, clickedCoord)) {
 						Move selectedMove = new Move(selectedSquare, clickedCoord);
-						g.makeMove(selectedMove);
+						//If it would be a promotion, do something special.
+						if(selectedMove.type == Move.SPATIALMOVE && ( selectedMove.dest.y == 0 || selectedMove.dest.y == g.height - 1 )) {
+							int pieceMoved = g.getSquare(selectedMove.origin, g.color);
+							pieceMoved = pieceMoved < 0 ? pieceMoved * -1 : pieceMoved;
+							if(pieceMoved == 1 || pieceMoved == 11) {
+								System.out.println("Promote");
+								promotionMoveBuffer = selectedMove;
+								showPromotionPrompt();
+								selectedSquare = null;
+								destinations = null;
+								return;
+							}
+						}
+						if(g.makeMove(selectedMove)) {
+							screenX += ChessDrawer.squarewidth * g.height + ChessDrawer.padding;							
+						}
 						selectedSquare = null;
 						destinations = null;
 						drawStage();
@@ -172,7 +185,10 @@ public class Controller {
 		drawStage();
 		statusLabel.setFont(new Font(MAX_FONT_SIZE));
 		setStatusLabel();
-		
+		if(Globals.es == null) {
+			Globals.es = new EventSource();
+			Globals.es.addListener(this);
+		}
 	}
 
 	//===========================Event Functions=========================================================================
@@ -190,6 +206,7 @@ public class Controller {
 		g.undoTempMoves();
 		selectedSquare = null;
 		destinations = null;
+		promotionMoveBuffer = null;
 		drawStage();
 	}
 
@@ -200,7 +217,7 @@ public class Controller {
 		if(submitted) {			
 			notationStringArray.add(g.turns.get(g.turns.size() - 1).toString());
 			boolean mated = g.bruteForceMateDetection();
-			System.out.println(mated);
+			//System.out.println(mated);
 			if(mated) {
 				String color;
 				if(g.color) {
@@ -224,8 +241,7 @@ public class Controller {
 	}
 	
 	@FXML
-	private void handleListEvent(MouseEvent event) {
-		System.out.println("Chagne");
+	private void handleListEvent(MouseEvent event) throws IOException {
 		//XXX set this -- test this
 		int turnIndex = 0;
 		//g.setTurn(turnIndex);
@@ -242,8 +258,13 @@ public class Controller {
 	}
 
 	@FXML
-	private void handleEventList(ActionEvent event) {
-
+	private void handleEventList(ActionEvent event) throws IOException {
+		Parent root = FXMLLoader.load(getClass().getResource("/PromotionPrompt.fxml"));
+		Scene properties = new Scene(root, 200, 200);
+		Stage stage = new Stage();
+		stage.setScene(properties);
+		stage.setResizable(false);
+		stage.show();
 	}
 	
 	@FXML
@@ -281,14 +302,6 @@ public class Controller {
 		stage.setScene(properties);
 		stage.setResizable(false);
 		stage.show();
-		/*
-		p.getContent().add(root);
-		p.setX(500);
-        p.setY(500);
-		System.out.println("Got Resource, Will Show Now");
-        Window w = new Window();
-		*/
-		//XXX finish this later
 	}
 
 	//================================================================================================================
@@ -362,6 +375,22 @@ public class Controller {
 
 	}
 
+	private void showPromotionPrompt(){
+		Parent root;
+		try {
+			root = FXMLLoader.load(getClass().getResource("/PromotionPrompt.fxml"));			
+		}catch(Exception e) {
+			System.out.println("Could Not load Promotion Prompt");
+			return;
+		}
+		Scene properties = new Scene(root, 175, 100);
+		Stage stage = new Stage();
+		stage.setTitle("Select a promotion Type!");
+		stage.setScene(properties);
+		stage.setResizable(false);
+		stage.show();
+	}
+	
 	/**
 	 * This was created because I couldn't understand why the arraylist.contains was not working properly
 	 * It is supposed to call the .equals function, but i think that it checking if two objects were the same memory, not the same contents.
@@ -382,6 +411,22 @@ public class Controller {
 		int panx = ((T - 1) * 2) * (ChessDrawer.padding + (ChessDrawer.squarewidth * g.width)) - 30;
 		screenX = panx;
 		screenY = pany;
+	}
+
+	@Override
+	public void handleMessage(MessageEvent m) {
+		if(m.type == MessageEvent.Promotion) {
+			promotionMoveBuffer.specialType = m.imess;
+			if(!g.color) {
+				promotionMoveBuffer.specialType += Board.numTypes;
+			}
+			if(g.makeMove(promotionMoveBuffer)) {
+				screenX += ChessDrawer.squarewidth * g.width + ChessDrawer.padding;
+			}
+			drawStage();
+			promotionMoveBuffer = null;
+		}
+		
 	}
 
 }

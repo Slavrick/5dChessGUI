@@ -124,6 +124,14 @@ public class Timeline {
 		}
 		return addMove(newBoard);
 	}
+	
+	public boolean promote(Move m) {
+		Board b = getPlayableBoard();
+		Board newBoard = new Board(b);
+		newBoard.setSquare(m.origin, Board.piece.EMPTY.ordinal());
+		newBoard.setSquare(m.dest, m.specialType);
+		return addMove(newBoard);
+	}
 
 	// adds jumping origin move, basically just removes that piece from the board.
 	public int addJumpingMove(CoordFour origin, boolean moveColor) {

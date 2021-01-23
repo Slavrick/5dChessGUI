@@ -228,12 +228,23 @@ public class GameState {
 	 * @return boolean whether the move was made or not
 	 */
 	public boolean makeMove(Move m) {
+		if(m.specialType != Move.NORMALMOVE) {
+			if(m.specialType >= Move.PROMOTION) {
+				if(this.promote(m)) {
+					turnTLs.add(m.dest.L);
+					turnMoves.add(m);
+				}else {
+					return false;
+				}
+			}
+		}
 		// Validation of move. TODO validate movement vector.
 		if (!isInBounds(m.origin, this.color) || !isInBounds(m.dest, this.color)) {
 			return false;
 		}
 		int pieceMoved = this.getSquare(m.origin, this.color);
 		int movedTo = this.getSquare(m.dest, this.color);
+		//TODO move this to begininig.
 		if((pieceMoved == -7 && movedTo == -4) || (pieceMoved == -7 - Board.numTypes && movedTo == -4 - Board.numTypes)) {
 			getTimeline(m.origin.L).castleKing(m);
 			turnTLs.add(m.origin.L);
@@ -246,7 +257,7 @@ public class GameState {
 			return false;
 		}
 		// Move the piece.
-		if (m.type == 1) {
+		if (m.type == Move.SPATIALMOVE) {
 			boolean moveResult = getTimeline(m.origin.L).addSpatialMove(m, color);
 			if (moveResult) {
 				turnTLs.add(m.origin.L);
@@ -271,29 +282,29 @@ public class GameState {
 			turnTLs.add(m.origin.L);
 			turnTLs.add(m.dest.L);
 			turnMoves.add(m);
-			m.type = 2;
+			m.type = Move.JUMPINGMOVE;
 		} else {
 			turnTLs.add(m.origin.L);
 			turnTLs.add(this.addTimeline(b, m.dest.T));
 			turnMoves.add(m);
-			m.type = 3;
+			m.type = Move.BRANCHINGMOVE;
 		}
 		determineActiveTLS();
 		return true;
 	}
 	// make sure to add the move iff there was a move added, and never if not.
 	
-	public boolean promote(Move m, int promotionType) {
-		if(m.type != 1 || m.dest.y != 0 || m.dest.y != this.height - 1 || Board.getColorBool(promotionType) != this.color || promotionType == 0) {
+	//this makes a move, without adding to the move buffer
+	public boolean promote(Move m) {
+		int promotionType = m.specialType;
+		if(m.type != Move.SPATIALMOVE || m.specialType < Move.PROMOTION || (m.dest.y != 0 && m.dest.y != (this.height - 1)) || Board.getColorBool(promotionType) != this.color || promotionType == 0) {
 			return false;
 		}
 		int targetPiece = this.getSquare(m.origin,this.color);
 		if(targetPiece == 1 || targetPiece == 11) {
-			getTimeline(m.origin.L);
-			return true;
+			return getTimeline(m.origin.L).promote(m);
 		}
 		return false;
-		//FIXME
 	}
 	
 	public boolean castle(CoordFour boardcoord, boolean side) {
@@ -301,7 +312,7 @@ public class GameState {
 		if( t == null || t.Tend != boardcoord.T || t.colorPlayable != this.color) {
 			return false;
 		}
-		return t.getPlayableBoard().CastleKing(this.color, side);
+		return false;
 		//FIXME
 	}
 	
@@ -659,11 +670,11 @@ public class GameState {
 			tlMoves.addAll(MoveGenerator.getAllMoves(this, color, t.Tend, i));
 			allMoves.add(tlMoves);
 		}
-		int sum = 0;
-		for (ArrayList<Move> one : allMoves) {
-			sum += one.size();
-		}
-		System.out.println("Generating " + sum + " Turns");
+		/*
+		 * int sum = 0;
+		 * for (ArrayList<Move> one : allMoves) { sum += one.size(); }
+		 * System.out.println("Generating " + sum + " Turns");
+		 */
 		int curMove[] = new int[allMoves.size()];
 		while (curMove[0] < allMoves.get(0).size()) { // TODO fix this
 			Move[] moves = new Move[curMove.length];
@@ -671,7 +682,7 @@ public class GameState {
 				moves[getM] = allMoves.get(getM).get(curMove[getM]);
 			}
 			if (this.validateAllPermutations(moves)) {
-				System.out.println(Arrays.toString(moves));
+				//System.out.println(Arrays.toString(moves));
 				return false;
 			}
 			int cursor = 0;

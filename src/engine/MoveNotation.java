@@ -74,17 +74,17 @@ public class MoveNotation {
 	};
 	
 	public static final CoordFour[] UnicornMoveset = {
-			new CoordFour(1,1,1,0),
+			//new CoordFour(1,1,1,0),
 			new CoordFour(1,1,0,1),
 			new CoordFour(1,0,1,1),
 			new CoordFour(0,1,1,1),
 			
-			new CoordFour(-1,1,1,0),
+			//new CoordFour(-1,1,1,0),
 			new CoordFour(-1,1,0,1),
 			new CoordFour(-1,0,1,1),
 			new CoordFour(0,-1,1,1),
 			
-			new CoordFour(1,-1,1,0),
+			//new CoordFour(1,-1,1,0),
 			new CoordFour(1,-1,0,1),
 			new CoordFour(1,0,-1,1),
 			new CoordFour(0,1,-1,1),
@@ -94,7 +94,7 @@ public class MoveNotation {
 			new CoordFour(1,0,1,-1),
 			new CoordFour(0,1,1,-1),
 			
-			new CoordFour(-1,-1,1,0),
+			//new CoordFour(-1,-1,1,0),
 			new CoordFour(-1,-1,0,1),
 			new CoordFour(-1,0,-1,1),
 			new CoordFour(0,-1,-1,1),
@@ -103,6 +103,11 @@ public class MoveNotation {
 			new CoordFour(-1,1,0,-1),
 			new CoordFour(-1,0,1,-1),
 			new CoordFour(0,-1,1,-1),
+			
+			new CoordFour(1,-1,-1,0),
+			new CoordFour(1,-1,0,-1),
+			new CoordFour(1,0,-1,-1),
+			new CoordFour(0,1,-1,-1),
 			
 			new CoordFour(-1,-1,-1,0),
 			new CoordFour(-1,-1,0,-1),

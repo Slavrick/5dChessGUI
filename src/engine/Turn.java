@@ -10,8 +10,8 @@ public class Turn {
 	public boolean color;
 	public int turnNum;
 	public int Tpresent;
-	public notationMode mode;
-	public prefixMode pre;
+	public static notationMode mode = notationMode.SHAD;
+	public static prefixMode pre = prefixMode.TURN;
 	
 	public static enum prefixMode{
 		NONE, TURN, TURNANDPRESENT
@@ -31,8 +31,6 @@ public class Turn {
 			tls[count] = i;
 			count++;
 		}
-		mode = notationMode.RAW;
-		pre = prefixMode.NONE;
 	}
 	
 	public Turn(ArrayList<Move> tmoves) {
@@ -76,6 +74,12 @@ public class Turn {
 			
 		}
 		switch(mode) {
+		case SHAD:
+			for(Move m : moves) {
+				temp += m.toString('x');
+				temp += " ";
+			}
+			break;
 		case RAW:
 		default:
 			for(Move m : moves) {
