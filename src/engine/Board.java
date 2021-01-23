@@ -17,6 +17,7 @@ public class Board {
 
 	public static final int numTypes = 10;
 	public static final int ERRORSQUARE = -63;
+	public static final int EMPTYSQUARE = 0;
 	
 	public static enum piece {
 		EMPTY, WPAWN, WKNIGHT, WBISHOP, WROOK, WPRINCESS, WQUEEN, WKING, WUNICORN, WDRAGON, WBRAWN, BPAWN, BKNIGHT,

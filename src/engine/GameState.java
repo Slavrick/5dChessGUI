@@ -3,6 +3,8 @@ package engine;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import GUI.MessageEvent;
+
 public class GameState {
 	public static final boolean WHITE = true;
 	public static final boolean BLACK = false;
@@ -228,33 +230,26 @@ public class GameState {
 	 * @return boolean whether the move was made or not
 	 */
 	public boolean makeMove(Move m) {
+		if(!validateMove(m)) {
+			return false;
+		}
+		//handle Special cases First
 		if(m.specialType != Move.NORMALMOVE) {
 			if(m.specialType >= Move.PROMOTION) {
 				if(this.promote(m)) {
 					turnTLs.add(m.dest.L);
 					turnMoves.add(m);
 				}else {
+					//TODO see if this is nessessary
 					return false;
 				}
 			}
-		}
-		// Validation of move. TODO validate movement vector.
-		if (!isInBounds(m.origin, this.color) || !isInBounds(m.dest, this.color)) {
-			return false;
-		}
-		int pieceMoved = this.getSquare(m.origin, this.color);
-		int movedTo = this.getSquare(m.dest, this.color);
-		//TODO move this to begininig.
-		if((pieceMoved == -7 && movedTo == -4) || (pieceMoved == -7 - Board.numTypes && movedTo == -4 - Board.numTypes)) {
-			getTimeline(m.origin.L).castleKing(m);
-			turnTLs.add(m.origin.L);
-			turnMoves.add(m);
-		}
-		if (pieceMoved == 0 || Board.getColorBool(pieceMoved) != color) {
-			return false;
-		}
-		if (movedTo != 0 && Board.getColorBool(movedTo) == color) {
-			return false;
+			if(m.specialType == Move.CASTLE) {
+				getTimeline(m.origin.L).castleKing(m);
+				turnTLs.add(m.origin.L);
+				turnMoves.add(m);
+				return true;
+			}
 		}
 		// Move the piece.
 		if (m.type == Move.SPATIALMOVE) {
@@ -263,18 +258,13 @@ public class GameState {
 				turnTLs.add(m.origin.L);
 				turnMoves.add(m);
 				return true;
-			} else {
+			} else { //TODO if this is nessesary
 				return false;
 			}
 		}
+		int pieceMoved = this.getSquare(m.origin, this.color);
 		Timeline originT = getTimeline(m.origin.L);
 		Timeline destT = getTimeline(m.dest.L);
-		if (originT == null || destT == null) {
-			return false;
-		}
-		if (!originT.colorPlayable == this.color) {
-			return false;
-		}
 		originT.addJumpingMove(m.origin, color);
 		Board b = destT.addJumpingMoveDest(m.dest, color, pieceMoved);
 		// This part sets the type on the move to convey information to other functions.
@@ -325,6 +315,16 @@ public class GameState {
 			color = !color;
 			startPresent = present;
 			return true;
+		}
+		//Send Message Event
+		if(GUI.Globals.es != null) {
+			if(presColor == color) {
+				MessageEvent m = new MessageEvent("The present Still rests on your color.");
+				GUI.Globals.es.broadcastEvent(m);
+			}else {
+				MessageEvent m = new MessageEvent("Submitting now Would Allow your opponent to capture your king.");
+				GUI.Globals.es.broadcastEvent(m);
+			}			
 		}
 		return false;
 	}
@@ -390,6 +390,48 @@ public class GameState {
 		return result;
 	}
 
+	protected boolean validateMove(Move m) {
+		if (!isInBounds(m.origin, this.color) || !isInBounds(m.dest, this.color)) {
+			return false;
+		}
+		Timeline originTL = getTimeline(m.origin.L);
+		if(originTL.colorPlayable != this.color) {
+			return false;
+		}
+		int pieceMoved = this.getSquare(m.origin, this.color);
+		int movedTo = this.getSquare(m.dest, this.color);
+		if(pieceMoved == Board.EMPTYSQUARE || pieceMoved == Board.ERRORSQUARE || this.color != Board.getColorBool(pieceMoved)) {
+			return false;
+		}
+		if (movedTo != Board.EMPTYSQUARE && Board.getColorBool(movedTo) == color) {
+			return false;
+		}
+		if(m.specialType != Move.NORMALMOVE) {
+			if(m.specialType >= Move.PROMOTION) {
+				if(m.specialType == 7 || m.specialType > Board.numTypes) {
+					return false;
+				}
+				if(pieceMoved == -1 || pieceMoved == 1 || pieceMoved == 1 + Board.numTypes || pieceMoved == -1 - Board.numTypes) {
+					return true;
+				}else {
+					return false;
+				}
+			}
+			else if(m.specialType == Move.CASTLE) {
+				//XXX make sure it is possible to castle-- possibly call the Movegenerator Function.
+				if((pieceMoved == -7 && movedTo == -4) || (pieceMoved == -7 - Board.numTypes && movedTo == -4 - Board.numTypes)) {
+					return true;
+				}
+				else {
+					return false;
+				}
+				
+			}
+		}
+		//TODO validate Path.....
+		return true;
+	}
+	
 	// Determine if we started the turn in check, by passing on all active
 	// timelines.
 	// For this to work, we assume that the Present and active timelines are already

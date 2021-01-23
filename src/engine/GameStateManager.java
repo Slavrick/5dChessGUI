@@ -2,6 +2,8 @@ package engine;
 
 import java.util.ArrayList;
 
+import GUI.MessageEvent;
+
 public class GameStateManager extends GameState{
 	
 	public Move[] preMoves;
@@ -35,6 +37,15 @@ public class GameStateManager extends GameState{
 			color =! color;
 			startPresent = present;
 			return true;
+		}
+		if(GUI.Globals.es != null) {
+			if(presColor == color) {
+				MessageEvent m = new MessageEvent("The present Still rests on your color.");
+				GUI.Globals.es.broadcastEvent(m);
+			}else {
+				MessageEvent m = new MessageEvent("Submitting now Would Allow your opponent to capture your king.");
+				GUI.Globals.es.broadcastEvent(m);
+			}			
 		}
 		return false;
 	}

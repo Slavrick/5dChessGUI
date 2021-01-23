@@ -57,6 +57,9 @@ public class Controller implements MessageListener{
 	TextField movefield;
 	@FXML
 	Label statusLabel;
+	@FXML
+	Label infoBox;
+	
 	ObservableList<String> notationStringArray;
 
 	static final double MAX_FONT_SIZE = 20.0;
@@ -142,7 +145,6 @@ public class Controller implements MessageListener{
 							int pieceMoved = g.getSquare(selectedMove.origin, g.color);
 							pieceMoved = pieceMoved < 0 ? pieceMoved * -1 : pieceMoved;
 							if(pieceMoved == 1 || pieceMoved == 11) {
-								System.out.println("Promote");
 								promotionMoveBuffer = selectedMove;
 								showPromotionPrompt();
 								selectedSquare = null;
@@ -425,6 +427,9 @@ public class Controller implements MessageListener{
 			}
 			drawStage();
 			promotionMoveBuffer = null;
+		}
+		if(m.type == MessageEvent.INFO) {
+			infoBox.setText(m.message);
 		}
 		
 	}
