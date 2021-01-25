@@ -129,7 +129,19 @@ public class FENParser {
 			return null;
 		}
 		// Parse Header
+		ArrayList<String> headers = new ArrayList<String>();
+		for(String line: lines) {
+			if(line.charAt(0) == '[') {
+				headers.add(line);
+			}
+		}
 		// Parse FEN States
+		ArrayList<String> fenBoards = new ArrayList<String>();
+		for(String header: headers) {
+			if(header.charAt(0) == '[') {
+				
+			}
+		}
 		// Parse Moves
 		// GameStateManager game = new
 		// GameStateManager(origins,width,height,evenTimelines,color,minTL,moves);

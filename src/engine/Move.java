@@ -1,9 +1,10 @@
 package engine;
 
-public class Move {
+public class Move implements Comparable{
 
 	public CoordFour origin;
 	public CoordFour dest;
+	public int pieceMoved;
 	// 1 for spatial, 2 for jumping(unrecognized branching, 3 for branching.
 	public int type;
 
@@ -27,7 +28,7 @@ public class Move {
 		} else {
 			type = JUMPINGMOVE;
 		}
-
+		pieceMoved = 0;
 	}
 
 	public Move(CoordFour coordorigin, CoordFour coorddest, int type) {
@@ -39,6 +40,7 @@ public class Move {
 		} else {
 			type = 0;
 		}
+		pieceMoved = 0;
 	}
 
 	public String rawMoveNotation() {
@@ -67,5 +69,36 @@ public class Move {
 		}
 		return move;
 	}
+	
+	public String toShadString(){
+		String move = "";
+		int piece = this.pieceMoved;
+		if(piece > Board.numTypes) {
+			piece -= Board.numTypes;
+		}
+		if(pieceMoved != Board.EMPTYSQUARE && pieceMoved != 1) {
+			move += Board.pieceChars[piece];
+		}
+		move = "(" + this.origin.L + "T" + this.origin.T + ")" + move;
+		if (this.type == SPATIALMOVE) {
+			move += this.dest.SANString();
+		} else if (this.type == JUMPINGMOVE) {
+			move += this.origin.SANString() + ">(" + this.dest.L + "T" + this.dest.T + ")" + this.dest.SANString();
+		} else if (this.type == BRANCHINGMOVE) {
+			move += ">>(" + this.dest.L + "T" + this.dest.T + ")" + this.dest.SANString();
+		}
+		return move;
+	}
 
+	@Override
+	public int compareTo(Object arg) {
+		Move m2 = (Move) arg;
+		if(m2.type > this.type) {
+			return -1;
+		}
+		if(m2.type == this.type) {
+			return 0;
+		}
+		return 1;
+	}
 }

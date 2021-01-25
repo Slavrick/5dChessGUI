@@ -100,6 +100,7 @@ public class Timeline {
 		Board newBoard = new Board(b);
 		int piece = newBoard.getSquare(m.origin);
 		piece = piece < 0 ? piece * -1 : piece;
+		m.pieceMoved = piece;
 		newBoard.setSquare(m.origin, Board.piece.EMPTY.ordinal());
 		newBoard.setSquare(m.dest, piece);
 		return addMove(newBoard);
@@ -134,13 +135,15 @@ public class Timeline {
 	}
 
 	// adds jumping origin move, basically just removes that piece from the board.
-	public int addJumpingMove(CoordFour origin, boolean moveColor) {
+	public int addJumpingMove(Move m, boolean moveColor) {
 		if (moveColor != colorPlayable)
 			return -1;
+		CoordFour origin = m.origin;
 		Board b = getPlayableBoard();
 		Board newBoard = new Board(b);
 		int piece =  newBoard.getSquare(origin);
 		piece = piece < 0 ? piece * -1 : piece;
+		m.pieceMoved = piece;
 		newBoard.setSquare(origin, Board.piece.EMPTY.ordinal());
 		addMove(newBoard);
 		return piece;

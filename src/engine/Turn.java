@@ -76,7 +76,7 @@ public class Turn {
 		switch(mode) {
 		case SHAD:
 			for(Move m : moves) {
-				temp += m.toString('x');
+				temp += m.toShadString();
 				temp += " ";
 			}
 			break;

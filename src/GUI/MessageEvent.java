@@ -1,6 +1,9 @@
 package GUI;
 
 public class MessageEvent {
+	
+	public static final int Promotion = 1;
+	public static final int INFO = 2;
 
 	public MessageEvent() {}
 	
@@ -8,9 +11,6 @@ public class MessageEvent {
 		type = INFO;
 		message = string;
 	}
-	
-	public static final int Promotion = 1;
-	public static final int INFO = 2;
 	public int type;
 	public int imess;
 	public String message;

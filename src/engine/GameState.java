@@ -142,7 +142,7 @@ public class GameState {
 				origin.addSpatialMove(m, origin.colorPlayable);
 			} else {
 				Timeline dest = this.getTimeline(m.dest.L);
-				int piece = origin.addJumpingMove(m.origin, origin.colorPlayable);
+				int piece = origin.addJumpingMove(m, origin.colorPlayable);
 				Board branch = dest.addJumpingMoveDest(m.dest, dest.colorPlayable, piece);
 				if (branch != null) {
 					if (moveColor) {
@@ -209,7 +209,7 @@ public class GameState {
 		if (!originT.colorPlayable == this.color) {
 			return false;
 		}
-		int pieceMoved = originT.addJumpingMove(m.origin, color);
+		int pieceMoved = originT.addJumpingMove(m, color);
 		Board b = destT.addJumpingMoveDest(m.dest, color, pieceMoved);
 		// This part sets the type on the move to convey information to other functions.
 		if (b == null) {
@@ -265,7 +265,7 @@ public class GameState {
 		int pieceMoved = this.getSquare(m.origin, this.color);
 		Timeline originT = getTimeline(m.origin.L);
 		Timeline destT = getTimeline(m.dest.L);
-		originT.addJumpingMove(m.origin, color);
+		originT.addJumpingMove(m, color);
 		Board b = destT.addJumpingMoveDest(m.dest, color, pieceMoved);
 		// This part sets the type on the move to convey information to other functions.
 		if (b == null) {
