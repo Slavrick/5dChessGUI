@@ -36,7 +36,4 @@ public class Main extends Application {
 		primaryStage.show();
 		primaryStage.setOnCloseRequest(evt -> Platform.exit());
 	}
-	
-	//Notes for tommorrrow:
-	//Big items -- notation conversion
 }

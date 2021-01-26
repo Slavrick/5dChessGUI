@@ -17,6 +17,11 @@ import engine.Timeline;
 
 public class FENParser {
 
+	public final String STDBOARDFEN = "r*nbqk*bnr*/p*p*p*p*p*p*p*p*/8/8/8/8/P*P*P*P*P*P*P*P*/R*NBQK*BNR*:0:1:W";
+	public final String STD_PRINCESS_BOARDFEN = "r*nbsk*bnr*/p*p*p*p*p*p*p*p*/8/8/8/8/P*P*P*P*P*P*P*P*/R*NBSK*BNR*:0:1:W";
+	public final String STD_DEFENDEDPAWN_BOARDFEN = "r*qbnk*bnr*/p*p*p*p*p*p*p*p*/8/8/8/8/P*P*P*P*P*P*P*P*/R*QBNK*BNR*:0:1:W";
+	
+	
 	// TODO this stuff doesnt work for - or + 0
 	public static GameState FENToGS(String fileLoc) {
 		File file = new File(fileLoc);
@@ -130,18 +135,23 @@ public class FENParser {
 		}
 		// Parse Header
 		ArrayList<String> headers = new ArrayList<String>();
+		ArrayList<String> fenBoards = new ArrayList<String>();
+		ArrayList<String> moves = new ArrayList<String>();
 		for(String line: lines) {
 			if(line.charAt(0) == '[') {
 				headers.add(line);
+				if(line.contains(":") && !line.contains("\"")) {
+					fenBoards.add(line);
+				}
+			}
+			else {
+				moves.add(line);
 			}
 		}
-		// Parse FEN States
-		ArrayList<String> fenBoards = new ArrayList<String>();
-		for(String header: headers) {
-			if(header.charAt(0) == '[') {
-				
-			}
-		}
+		int width = -1;
+		int height = -1;
+		// Parse Headers
+		
 		// Parse Moves
 		// GameStateManager game = new
 		// GameStateManager(origins,width,height,evenTimelines,color,minTL,moves);
@@ -250,5 +260,12 @@ public class FENParser {
 			}
 		}
 		return 0;
+	}
+	
+	//Recieve a gamestate and a shad move and add it to the gamestate. This is expected to be correct due to
+	//color ambiguity which may result in an illegal or incorrect gamestate.
+	public static boolean addShadMove(GameState g, Move m) {
+		
+		return true;
 	}
 }

@@ -9,7 +9,6 @@ import sun.awt.KeyboardFocusManagerPeerImpl;
 public class MoveGenerator {
 
 	// TODO promotion
-
 	public static final int EMPTYSQUARE = Board.piece.EMPTY.ordinal();
 	public static final int WKING = 7;
 	public static final int BKING = 17;

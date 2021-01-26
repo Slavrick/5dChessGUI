@@ -579,7 +579,6 @@ public class GameState {
 		return true;
 	}
 
-	//FIXME all of these undo functions need to do in reverse order.
 	// same as above, for ArrayList
 	public boolean undoTurn(ArrayList<Integer> tlmoved) {
 		if (tlmoved.size() == 0)
