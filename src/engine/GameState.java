@@ -711,11 +711,6 @@ public class GameState {
 			tlMoves.addAll(MoveGenerator.getAllMoves(this, color, t.Tend, i));
 			allMoves.add(tlMoves);
 		}
-		/*
-		 * int sum = 0;
-		 * for (ArrayList<Move> one : allMoves) { sum += one.size(); }
-		 * System.out.println("Generating " + sum + " Turns");
-		 */
 		int curMove[] = new int[allMoves.size()];
 		while (curMove[0] < allMoves.get(0).size()) { // TODO fix this
 			Move[] moves = new Move[curMove.length];
@@ -742,7 +737,39 @@ public class GameState {
 		}
 		return true;
 	}
-
+	
+	public boolean firstPassMateDetection() {
+		determineActiveTLS();// TODO figure out if this is needed.
+		calcPresent();
+		if (opponentCanCaptureKing()) {
+			return true;
+		}
+		// This looks like it should be hackey and bad, i should change it.
+		ArrayList<ArrayList<Move>> allMoves = new ArrayList<ArrayList<Move>>();
+		for (int i = minTL; i <= maxTL; i++) {
+			ArrayList<Move> tlMoves = new ArrayList<Move>();
+			Timeline t = getTimeline(i);
+			if (t.colorPlayable != color) {
+				continue;
+			}
+			// the null move marks that the timeline is unmoved. Ie this is the case for
+			// certain things.(inactive, future timelines etc.)
+			tlMoves.add(null);
+			tlMoves.addAll(MoveGenerator.getAllMoves(this, color, t.Tend, i));
+			allMoves.add(tlMoves);
+		}
+		for(int i = 0; i < allMoves.size(); i++) {
+			ArrayList<Move> tlMoves = allMoves.get(i);
+			for(int w = 0; w < tlMoves.size(); w++) {
+				Move moveToValidate = tlMoves.get(w);
+				if(moveToValidate.type == Move.SPATIALMOVE) {
+					//FIXME validate the moves.
+				}
+				//Validate and remove any unnessasary things.
+			}
+		}
+		return true;
+	}
 	// Looks at all permutations of a moveset and validates them. this uses a swap
 	// permutation algorithm.
 	public boolean validateAllPermutations(Move[] moves) {

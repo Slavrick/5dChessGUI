@@ -95,7 +95,7 @@ public class MoveGenerator {
 		}
 		if (piece == 0)
 			return null;
-		if (piece == 1 || piece == 11 || piece == 10 || piece == 20) {// TODO add brawn Movement.
+		if (piece == 1 || piece == 11 || piece == 10 || piece == 20) {// TODO add brawn captures, it only captures like pawn atm.
 			return getPawnMoves(piece, g, source, unMoved);
 		}
 		if (piece == 7 || piece == 17) {
@@ -274,7 +274,7 @@ public class MoveGenerator {
 		Board b = g.getBoard(source, color);
 		CoordFour currSquare = CoordFour.add(source, movementVec);
 		while (true) {
-			int currPiece = b.getSquare(currSquare);// TODO handle negative
+			int currPiece = b.getSquare(currSquare);
 			if (currPiece == Board.ERRORSQUARE) {
 				return null;
 			}
@@ -532,8 +532,8 @@ public class MoveGenerator {
 
 	// For now, somewhat counterIntuitively this checks for pieces of opposite CF
 	// color,
+	//TODO fix this, it doesnt work but look around given square on a queen/knight basis rather than searching like this.
 	private static boolean isSquareAttacked(Board b, CoordFive target) {
-		// TODO Auto-generated method stub
 		for (int x = 0; x < b.width; x++) {
 			for (int y = 0; y < b.height; y++) {
 				int piece = b.getSquare(x, y);

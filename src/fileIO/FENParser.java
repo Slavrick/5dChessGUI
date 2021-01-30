@@ -20,8 +20,7 @@ public class FENParser {
 	public final String STDBOARDFEN = "r*nbqk*bnr*/p*p*p*p*p*p*p*p*/8/8/8/8/P*P*P*P*P*P*P*P*/R*NBQK*BNR*:0:1:W";
 	public final String STD_PRINCESS_BOARDFEN = "r*nbsk*bnr*/p*p*p*p*p*p*p*p*/8/8/8/8/P*P*P*P*P*P*P*P*/R*NBSK*BNR*:0:1:W";
 	public final String STD_DEFENDEDPAWN_BOARDFEN = "r*qbnk*bnr*/p*p*p*p*p*p*p*p*/8/8/8/8/P*P*P*P*P*P*P*P*/R*QBNK*BNR*:0:1:W";
-	
-	
+
 	// TODO this stuff doesnt work for - or + 0
 	public static GameState FENToGS(String fileLoc) {
 		File file = new File(fileLoc);
@@ -134,24 +133,32 @@ public class FENParser {
 			return null;
 		}
 		// Parse Header
-		ArrayList<String> headers = new ArrayList<String>();
+		String size = null;
+		String variant;
+		String Puzzle;
 		ArrayList<String> fenBoards = new ArrayList<String>();
 		ArrayList<String> moves = new ArrayList<String>();
-		for(String line: lines) {
-			if(line.charAt(0) == '[') {
-				headers.add(line);
-				if(line.contains(":") && !line.contains("\"")) {
+		for (String line : lines) {
+			if (line.charAt(0) == '[') {
+				if(line.substring(1, 5).equalsIgnoreCase("size")) {
+					size = line;
+				}
+				if(line.substring(1, 8).equalsIgnoreCase("variant")) {
+					variant = line;
+				}
+				if (line.contains(":") && !line.contains("\"")) {
 					fenBoards.add(line);
 				}
-			}
-			else {
+			} else {
 				moves.add(line);
 			}
 		}
-		int width = -1;
-		int height = -1;
+		if(size == null) {
+			return null;
+		}
 		// Parse Headers
-		
+		int width = Integer.parseInt(size.substring(size.indexOf('\"') + 1, size.indexOf('x')));
+		int height = Integer.parseInt(size.substring(size.indexOf('x') + 1, size.indexOf('\"')));
 		// Parse Moves
 		// GameStateManager game = new
 		// GameStateManager(origins,width,height,evenTimelines,color,minTL,moves);
@@ -171,7 +178,7 @@ public class FENParser {
 					char c = s.charAt(charat);
 					if (c >= 'A') {
 						int piece = indexOfElement(Board.pieceChars, c);
-						if(charat < s.length() - 1 && s.charAt(charat+1) == '*') {
+						if (charat < s.length() - 1 && s.charAt(charat + 1) == '*') {
 							piece *= -1;
 							charat++;
 						}
@@ -216,7 +223,55 @@ public class FENParser {
 		b.wkingSideCastle = castlingrights.contains("K");
 		b.wqueenSideCastle = castlingrights.contains("Q");
 		b.bkingSideCastle = castlingrights.contains("k");
-		b.bqueenSideCastle = castlingrights.contains("q");
+		b.bqueenSideCastle = castlingrights.contains("q");// XXX due for removal.
+	}
+
+	// Recieve a gamestate and a shad move and add it to the gamestate.
+	// The notation for the move should be (<L>T<T>)<Piece><SAN> for spatial,
+	// (<L>T<T>)(Piece)(SAN)>(<L>T<T>)<SAN> for spatial/branching.
+	// XXX make sure this works for +0 and -0
+	public static CoordFour getShadMove(GameState g, String move) {
+		CoordFour temp;
+		
+		return null;
+	}
+
+	public static Move fullStringToCoord(String move) {
+		String coord1;
+		if(move.contains(">")) {
+			coord1 = move.substring(0, move.indexOf('>'));			
+		}
+		else {
+			coord1 = move.substring(0, move.lastIndexOf('('));
+		}
+		String coord2 = move.substring(move.lastIndexOf('('));
+		return new Move(halfStringToCoord(coord1), halfStringToCoord(coord2));
+	}
+	
+	//This is for when the move is ambiguous, such as a Nf3
+	public static Move ambiguousStringToMove(String move, GameState g) {
+		//TODO finish function
+		
+		return null;
+	}
+	
+	// Recieve a string in format (<L>T<T>)(?PIECE)(SAN)
+	// TODO make it work for a move such as Nf4, or make that logic elsewhere 
+	// XXX make this work for +-0
+	public static CoordFour halfStringToCoord(String halfmove) {
+		String layerstr = halfmove.substring(halfmove.indexOf('(') + 1, halfmove.indexOf('T'));
+		String timestr = halfmove.substring(halfmove.indexOf('T') + 1, halfmove.indexOf(')'));
+		String sancoord;
+		if (halfmove.charAt(halfmove.indexOf(')') + 1) < 'a') {
+			// Means there is a piece char.
+			sancoord = halfmove.substring(halfmove.indexOf(')') + 2);
+		} else {
+			sancoord = halfmove.substring(halfmove.indexOf(')') + 1);
+		}
+		CoordFour coord = SANtoCoord(sancoord);
+		coord.L = Integer.parseInt(layerstr);
+		coord.T = Integer.parseInt(timestr);
+		return coord;
 	}
 
 	// Recive string (a,b,c,d) return int[] {a,b,c,d} or coordFIVE
@@ -238,10 +293,18 @@ public class FENParser {
 		return new Move(c1, c2);
 	}
 
+	// Recieve 2 strings each of one coordinate style string.
 	public static Move stringToMove(String coord1, String coord2) {
 		CoordFour c1 = stringtoCoord(coord1);
 		CoordFour c2 = stringtoCoord(coord2);
 		return new Move(c1, c2);
+	}
+
+	// Recieve a String such as a8, assumes the san is correct
+	public static CoordFour SANtoCoord(String san) {
+		char file = san.charAt(0);
+		String rank = san.substring(1);
+		return new CoordFour((int) file - 97, Integer.parseInt(rank) - 1, 0, 0);
 	}
 
 	public static int indexOfElement(int[] arr, int target) {
@@ -261,11 +324,5 @@ public class FENParser {
 		}
 		return 0;
 	}
-	
-	//Recieve a gamestate and a shad move and add it to the gamestate. This is expected to be correct due to
-	//color ambiguity which may result in an illegal or incorrect gamestate.
-	public static boolean addShadMove(GameState g, Move m) {
-		
-		return true;
-	}
+
 }

@@ -50,10 +50,6 @@ public class MoveTester {
 				c[i] = 0;
 				i++;
 			}
-			
 		}
-	
 	}
-	
-	
 }
