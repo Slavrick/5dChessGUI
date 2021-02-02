@@ -26,6 +26,7 @@ public class Main extends Application {
 		MoveTester.TestBishopMoves();
 		FENParserTest.testSANParser();
 		FENParserTest.testShadParser();
+		FENParserTest.testShadFEN();
 		//FENExporterTester.testExporter();
 		System.out.println("Done.");
 	}

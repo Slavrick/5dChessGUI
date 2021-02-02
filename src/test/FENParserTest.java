@@ -72,4 +72,8 @@ public class FENParserTest {
 		CoordTester.testCoord(f3.dest,   5, 6, 1, 0);
 	}
 	
+	public static void testShadFEN() {
+		FENParser.shadSTDGSM("res/Brawn Tactics 1.5DPGN.txt");
+	}
+	
 }

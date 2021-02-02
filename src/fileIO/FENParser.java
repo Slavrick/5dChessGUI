@@ -118,6 +118,11 @@ public class FENParser {
 		return game;
 	}
 
+	public static GameStateManager shadSTDGSM(String fileLocation) {
+		File file = new File(fileLocation);
+		return shadSTDGSM(file);
+	}
+	
 	public static GameStateManager shadSTDGSM(File file) {
 		ArrayList<String> lines = new ArrayList<String>();
 		try {
@@ -125,7 +130,9 @@ public class FENParser {
 			BufferedReader br = new BufferedReader(fr);
 			String line;
 			while ((line = br.readLine()) != null) {
-				lines.add(line);
+				if(line.length() != 0) {
+					lines.add(line);
+				}
 			}
 			br.close();
 		} catch (IOException e) {
@@ -134,7 +141,7 @@ public class FENParser {
 		}
 		// Parse Header
 		String size = null;
-		String variant;
+		String variant = null;
 		String Puzzle;
 		ArrayList<String> fenBoards = new ArrayList<String>();
 		ArrayList<String> moves = new ArrayList<String>();
@@ -143,7 +150,7 @@ public class FENParser {
 				if(line.substring(1, 5).equalsIgnoreCase("size")) {
 					size = line;
 				}
-				if(line.substring(1, 8).equalsIgnoreCase("variant")) {
+				if(line.substring(1, 8).equalsIgnoreCase("variant") || line.substring(1, 6).equalsIgnoreCase("board")) {
 					variant = line;
 				}
 				if (line.contains(":") && !line.contains("\"")) {
@@ -158,16 +165,69 @@ public class FENParser {
 		}
 		// Parse Headers
 		int width = Integer.parseInt(size.substring(size.indexOf('\"') + 1, size.indexOf('x')));
-		int height = Integer.parseInt(size.substring(size.indexOf('x') + 1, size.indexOf('\"')));
+		int height = Integer.parseInt(size.substring(size.indexOf('x') + 1, size.lastIndexOf('\"')));
+		// Parse FEN
+		if(variant != null) {
+			String boardChosen = variant.substring(variant.indexOf("\"") + 1, variant.lastIndexOf("\""));
+			if(boardChosen.equalsIgnoreCase("custom")) {
+				for(String FEN: fenBoards) {
+					
+				}
+			}
+		}else {
+			
+		}
+		Board[] starters = new Board[fenBoards.size()];
 		// Parse Moves
-		// GameStateManager game = new
 		// GameStateManager(origins,width,height,evenTimelines,color,minTL,moves);
 		// return game;
 		return null;
 	}
+	
+	public static Board getBoardFromString(String board, int width, int height) {
+		board.substring(1,board.length()-1);
+		Board b = new Board(width, height);	
+		String[] fields = board.split(":");
+		String[] rows = fields[0].split("/");
+		int row = 0;
+		int col = 0;
+		try {
+			for (String s : rows) {
+				for (int charat = 0; charat < s.length(); charat++) {
+					char c = s.charAt(charat);
+					if (c >= 'A') {
+						int piece = indexOfElement(Board.pieceChars, c);
+						if (charat < s.length() - 1 && s.charAt(charat + 1) == '*') {
+							piece *= -1;
+							charat++;
+						}
+						b.setSquare(col,height - row - 1,piece);
+						col++;
+					} else if (c <= '9' && c >= '1') {
+						for (int i = 0; i < (int) (c) - 48; i++) {
+							b.brd[height - row - 1][col] = indexOfElement(Board.pieceChars, '_');
+							col++;
+						}
+					} else {
+						System.out.println("There was an error reading the FEN provided");
+						col++;
+					}
+				}
+				row++;
+				col = 0;
+			}
+		} catch (ArrayIndexOutOfBoundsException e) { // this means that the board was out of bounds, which means the
+														// corrilating numbers are wrong
+			System.out.println(
+					"There was an indexOutOfBounds -- this probably means the height or width was incorrectly provided");
+			System.out.println("Height of: " + (height - row - 1) + "Width of: " + (col - height - 1));
+			return null;
+		}
+		return b;
+	}
 
-	public static Timeline getTimelineFromString(String Timeline, int layer, int width, int height) {
-		String[] fields = Timeline.split(";");
+	public static Timeline getTimelineFromString(String timelinestr, int layer, int width, int height) {
+		String[] fields = timelinestr.split(";");
 		String[] rows = fields[0].split("/");
 		Board b = new Board(width, height);
 		int row = 0;
@@ -324,5 +384,7 @@ public class FENParser {
 		}
 		return 0;
 	}
+
+
 
 }

@@ -85,6 +85,11 @@ public class Board {
 		brd[c.y][c.x] = piece;
 	}
 	
+
+	public void setSquare(int x, int y, int piece) {
+		brd[y][x] = piece;
+	}
+	
 	/**
 	 * Determine whether a coordinate is in bounds
 	 * 
@@ -144,4 +149,5 @@ public class Board {
 		}
 		return GameState.WHITE;
 	}
+
 }
