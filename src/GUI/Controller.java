@@ -7,7 +7,6 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.control.Label;
@@ -22,9 +21,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Popup;
-import javafx.stage.PopupWindow;
 import javafx.stage.Stage;
-import javafx.stage.Window;
 
 import java.awt.MouseInfo;
 import java.awt.Point;
@@ -36,7 +33,6 @@ import java.util.ArrayList;
 import engine.Board;
 import engine.CoordFive;
 import engine.CoordFour;
-import engine.GameState;
 import engine.GameStateManager;
 import engine.Move;
 import engine.MoveGenerator;
@@ -274,6 +270,18 @@ public class Controller implements MessageListener{
 		File selectedFile = getFile();
 		if (selectedFile != null) {
 			g = FENParser.FENtoGSM(selectedFile);
+			setStatusLabel();
+			screenX = 0;
+			screenY = 0;
+			drawStage();
+		}
+	}
+	
+	@FXML
+	private void loadShadGame(ActionEvent event) {
+		File selectedFile = getFile();
+		if (selectedFile != null) {
+			g = FENParser.shadSTDGSM(selectedFile);
 			setStatusLabel();
 			screenX = 0;
 			screenY = 0;

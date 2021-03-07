@@ -548,6 +548,7 @@ public class MoveGenerator {
 		return false;
 	}
 
+	//TODO not sure this works with pawns/brawns.
 	private static boolean validateSpatialPath(Board b, int piece, Move attack) {
 		CoordFour attackVector = CoordFour.sub(attack.origin, attack.dest);
 		attackVector.flatten();
@@ -572,5 +573,64 @@ public class MoveGenerator {
 			}
 		}
 		return false;
+	}
+	
+	//this will return the origin square given a coord, used for parsing the moves such as Nf3
+	//where you would not know the destination and would have to search for it.
+	//this only works for spatial moves, really full coordinates should be entered for anything other than a spatial move.
+	public static CoordFour reverseLookup(GameState g, CoordFive destSquare, int pieceType, int rank, int file) {
+		Board b = g.getBoard(destSquare);
+		if(b == null) {
+			return null;
+		}
+		if(pieceType == Board.piece.BROOK.ordinal()) {
+			System.out.println("Entering Critical");
+		}
+		if(MoveNotation.pieceIsRider(pieceType)) {
+			CoordFour[] moveVecs = MoveNotation.getMoveVectors(pieceType);
+			for(CoordFour vector : moveVecs) {
+				if(vector.isSpatial()) {
+					CoordFour result = destSquare.clone();
+					while(true) {
+						result = CoordFour.sub(result, vector);
+						int square = b.getSquare(result);
+						if(square == EMPTYSQUARE) {
+							continue;
+						}
+						if(square == Board.ERRORSQUARE) {
+							break;
+						}
+						if(square == pieceType) {
+							if( (file == -1 || result.x == file) && (rank == -1 || result.y == rank)) {
+								return result;
+							}
+						}
+						break;
+					}
+				}
+			}
+		}else {
+			CoordFour[] moveVecs = MoveNotation.getMoveVectors(pieceType);
+			if(pieceType == Board.piece.WPAWN.ordinal()) {
+				moveVecs = MoveNotation.whitePawnRLkup;
+			}else if(pieceType == Board.piece.WPAWN.ordinal() + Board.numTypes) {
+				moveVecs = MoveNotation.blackPawnRLkup;
+			}else if(pieceType == Board.piece.WBRAWN.ordinal()) {
+				moveVecs = MoveNotation.whiteBrawnRLkup;
+			}else if(pieceType == Board.piece.WBRAWN.ordinal() + Board.numTypes) {
+				moveVecs = MoveNotation.blackBrawnRLkup;
+			}
+			for(CoordFour vector : moveVecs) {
+				if(vector.isSpatial()) {
+					CoordFour result = CoordFour.sub(destSquare, vector);
+					if(b.getSquare(result) == pieceType) {
+						if( (file == -1 || result.x == file) && (rank == -1 || result.y == rank)) {
+							return result;
+						}
+					}
+				}
+			}
+		}
+		return null;
 	}
 }

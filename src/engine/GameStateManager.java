@@ -71,4 +71,17 @@ public class GameStateManager extends GameState{
 		}
 		return true;
 	}
+
+	public boolean makeTurn(Turn turn) {
+		if(turn == null) {
+			return false;
+		}
+		for(Move m : turn.moves) {
+			if(!this.makeMove(m)) {
+				return false;
+			}
+		}
+		this.submitMoves();
+		return true;
+	}
 }

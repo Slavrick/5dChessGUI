@@ -5,7 +5,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import engine.Board;
-import engine.GameState;
 import engine.GameStateManager;
 import engine.Move;
 import engine.Timeline;

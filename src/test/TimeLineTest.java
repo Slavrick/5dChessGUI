@@ -1,6 +1,5 @@
 package test;
 
-import engine.Board;
 import engine.CoordFour;
 import engine.Move;
 import engine.Timeline;

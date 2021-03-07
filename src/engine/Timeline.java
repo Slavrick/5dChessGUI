@@ -2,10 +2,11 @@ package engine;
 
 import java.util.ArrayList;
 
-public class Timeline {
+public class Timeline implements Comparable<Timeline>{
 	/* the white and black boards on the timeline. */
 	public ArrayList<Board> wboards;
 	public ArrayList<Board> bboards;
+	public int layer;
 	/* the absolute start and end time of both white or black */
 	public int Tstart;
 	public int Tend;
@@ -42,6 +43,7 @@ public class Timeline {
 			blackStart = startTime;
 			blackEnd = startTime;
 		}
+		this.layer = layer;
 		colorPlayable = boardColor;
 		colorStart = boardColor;
 		Tstart = startTime;
@@ -226,5 +228,16 @@ public class Timeline {
 				}
 			}
 		}
+	}
+
+	@Override
+	public int compareTo(Timeline compareTo) {
+		if(this.layer > compareTo.layer) {
+			return 1;
+		}
+		if(this.layer > compareTo.layer) {
+			return -1;
+		}
+		return 0;
 	}
 }

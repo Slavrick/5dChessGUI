@@ -1,14 +1,10 @@
 package test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 
 import engine.Board;
 import engine.CoordFive;
-import engine.CoordFour;
 import engine.GameState;
 import engine.MoveGenerator;
-import engine.MoveNotation;
 import fileIO.FENParser;
 
 public class MoveTester {

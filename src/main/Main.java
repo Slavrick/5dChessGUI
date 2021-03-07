@@ -27,6 +27,7 @@ public class Main extends Application {
 		FENParserTest.testSANParser();
 		FENParserTest.testShadParser();
 		FENParserTest.testShadFEN();
+		FENParserTest.testAmbiguityInfoParser();
 		//FENExporterTester.testExporter();
 		System.out.println("Done.");
 	}

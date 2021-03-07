@@ -1,6 +1,6 @@
 package engine;
 
-public class Move implements Comparable{
+public class Move implements Comparable<Move>{
 
 	public CoordFour origin;
 	public CoordFour dest;
@@ -91,8 +91,7 @@ public class Move implements Comparable{
 	}
 
 	@Override
-	public int compareTo(Object arg) {
-		Move m2 = (Move) arg;
+	public int compareTo(Move m2) {
 		if(m2.type > this.type) {
 			return -1;
 		}

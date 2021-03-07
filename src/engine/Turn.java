@@ -58,6 +58,32 @@ public class Turn {
 		pre = prefixMode.NONE;
 	}
 	
+	
+	public Turn(Move[] tmoves) {
+		this.moves = tmoves;
+		int count = 0;
+		for(Move m : this.moves) {
+			count++;
+			if(m.type != 1)
+				count++;
+		}
+		this.tls = new int[count];
+		count = 0;
+		for(Move m : this.moves) {
+			if(m.type != 1){
+				tls[count] = m.origin.L;
+				count++;
+				tls[count] = m.dest.L;
+				count++;
+			}else {
+				tls[count] = m.dest.L;
+				count++;
+			}
+		}
+		mode = notationMode.SHAD;
+		pre = prefixMode.TURN;
+	}
+
 	public Move[] getMoves(){
 		return this.moves;
 	}

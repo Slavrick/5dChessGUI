@@ -1,10 +1,6 @@
 package test;
 
-import engine.Board;
-import engine.CoordFour;
 import engine.GameState;
-import engine.Move;
-import engine.Timeline;
 import fileIO.FENParser;
 
 public class BranchTester {

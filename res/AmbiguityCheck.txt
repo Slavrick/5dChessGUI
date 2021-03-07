@@ -1,0 +1,6 @@
+[Size "8x8"]
+[Board "custom"]
+[2N3N1/8/8/8/8/8/8/r6r:0:1:w]
+
+1. Nce7 / Rae1
+ 

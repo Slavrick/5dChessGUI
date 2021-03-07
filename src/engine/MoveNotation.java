@@ -391,6 +391,75 @@ public class MoveNotation {
 			
 	};
 	
+	
+	//Jank Solution to the fact that pawns and brawns can move in so many ways, for reverse lookup(Searching for a source from a destination)
+	//Notice the 1 or two movement. This could fail if there is an inproper configuration, ie. the reverse lookup is destined to fail(this doesnt have any validations)
+	//However say 2 pawns are in a line, This code will always find the one in front based of this description(so it should work fine, given that the reverse lookup is
+	//non ambiguous and actually exitst)
+	public static final CoordFour[] whitePawnRLkup = {
+			//Pawn Movement
+			new CoordFour(0,1,0,0),
+			new CoordFour(0,0,0,-1),
+			new CoordFour(0,2,0,0),
+			new CoordFour(0,0,0,-2),
+			//Pawn Attack
+			new CoordFour(1,1,0,0),
+			new CoordFour(-1,1,0,0),
+			new CoordFour(0,0,1,-1),
+			new CoordFour(0,0,-1,-1)
+	};
+	
+	public static final CoordFour[] blackPawnRLkup = {
+			//Pawn Movement
+			new CoordFour(0,-1,0,0),
+			new CoordFour(0,0,0,1),
+			new CoordFour(0,-2,0,0),
+			new CoordFour(0,0,0,2),
+			//Pawn Attack
+			new CoordFour(1,-1,0,0),
+			new CoordFour(-1,-1,0,0),
+			new CoordFour(0,0,1,1),
+			new CoordFour(0,0,-1,1)
+	};
+	
+	public static final CoordFour[] whiteBrawnRLkup = {
+			//Pawn Movement
+			new CoordFour(0,1,0,0),
+			new CoordFour(0,0,0,-1),
+			new CoordFour(0,2,0,0),
+			new CoordFour(0,0,0,-2),
+			//Pawn Captures
+			new CoordFour(1,1,0,0),
+			new CoordFour(-1,1,0,0),
+			new CoordFour(0,0,1,-1),
+			new CoordFour(0,0,-1,-1),
+			//Brawn Specific Captures
+			new CoordFour(0,1,-1,0),
+			new CoordFour(0,1,1,0),
+			new CoordFour(0,1,0,-1),
+			new CoordFour(1,0,0,-1),
+			new CoordFour(-1,0,0,-1),
+	};
+	
+	public static final CoordFour[] blackBrawnRLkup = {
+			//Pawn Movement
+			new CoordFour(0,-1,0,0),
+			new CoordFour(0,0,0,1),
+			new CoordFour(0,-2,0,0),
+			new CoordFour(0,0,0,2),
+			//Pawn Captures
+			new CoordFour(1,-1,0,0),
+			new CoordFour(-1,-1,0,0),
+			new CoordFour(0,0,1,1),
+			new CoordFour(0,0,-1,1),
+			//Brawn Captures
+			new CoordFour(0,-1,-1,0),
+			new CoordFour(0,-1,1,0),
+			new CoordFour(0,-1,0,1),
+			new CoordFour(1,0,0,1),
+			new CoordFour(-1,0,0,1),
+	};
+	
 	/**
 	 * Take a piece and turns it into an array of movement vectors,
 	 * 
@@ -443,12 +512,14 @@ public class MoveNotation {
 	public static boolean pieceIsRider(int piece) {
 		piece = piece < 0 ? piece * -1 : piece;
 		switch(piece) {
-		case 1 + 10:
+		case 1 + Board.numTypes://Pawn
 		case 1:
-		case 2 + 10:	
+		case 2 + Board.numTypes://Knight
 		case 2:
-		case 7 + 10:
+		case 7 + Board.numTypes://King
 		case 7:
+		case 10 + Board.numTypes://Brawn
+		case 10:
 			return false;
 		default: 
 			return true;
