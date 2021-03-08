@@ -8,7 +8,6 @@ import sun.awt.KeyboardFocusManagerPeerImpl;
 
 public class MoveGenerator {
 
-	// TODO promotion
 	public static final int EMPTYSQUARE = Board.piece.EMPTY.ordinal();
 	public static final int WKING = 7;
 	public static final int BKING = 17;
@@ -95,8 +94,13 @@ public class MoveGenerator {
 		}
 		if (piece == 0)
 			return null;
-		if (piece == 1 || piece == 11 || piece == 10 || piece == 20) {// TODO add brawn captures, it only captures like pawn atm.
+		if (piece == Board.piece.WPAWN.ordinal() || piece == Board.piece.BPAWN.ordinal()) {
 			return getPawnMoves(piece, g, source, unMoved);
+		}
+		if(piece == Board.piece.WBRAWN.ordinal() || piece == Board.piece.BBRAWN.ordinal()) {
+			ArrayList<CoordFour> moves = getPawnMoves(piece, g, source, unMoved);
+			moves.addAll(getCaptures(piece,g,source));
+			return moves;
 		}
 		if (piece == 7 || piece == 17) {
 			ArrayList<CoordFour> moves = new ArrayList<CoordFour>();
@@ -128,16 +132,16 @@ public class MoveGenerator {
 			unMoved = true;
 			piece *= -1;
 		}
-		if (piece == 1) {
+		if (piece == Board.piece.WPAWN.ordinal()) {
 			return getLeaperCaptures(g, source.color, source, MoveNotation.whitePawnattack);
 		}
-		if (piece == 11) {
+		if (piece == Board.piece.BPAWN.ordinal()) {
 			return getLeaperCaptures(g, source.color, source, MoveNotation.blackPawnattack);
 		}
-		if (piece == 10) {
+		if (piece == Board.piece.WBRAWN.ordinal()) {
 			return getLeaperCaptures(g, source.color, source, MoveNotation.whiteBrawnattack);
 		}
-		if (piece == 20) {
+		if (piece == Board.piece.BBRAWN.ordinal()) {
 			return getLeaperCaptures(g, source.color, source, MoveNotation.blackBrawnattack);
 		}
 		if (MoveNotation.pieceIsRider(piece)) {
@@ -583,9 +587,6 @@ public class MoveGenerator {
 		if(b == null) {
 			return null;
 		}
-		if(pieceType == Board.piece.BROOK.ordinal()) {
-			System.out.println("Entering Critical");
-		}
 		if(MoveNotation.pieceIsRider(pieceType)) {
 			CoordFour[] moveVecs = MoveNotation.getMoveVectors(pieceType);
 			for(CoordFour vector : moveVecs) {
@@ -594,6 +595,7 @@ public class MoveGenerator {
 					while(true) {
 						result = CoordFour.sub(result, vector);
 						int square = b.getSquare(result);
+						square = square < 0 ? square * -1 : square;
 						if(square == EMPTYSQUARE) {
 							continue;
 						}
@@ -623,7 +625,7 @@ public class MoveGenerator {
 			for(CoordFour vector : moveVecs) {
 				if(vector.isSpatial()) {
 					CoordFour result = CoordFour.sub(destSquare, vector);
-					if(b.getSquare(result) == pieceType) {
+					if(b.getSquare(result) == pieceType || b.getSquare(result) * -1 == pieceType) {
 						if( (file == -1 || result.x == file) && (rank == -1 || result.y == rank)) {
 							return result;
 						}

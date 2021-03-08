@@ -21,9 +21,9 @@ import engine.Turn;
 
 public class FENParser {
 
-	public final String STDBOARDFEN = "[r*nbqk*bnr*/p*p*p*p*p*p*p*p*/8/8/8/8/P*P*P*P*P*P*P*P*/R*NBQK*BNR*:0:1:W]";
-	public final String STD_PRINCESS_BOARDFEN = "[r*nbsk*bnr*/p*p*p*p*p*p*p*p*/8/8/8/8/P*P*P*P*P*P*P*P*/R*NBSK*BNR*:0:1:W]";
-	public final String STD_DEFENDEDPAWN_BOARDFEN = "[r*qbnk*bnr*/p*p*p*p*p*p*p*p*/8/8/8/8/P*P*P*P*P*P*P*P*/R*QBNK*BNR*:0:1:W]";
+	public final static String STDBOARDFEN = "[r*nbqk*bnr*/p*p*p*p*p*p*p*p*/8/8/8/8/P*P*P*P*P*P*P*P*/R*NBQK*BNR*:0:1:w]";
+	public final static String STD_PRINCESS_BOARDFEN = "[r*nbsk*bnr*/p*p*p*p*p*p*p*p*/8/8/8/8/P*P*P*P*P*P*P*P*/R*NBSK*BNR*:0:1:w]";
+	public final static String STD_DEFENDEDPAWN_BOARDFEN = "[r*qbnk*bnr*/p*p*p*p*p*p*p*p*/8/8/8/8/P*P*P*P*P*P*P*P*/R*QBNK*BNR*:0:1:w]";
 
 	// TODO this stuff doesnt work for - or + 0
 	public static GameState FENToGS(String fileLoc) {
@@ -54,7 +54,7 @@ public class FENParser {
 		boolean evenTimelines = firstLine[2].charAt(0) == '1';
 		int numOrigins = Integer.parseInt(firstLine[3]);
 		int minTL = Integer.parseInt(firstLine[4]);
-		boolean color = firstLine[5].charAt(0) == 'w';
+		boolean color = firstLine[5].charAt(0) == 'w' || firstLine[5].charAt(0) == 'W';
 		Timeline[] origins = new Timeline[numOrigins];
 		for (int i = 1; i <= numOrigins; i++) {
 			String tlString = lines.get(i);
@@ -167,12 +167,7 @@ public class FENParser {
 				moves.add(line);
 			}
 		}
-		if(size == null) {
-			return null;
-		}
 		// Parse Headers
-		int width = Integer.parseInt(size.substring(size.indexOf('\"') + 1, size.indexOf('x')));
-		int height = Integer.parseInt(size.substring(size.indexOf('x') + 1, size.lastIndexOf('\"')));
 		boolean evenStarters = false;//FIXME add this to parser.
 		Timeline[] starters;
 		GameStateManager gsm = null;
@@ -180,22 +175,35 @@ public class FENParser {
 		if(variant != null) {
 			String boardChosen = variant.substring(variant.indexOf("\"") + 1, variant.lastIndexOf("\""));
 			if(boardChosen.equalsIgnoreCase("custom")) {
+				if(size == null) {
+					return null;
+				}
+				int width = Integer.parseInt(size.substring(size.indexOf('\"') + 1, size.indexOf('x')));
+				int height = Integer.parseInt(size.substring(size.indexOf('x') + 1, size.lastIndexOf('\"')));
 				int count = 0;
 				starters = new Timeline[fenBoards.size()];
 				for(String FEN: fenBoards) {
 					starters[count++] = getTimelineFromString(FEN, width, height);
 				}
+				
 				Arrays.sort(starters);
 				gsm = new GameStateManager(starters, width, height, evenStarters, true, starters[0].layer, null);
 			}
-			else {
-				
-			}
 			//Detect other boards / variants by string.
+			else if(boardChosen.equalsIgnoreCase("standard")) {
+				starters = new Timeline[1];
+				starters[0] = getTimelineFromString(STDBOARDFEN,8,8);
+				gsm = new GameStateManager(starters, 8, 8, false, true, starters[0].layer, null);
+			}
+			else if(boardChosen.equalsIgnoreCase("standard-princess") ) {
+				starters = new Timeline[1];
+				starters[0] = getTimelineFromString(STD_PRINCESS_BOARDFEN,8,8);
+				gsm = new GameStateManager(starters, 8, 8, false, true, starters[0].layer, null);
+			}
+			//XXX add more variants, or a better variant loader in the future.(Such as loading from some sort of dictionary).
 		}else {
-			
+			return null;
 		}
-		System.out.println(MoveGenerator.reverseLookup(gsm, new CoordFive(3,2,1,0,true), Board.piece.WBRAWN.ordinal(), -1, -1));
 		// Parse Moves
 		ArrayList<String> turns = new ArrayList<String>();
 		for(String s: moves) {
@@ -206,7 +214,7 @@ public class FENParser {
 				turns.add(s);				
 			}
 		}
-		stringToTurn(gsm, turns.get(0));
+		//apply moves
 		for(String strturn : turns) {
 			gsm.makeTurn(stringToTurn(gsm,strturn));
 		}
@@ -294,7 +302,6 @@ public class FENParser {
 			System.out.println("Height of: " + (height - row - 1) + "Width of: " + (col - height - 1));
 			return null;
 		}
-		FENParser.populateCastlingRights(b, fields[1]);
 		if (fields[2].equals("-")) {
 			b.enPassentSquare = null;
 		} else {
@@ -306,14 +313,6 @@ public class FENParser {
 		int timeStart = Integer.parseInt(fields[3].substring(1, fields[3].length()));
 		Timeline t = new Timeline(b, color, timeStart, layer);
 		return t;
-	}
-
-	// recieve String in form such as KQkq for full castling rights.
-	public static void populateCastlingRights(Board b, String castlingrights) {
-		b.wkingSideCastle = castlingrights.contains("K");
-		b.wqueenSideCastle = castlingrights.contains("Q");
-		b.bkingSideCastle = castlingrights.contains("k");
-		b.bqueenSideCastle = castlingrights.contains("q");// XXX due for removal.
 	}
 
 	public static Turn stringToTurn(GameState g, String turnstr) {
@@ -328,7 +327,7 @@ public class FENParser {
 		String[] movesStr = turnstr.split("\\s+");
 		Move[] moves = new Move[movesStr.length];
 		for(int i = 0; i < movesStr.length; i++) {
-			moves[i] = getShadMove( g, movesStr[i]);
+			moves[i] = getShadMove(g, movesStr[i]);
 		}
 		return new Turn(moves);
 	}
@@ -365,24 +364,31 @@ public class FENParser {
 			dest.T = g.getTimeline(0).Tend;
 		}
 		//Get Piece.
+		char piecechar;
 		int piece;
 		if(move.contains(")")) {
-			piece = indexOfElement(Board.pieceChars, move.charAt(move.indexOf(')') + 1));
+			piecechar = move.charAt(move.indexOf(')') + 1);
 		}else {
-			piece = indexOfElement(Board.pieceChars, move.charAt(0));
+			piecechar = move.charAt(0);
+		}
+		if(piecechar <= 'Z') {
+			piece = indexOfElement(Board.pieceChars,piecechar);
+		}else {
+			piece = Board.piece.WPAWN.ordinal();
 		}
 		//Makes sure we get the right piece color.
 		piece = g.color ? piece : piece + Board.numTypes;
 		CoordFour ambiguity = getAmbiguityInfo(move);
 		int file = ambiguity.x;
 		int rank = ambiguity.y;
-		//TODO find ambiguity clarification things.
-		
-		//TODO finish function
-		//Detect if extra file/rank information is given
-		//Ie ndf3 or R3f2
-		
+		if(piece == 1) {
+			System.out.println("Pawn RLUP");
+		}
 		CoordFour origin = MoveGenerator.reverseLookup(g, dest, piece, rank, file);
+		if(origin == null) {
+			System.out.println("Could not find reverseLookup for this move :l" + move);
+			return null;
+		}
 		return new Move(origin,dest);
 	}
 	
@@ -430,7 +436,7 @@ public class FENParser {
 	public static CoordFour halfStringToCoord(String halfmove) {
 		String temporalCoord;
 		//This next line should hold true, but may be wrong(hopefully not, im not planning on supporting boards of 9 or greater length
-		//TODO not sure if exits (0T1)Na1x(0T1)c3 <-- must account for 'x' "takes" symbol.
+		//not sure if exits (0T1)Na1x(0T1)c3 <-- must account for 'x' "takes" symbol.
 		String sancoord;
 		if(halfmove.charAt(halfmove.length() - 1) == 'x') {
 			sancoord = halfmove.substring(halfmove.length() - 3, halfmove.length() - 1);

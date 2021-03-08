@@ -84,18 +84,6 @@ public class FENExporter {
 			}
 		}
 		FEN += ";";
-		if(b.wkingSideCastle) {
-			FEN += "K";
-		}
-		if(b.wqueenSideCastle) {
-			FEN += "Q";
-		}
-		if(b.bkingSideCastle) {
-			FEN += "k";
-		}
-		if(b.bqueenSideCastle) {
-			FEN += "q";
-		}
 		FEN += ";";
 		if(b.enPassentSquare == null) {
 			FEN += "-";

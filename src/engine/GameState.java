@@ -10,6 +10,7 @@ public class GameState {
 	public static final boolean BLACK = false;
 
 	public ArrayList<Timeline> multiverse;
+	public boolean evenStart;
 	public boolean color;
 	public int startPresent;
 	public int present;
@@ -38,6 +39,7 @@ public class GameState {
 	// arrays. But it will work for certain purposes, ie. for a subclass.
 	public GameState(GameState g) {
 		this.multiverse = g.multiverse;
+		this.evenStart = g.evenStart;
 		this.color = g.color;
 		this.startPresent = g.startPresent;
 		this.present = g.present;
@@ -57,6 +59,7 @@ public class GameState {
 		multiverse.add(new Timeline(start, true, 1, 0));
 		minTL = 0;
 		maxTL = 0;
+		evenStart = false;
 		tlHandicap = 0;
 		this.width = start.width;
 		this.height = start.height;
@@ -68,6 +71,7 @@ public class GameState {
 		multiverse.add(starter);
 		minTL = 0;
 		maxTL = 0;
+		evenStart = false;
 		tlHandicap = 0;
 		color = true;
 		Board b = starter.getPlayableBoard();
@@ -90,30 +94,26 @@ public class GameState {
 		initVals();
 	}
 
-	public GameState(ArrayList<Timeline> starters, int minTL, int maxTL) {
-		Board b = starters.get(0).getPlayableBoard();
-		this.width = b.width;
-		this.height = b.height;
-		multiverse = starters;
+	//This is going to be the new Constructor going foreward.
+	public GameState(Timeline[] origins, int width, int height, boolean evenStart, boolean color, int minTL) {
+		multiverse = new ArrayList<Timeline>();
+		this.width = width;
+		this.height = height;
 		this.minTL = minTL;
-		this.maxTL = maxTL;
-		tlHandicap = 0;
-		color = true;
+		this.maxTL = minTL + origins.length - 1;
+		this.color = color;
+		this.evenStart = evenStart;
+		if (evenStart) {
+			tlHandicap = 1;
+		} else {
+			tlHandicap = 0;
+		}
+		for (Timeline t : origins) {
+			multiverse.add(t);
+		}
 		initVals();
 	}
-
-	public GameState(ArrayList<Timeline> starters, int minTL, int maxTL, int handicap) {
-		Board b = starters.get(0).getPlayableBoard();
-		this.width = b.width;
-		this.height = b.height;
-		multiverse = starters;
-		this.minTL = minTL;
-		this.maxTL = maxTL;
-		tlHandicap = handicap;
-		color = true;
-		initVals();
-	}
-
+	
 	// This function is used by the FEN which is why it is so beefy.
 	public GameState(Timeline[] origins, int width, int height, boolean evenStart, boolean color, int minTL,
 			Move[] moves) {
@@ -123,6 +123,7 @@ public class GameState {
 		this.minTL = minTL;
 		this.maxTL = minTL + origins.length - 1;
 		this.color = color;
+		this.evenStart = evenStart;
 		if (evenStart) {
 			tlHandicap = 1;
 		} else {
@@ -297,15 +298,6 @@ public class GameState {
 		return false;
 	}
 	
-	public boolean castle(CoordFour boardcoord, boolean side) {
-		Timeline t = getTimeline(boardcoord.L);
-		if( t == null || t.Tend != boardcoord.T || t.colorPlayable != this.color) {
-			return false;
-		}
-		return false;
-		//FIXME
-	}
-	
 	public boolean submitMoves() {
 		determineActiveTLS();
 		boolean presColor = calcPresent();
@@ -400,10 +392,13 @@ public class GameState {
 		}
 		int pieceMoved = this.getSquare(m.origin, this.color);
 		int movedTo = this.getSquare(m.dest, this.color);
+		if((pieceMoved == -7 && movedTo == -4) || (pieceMoved == -7 - Board.numTypes && movedTo == -4 - Board.numTypes)) {
+			m.specialType = Move.CASTLE;
+		}
 		if(pieceMoved == Board.EMPTYSQUARE || pieceMoved == Board.ERRORSQUARE || this.color != Board.getColorBool(pieceMoved)) {
 			return false;
 		}
-		if (movedTo != Board.EMPTYSQUARE && Board.getColorBool(movedTo) == color) {
+		if (movedTo != Board.EMPTYSQUARE && Board.getColorBool(movedTo) == color && m.specialType == Move.NORMALMOVE) {
 			return false;
 		}
 		if(m.specialType != Move.NORMALMOVE) {
@@ -425,7 +420,6 @@ public class GameState {
 				else {
 					return false;
 				}
-				
 			}
 		}
 		//TODO validate Path.....

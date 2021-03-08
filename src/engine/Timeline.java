@@ -87,7 +87,7 @@ public class Timeline implements Comparable<Timeline>{
 		}
 	}
 
-	public int getSquare(CoordFour c, boolean color) {//TODO handle this for negative numbers
+	public int getSquare(CoordFour c, boolean color) {
 		Board b = getBoard(c.T, color);
 		if (b != null) {
 			return b.getSquare(c);

@@ -75,6 +75,7 @@ public class FENParserTest {
 	}
 
 	public static void testShadFEN() {
+		System.out.println("    Testing Whole Fen Parser.");
 		FENParser.shadSTDGSM("res/Brawn Tactics 1.5DPGN.txt");
 		FENParser.shadSTDGSM("res/AmbiguityCheck.txt");
 	}

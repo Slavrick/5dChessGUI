@@ -9,10 +9,6 @@ public class Board {
 	public int height;
 	public int width;
 	// The board has no need for its location within the multiverse
-	public boolean wkingSideCastle;
-	public boolean wqueenSideCastle;
-	public boolean bkingSideCastle;
-	public boolean bqueenSideCastle;
 	public CoordFour enPassentSquare;
 
 	public static final int numTypes = 10;
@@ -34,10 +30,6 @@ public class Board {
 		}
 		this.height = b.height;
 		this.width = b.width;
-		this.wkingSideCastle = b.wkingSideCastle;
-		this.wqueenSideCastle = b.wqueenSideCastle;
-		this.bkingSideCastle = b.bkingSideCastle;
-		this.bqueenSideCastle = b.bqueenSideCastle;
 	}
 
 	public Board(int height, int width) {
@@ -45,11 +37,6 @@ public class Board {
 		brd = new int[width][height];
 		this.height = height;
 		this.width = width;
-		wkingSideCastle = true;
-		wqueenSideCastle = true;
-		bkingSideCastle = true;
-		bqueenSideCastle = true;
-
 	}
 
 	/**

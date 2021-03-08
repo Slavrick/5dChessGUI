@@ -20,14 +20,14 @@ public class Main extends Application {
 
 	public static void runTests() {
 		System.out.println("Starting Tests");
-		FENParserTest.testFENFileParser();
-		FENParserTest.testMoveParser();
 		CoordTester.testAllCoordFourFuncs();
 		MoveTester.TestBishopMoves();
+		FENParserTest.testFENFileParser();
+		FENParserTest.testMoveParser();
 		FENParserTest.testSANParser();
 		FENParserTest.testShadParser();
-		FENParserTest.testShadFEN();
 		FENParserTest.testAmbiguityInfoParser();
+		FENParserTest.testShadFEN();
 		//FENExporterTester.testExporter();
 		System.out.println("Done.");
 	}
