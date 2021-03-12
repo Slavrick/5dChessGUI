@@ -291,8 +291,9 @@ public class GameState {
 		if(m.type != Move.SPATIALMOVE || m.specialType < Move.PROMOTION || (m.dest.y != 0 && m.dest.y != (this.height - 1)) || Board.getColorBool(promotionType) != this.color || promotionType == 0) {
 			return false;
 		}
-		int targetPiece = this.getSquare(m.origin,this.color);
-		if(targetPiece == 1 || targetPiece == 11) {
+		int pieceMoved = this.getSquare(m.origin,this.color); //XXX not sure I need this check, it should have already been done
+		if(pieceMoved == Board.piece.WPAWN.ordinal() || pieceMoved == Board.piece.BPAWN.ordinal()  || 
+				pieceMoved == Board.piece.WBRAWN.ordinal() || pieceMoved == Board.piece.BBRAWN.ordinal()) {
 			return getTimeline(m.origin.L).promote(m);
 		}
 		return false;
@@ -403,10 +404,12 @@ public class GameState {
 		}
 		if(m.specialType != Move.NORMALMOVE) {
 			if(m.specialType >= Move.PROMOTION) {
+				pieceMoved = pieceMoved < 0 ? pieceMoved * -1 : pieceMoved;
 				if(m.specialType == 7 || m.specialType > Board.numTypes) {
 					return false;
 				}
-				if(pieceMoved == -1 || pieceMoved == 1 || pieceMoved == 1 + Board.numTypes || pieceMoved == -1 - Board.numTypes) {
+				if(pieceMoved == Board.piece.WPAWN.ordinal() || pieceMoved == Board.piece.BPAWN.ordinal()  || 
+						pieceMoved == Board.piece.WBRAWN.ordinal() || pieceMoved == Board.piece.BBRAWN.ordinal()) {
 					return true;
 				}else {
 					return false;

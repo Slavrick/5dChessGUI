@@ -140,7 +140,8 @@ public class Controller implements MessageListener{
 						if(selectedMove.type == Move.SPATIALMOVE && ( selectedMove.dest.y == 0 || selectedMove.dest.y == g.height - 1 )) {
 							int pieceMoved = g.getSquare(selectedMove.origin, g.color);
 							pieceMoved = pieceMoved < 0 ? pieceMoved * -1 : pieceMoved;
-							if(pieceMoved == 1 || pieceMoved == 11) {
+							if(pieceMoved == Board.piece.WPAWN.ordinal() || pieceMoved == Board.piece.BPAWN.ordinal() ||
+									pieceMoved == Board.piece.WBRAWN.ordinal() || pieceMoved == Board.piece.BBRAWN.ordinal()) {
 								promotionMoveBuffer = selectedMove;
 								showPromotionPrompt();
 								selectedSquare = null;

@@ -370,7 +370,7 @@ public class MoveNotation {
 			new CoordFour(0,0,-1,-1),
 			//Brawn Specific Captures
 			new CoordFour(0,1,-1,0),
-			new CoordFour(0,1,1,0),
+			//new CoordFour(0,1,1,0),
 			new CoordFour(0,1,0,-1),
 			new CoordFour(1,0,0,-1),
 			new CoordFour(-1,0,0,-1),

@@ -1,0 +1,4 @@
+[board "custom"]
+[size "5x5"]
+[puzzle "Mate-In-4"]
+[3k1/2w2/ww2W/2WW1/K4:0:1:w]

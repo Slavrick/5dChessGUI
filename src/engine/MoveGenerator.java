@@ -552,7 +552,7 @@ public class MoveGenerator {
 		return false;
 	}
 
-	//TODO not sure this works with pawns/brawns.
+	//TODO not sure this works with pawns/brawns. -- it doesnt.
 	private static boolean validateSpatialPath(Board b, int piece, Move attack) {
 		CoordFour attackVector = CoordFour.sub(attack.origin, attack.dest);
 		attackVector.flatten();
