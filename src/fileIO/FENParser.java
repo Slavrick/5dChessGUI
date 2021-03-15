@@ -336,9 +336,18 @@ public class FENParser {
 				if (token.contains("O-O")) {
 					moves[i] = findCastleMove(g, token);
 				}
+				else if (token.contains("=")) {
+					int promotion = Board.pieceCharToInt(token.charAt(token.length() - 1));
+					if(!g.color) {
+						promotion += Board.numTypes;
+					}
+					moves[i] = getShadMove(g, token.substring(0, token.length() - 2));
+					moves[i].specialType = promotion;
+					
+				}
 				// handle special cases
 			} else {
-				moves[i] = getShadMove(g, movesStr[i]);
+				moves[i] = getShadMove(g, token);
 			}
 		}
 		return new Turn(moves);

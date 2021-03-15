@@ -1,0 +1,5 @@
+[board "custom"]
+[size "4x4"]
+[4/3p*/P*3/4:0:1:w]
+
+1. a4=Q / d1=N

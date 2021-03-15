@@ -136,5 +136,16 @@ public class Board {
 		}
 		return GameState.WHITE;
 	}
+	
+	//gets ordinal value from char. ie N = 2
+	//error square is returned if not found.
+	public static int pieceCharToInt(char target) {
+		for (int i = 0; i < pieceChars.length; i++) {
+			if (pieceChars[i] == target) {
+				return i;
+			}
+		}
+		return ERRORSQUARE;
+	}
 
 }
