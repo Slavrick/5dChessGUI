@@ -60,7 +60,13 @@ public class Turn {
 	
 	
 	public Turn(Move[] tmoves) {
-		this.moves = tmoves;
+		ArrayList<Move> removedNull = new ArrayList<Move>();
+		for (Move m : tmoves) {
+			if (m != null) {
+				removedNull.add(m);   
+			}			   
+		}
+		this.moves = removedNull.toArray(new Move[0]);
 		int count = 0;
 		for(Move m : this.moves) {
 			count++;

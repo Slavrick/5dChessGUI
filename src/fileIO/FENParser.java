@@ -126,7 +126,7 @@ public class FENParser {
 		File file = new File(fileLocation);
 		return shadSTDGSM(file);
 	}
-	
+
 	public static GameStateManager shadSTDGSM(File file) {
 		ArrayList<String> lines = new ArrayList<String>();
 		try {
@@ -134,7 +134,7 @@ public class FENParser {
 			BufferedReader br = new BufferedReader(fr);
 			String line;
 			while ((line = br.readLine()) != null) {
-				if(line.length() != 0) {
+				if (line.length() != 0) {
 					lines.add(line);
 				}
 			}
@@ -151,13 +151,13 @@ public class FENParser {
 		ArrayList<String> moves = new ArrayList<String>();
 		for (String line : lines) {
 			if (line.charAt(0) == '[') {
-				if(line.contains("\"")) {
+				if (line.contains("\"")) {
 					line = line.toLowerCase();
 				}
-				if(line.contains("size")) {
+				if (line.contains("size")) {
 					size = line;
 				}
-				if(line.contains("variant") || line.contains("board")) {
+				if (line.contains("variant") || line.contains("board")) {
 					variant = line;
 				}
 				if (line.contains(":") && !line.contains("\"")) {
@@ -168,62 +168,61 @@ public class FENParser {
 			}
 		}
 		// Parse Headers
-		boolean evenStarters = false;//FIXME add this to parser.
+		boolean evenStarters = false;// FIXME add this to parser.
 		Timeline[] starters;
 		GameStateManager gsm = null;
 		// Parse FEN
-		if(variant != null) {
+		if (variant != null) {
 			String boardChosen = variant.substring(variant.indexOf("\"") + 1, variant.lastIndexOf("\""));
-			if(boardChosen.equalsIgnoreCase("custom")) {
-				if(size == null) {
+			if (boardChosen.equalsIgnoreCase("custom")) {
+				if (size == null) {
 					return null;
 				}
 				int width = Integer.parseInt(size.substring(size.indexOf('\"') + 1, size.indexOf('x')));
 				int height = Integer.parseInt(size.substring(size.indexOf('x') + 1, size.lastIndexOf('\"')));
 				int count = 0;
 				starters = new Timeline[fenBoards.size()];
-				for(String FEN: fenBoards) {
+				for (String FEN : fenBoards) {
 					starters[count++] = getTimelineFromString(FEN, width, height);
 				}
-				
+
 				Arrays.sort(starters);
 				gsm = new GameStateManager(starters, width, height, evenStarters, true, starters[0].layer, null);
 			}
-			//Detect other boards / variants by string.
-			else if(boardChosen.equalsIgnoreCase("standard")) {
+			// Detect other boards / variants by string.
+			else if (boardChosen.equalsIgnoreCase("standard")) {
 				starters = new Timeline[1];
-				starters[0] = getTimelineFromString(STDBOARDFEN,8,8);
+				starters[0] = getTimelineFromString(STDBOARDFEN, 8, 8);
+				gsm = new GameStateManager(starters, 8, 8, false, true, starters[0].layer, null);
+			} else if (boardChosen.equalsIgnoreCase("standard-princess")) {
+				starters = new Timeline[1];
+				starters[0] = getTimelineFromString(STD_PRINCESS_BOARDFEN, 8, 8);
 				gsm = new GameStateManager(starters, 8, 8, false, true, starters[0].layer, null);
 			}
-			else if(boardChosen.equalsIgnoreCase("standard-princess") ) {
-				starters = new Timeline[1];
-				starters[0] = getTimelineFromString(STD_PRINCESS_BOARDFEN,8,8);
-				gsm = new GameStateManager(starters, 8, 8, false, true, starters[0].layer, null);
-			}
-			//XXX add more variants, or a better variant loader in the future.(Such as loading from some sort of dictionary).
-		}else {
+			// XXX add more variants, or a better variant loader in the future.(Such as
+			// loading from some sort of dictionary).
+		} else {
 			return null;
 		}
 		// Parse Moves
 		ArrayList<String> turns = new ArrayList<String>();
-		for(String s: moves) {
-			if(s.contains("/")) {
+		for (String s : moves) {
+			if (s.contains("/")) {
 				turns.addAll(Arrays.asList(s.split("/")));
-			}
-			else {
-				turns.add(s);				
+			} else {
+				turns.add(s);
 			}
 		}
-		//apply moves
-		for(String strturn : turns) {
-			gsm.makeTurn(stringToTurn(gsm,strturn));
+		// apply moves
+		for (String strturn : turns) {
+			gsm.makeTurn(stringToTurn(gsm, strturn));
 		}
 		return gsm;
 	}
-	
+
 	public static Timeline getTimelineFromString(String board, int width, int height) {
-		board = board.substring(1,board.length()-1);
-		Board b = new Board(width, height);	
+		board = board.substring(1, board.length() - 1);
+		Board b = new Board(width, height);
 		String[] fields = board.split(":");
 		String[] rows = fields[0].split("/");
 		int row = 0;
@@ -238,7 +237,7 @@ public class FENParser {
 							piece *= -1;
 							charat++;
 						}
-						b.setSquare(col,height - row - 1,piece);
+						b.setSquare(col, height - row - 1, piece);
 						col++;
 					} else if (c <= '9' && c >= '1') {
 						for (int i = 0; i < (int) (c) - 48; i++) {
@@ -260,7 +259,8 @@ public class FENParser {
 			System.out.println("Height of: " + (height - row - 1) + "Width of: " + (col - height - 1));
 			return null;
 		}
-		Timeline t = new Timeline(b,fields[3].charAt(0) == 'w',Integer.parseInt(fields[2]),Integer.parseInt(fields[1]));
+		Timeline t = new Timeline(b, fields[3].charAt(0) == 'w', Integer.parseInt(fields[2]),
+				Integer.parseInt(fields[1]));
 		return t;
 	}
 
@@ -316,148 +316,203 @@ public class FENParser {
 	}
 
 	public static Turn stringToTurn(GameState g, String turnstr) {
-		if(turnstr.contains(".")) {
-			//Remove the turn prefix. ie. 1.Nf3 -> Nf3
+		if (turnstr.contains(".")) {
+			// Remove the turn prefix. ie. 1.Nf3 -> Nf3
 			turnstr = turnstr.substring(turnstr.indexOf('.') + 1);
 		}
 		turnstr = turnstr.trim();
-		if(turnstr.length() <= 1) {
+		if (turnstr.length() <= 1) {
 			return null;
 		}
 		String[] movesStr = turnstr.split("\\s+");
 		Move[] moves = new Move[movesStr.length];
-		for(int i = 0; i < movesStr.length; i++) {
-			moves[i] = getShadMove(g, movesStr[i]);
+		for (int i = 0; i < movesStr.length; i++) {
+			String token = movesStr[i];
+			if (shouldIgnoreToken(token)) {
+				moves[i] = null;
+				continue;
+			}
+			if (isSpecialMove(token)) {
+				if (token.contains("O-O")) {
+					moves[i] = findCastleMove(g, token);
+				}
+				// handle special cases
+			} else {
+				moves[i] = getShadMove(g, movesStr[i]);
+			}
 		}
 		return new Turn(moves);
 	}
-	
+
+	// Find Castling move XXX finalize this with notation changess
+	private static Move findCastleMove(GameState g, String token) {
+		boolean side = true;
+		CoordFive temporalOrigin;
+		if(token.contains("O-O-O")) {
+			side = false;
+		}
+		else if(token.contains("O-O")) {
+			side = true;
+		}
+		if(token.contains("(")) {
+			temporalOrigin = new CoordFive(temporalToCoord(token.substring(token.indexOf('('), token.indexOf(')')+1)) , g.color);
+		}
+		else {
+			temporalOrigin = new CoordFive(0,0,g.getTimeline(0).Tend,0,g.color);
+		}
+		Board origin = g.getBoard(temporalOrigin);
+		int target = g.color ? -1 * Board.piece.WKING.ordinal() : -1 * Board.piece.BKING.ordinal();
+		CoordFour spatialOrigin = MoveGenerator.findPiece(origin, target);
+		temporalOrigin.add(spatialOrigin);
+		Move castle = new Move(temporalOrigin, MoveGenerator.kingCanCastle(origin, temporalOrigin, side));
+		return castle;
+	}
+
+	// Handle Castling, Promotion
+	private static boolean isSpecialMove(String string) {
+		if (string.contains("O-O") || string.contains("=")) {
+			return true;
+		}
+		return false;
+	}
+
+	// Remove Ignorable Tokens such as (L0)
+	private static boolean shouldIgnoreToken(String string) {
+		if (string.charAt(0) == '(' && string.charAt(string.length() - 1) == ')') {
+			return true;
+		}
+		return false;
+	}
+
 	// Recieve a gamestate and a shad move and add it to the gamestate.
 	// The notation for the move should be (<L>T<T>)<Piece><SAN> for spatial,
 	// (<L>T<T>)(Piece)(SAN)>(<L>T<T>)<SAN> for spatial/branching.
 	// XXX make sure this works for +0 and -0
 	public static Move getShadMove(GameState g, String move) {
-		Move temp;//Fit this to +-0 later (increment posative and make it so +0 is 1
-		if(move.contains("(") && move.indexOf("(") != move.lastIndexOf("(")) { //TODO not sure if something like Qc2(0T1)f7 is possible (origin of L0 T5
+		Move temp;// Fit this to +-0 later (increment posative and make it so +0 is 1
+		if (move.contains("(") && move.indexOf("(") != move.lastIndexOf("(")) { // TODO not sure if something like
+																				// Qc2(0T1)f7 is possible (origin of L0
+																				// T5
 			return fullStringToCoord(move);
 		}
-		return ambiguousStringToMove(g,move);
+		return ambiguousStringToMove(g, move);
 	}
 
-	//This takes a full move (Such as a branching or jumping move, and turns it into a move
+	// This takes a full move (Such as a branching or jumping move, and turns it
+	// into a move
 	public static Move fullStringToCoord(String move) {
 		String coord1;
-		if(move.contains(">")) {
-			coord1 = move.substring(0, move.indexOf('>'));			
-		}
-		else {
+		if (move.contains(">")) {
+			coord1 = move.substring(0, move.indexOf('>'));
+		} else {
 			coord1 = move.substring(0, move.lastIndexOf('('));
 		}
 		String coord2 = move.substring(move.lastIndexOf('('));
 		return new Move(halfStringToCoord(coord1), halfStringToCoord(coord2));
 	}
-	
-	//This is for when the move is ambiguous, such as a Nf3 -> need the gamestate to firgure out the source.
+
+	// This is for when the move is ambiguous, such as a Nf3 -> need the gamestate
+	// to firgure out the source.
 	public static Move ambiguousStringToMove(GameState g, String move) {
 		CoordFive dest = new CoordFive(halfStringToCoord(move), g.color);
-		if(dest.T == -1) {
+		if (dest.T == -1) {
 			dest.T = g.getTimeline(0).Tend;
 		}
-		//Get Piece.
+		// Get Piece.
 		char piecechar;
 		int piece;
-		if(move.contains(")")) {
+		if (move.contains(")")) {
 			piecechar = move.charAt(move.indexOf(')') + 1);
-		}else {
+		} else {
 			piecechar = move.charAt(0);
 		}
-		if(piecechar <= 'Z') {
-			piece = indexOfElement(Board.pieceChars,piecechar);
-		}else {
+		if (piecechar <= 'Z') {
+			piece = indexOfElement(Board.pieceChars, piecechar);
+		} else {
 			piece = Board.piece.WPAWN.ordinal();
 		}
-		//Makes sure we get the right piece color.
+		// Makes sure we get the right piece color.
 		piece = g.color ? piece : piece + Board.numTypes;
 		CoordFour ambiguity = getAmbiguityInfo(move);
 		int file = ambiguity.x;
 		int rank = ambiguity.y;
-		if(piece == 1) {
-			System.out.println("Pawn RLUP");
-		}
 		CoordFour origin = MoveGenerator.reverseLookup(g, dest, piece, rank, file);
-		if(origin == null) {
-			System.out.println("Could not find reverseLookup for this move :l" + move);
+		if (origin == null) {
+			System.out.println("Could not find reverseLookup for this move :l now im gonna crash" + move);
 			return null;
 		}
-		return new Move(origin,dest);
+		return new Move(origin, dest);
 	}
-	
-	//Recieve a half move (<L>T<T>)(?PIECE)(?AMBIGUITY)(SAN) and gives ambiguity info
+
+	// Recieve a half move (<L>T<T>)(?PIECE)(?AMBIGUITY)(SAN) and gives ambiguity
+	// info
 	public static CoordFour getAmbiguityInfo(String move) {
-		//make sure to get axb5 --> as the right thing
-		CoordFour temp = new CoordFour(-1,-1,-1,-1);
+		// make sure to get axb5 --> as the right thing
+		CoordFour temp = new CoordFour(-1, -1, -1, -1);
 		move = move.trim();
-		//Trim temporal
-		if(move.contains(")")) {
+		// Trim temporal
+		if (move.contains(")")) {
 			move = move.substring(move.indexOf(")") + 1);
 		}
-		//Trim possible Piece.
-		if(move.charAt(0) > 'A' && move.charAt(0) < 'a' ) {
+		// Trim possible Piece.
+		if (move.charAt(0) > 'A' && move.charAt(0) < 'a') {
 			move = move.substring(1);
 		}
-		//trim takes symbol
-		if(move.charAt(0) == 'x') {
+		// trim takes symbol
+		if (move.charAt(0) == 'x') {
 			move = move.substring(1);
 		}
-		//trim san
-		if(move.length() >= 3 && move.charAt(move.length() - 3) == 'x') {
+		// trim san
+		if (move.length() >= 3 && move.charAt(move.length() - 3) == 'x') {
 			move = move.substring(0, move.length() - 3);
-		}else {
-			move = move.substring(0, move.length() - 2);			
+		} else {
+			move = move.substring(0, move.length() - 2);
 		}
-		if(move.length() == 2) {
+		if (move.length() == 2) {
 			temp = SANtoCoord(move);
 			temp.T = -1;
 			temp.L = -1;
-		}
-		else if(move.length() == 1) {
-			if(move.charAt(0) >= 'a') {
+		} else if (move.length() == 1) {
+			if (move.charAt(0) >= 'a') {
 				temp.x = (int) move.charAt(0) - 97;
-			}else {
+			} else {
 				temp.y = Integer.parseInt(move) - 1;
 			}
 		}
 		return temp;
-		//XXX instead of constantly changing the String, just simply get the index.
+		// XXX instead of constantly changing the String, just simply get the index.
 	}
 
 	// Recieve a string in format (<L>T<T>)(?PIECE)(SAN) ; or (?PIECE)(SAN)
 	// XXX make this work for +-0
 	public static CoordFour halfStringToCoord(String halfmove) {
 		String temporalCoord;
-		//This next line should hold true, but may be wrong(hopefully not, im not planning on supporting boards of 9 or greater length
-		//not sure if exits (0T1)Na1x(0T1)c3 <-- must account for 'x' "takes" symbol.
+		// This next line should hold true, but may be wrong(hopefully not, im not
+		// planning on supporting boards of 9 or greater length
+		// not sure if exits (0T1)Na1x(0T1)c3 <-- must account for 'x' "takes" symbol.
 		String sancoord;
-		if(halfmove.charAt(halfmove.length() - 1) == 'x') {
+		if (halfmove.charAt(halfmove.length() - 1) == 'x') {
 			sancoord = halfmove.substring(halfmove.length() - 3, halfmove.length() - 1);
-		}else {
+		} else {
 			sancoord = halfmove.substring(halfmove.length() - 2);
 		}
-		if(halfmove.contains("(")) {
+		if (halfmove.contains("(")) {
 			temporalCoord = halfmove.substring(0, halfmove.indexOf(")") + 1);
-		}
-		else {
+		} else {
 			temporalCoord = null;
 		}
 		CoordFour coord = SANtoCoord(sancoord);
-		if(temporalCoord != null) {
-			String layerstr = halfmove.substring(halfmove.indexOf('(') + 1, halfmove.indexOf('T'));
-			String timestr = halfmove.substring(halfmove.indexOf('T') + 1, halfmove.indexOf(')'));			
-			coord.L = Integer.parseInt(layerstr);
-			coord.T = Integer.parseInt(timestr);
-		}else { //Not Sure but this kinda sucks lol.
+		if (temporalCoord != null) {
+			coord.add(temporalToCoord(halfmove.substring(halfmove.indexOf('('), halfmove.indexOf(')') + 1)));
+			// String layerstr = halfmove.substring(halfmove.indexOf('(') + 1,
+			// halfmove.indexOf('T'));
+			// String timestr = halfmove.substring(halfmove.indexOf('T') + 1,
+			// halfmove.indexOf(')'));
+			// coord.L = Integer.parseInt(layerstr);
+			// coord.T = Integer.parseInt(timestr);
+		} else { // Not Sure but this kinda sucks lol.
 			coord.L = 0;
-			coord.T = -1;//Indicate no give Time.
+			coord.T = -1;// Indicate no give Time.
 		}
 		return coord;
 	}
@@ -488,6 +543,13 @@ public class FENParser {
 		return new Move(c1, c2);
 	}
 
+	// Recieve a string form (<L>T<T>) return CoordFour
+	public static CoordFour temporalToCoord(String temporal) {
+		int T = Integer.parseInt(temporal.substring(temporal.indexOf("T") + 1, temporal.indexOf(")")));
+		int L = Integer.parseInt(temporal.substring(1, temporal.indexOf("T")));
+		return new CoordFour(0, 0, T, L);
+	}
+
 	// Recieve a String such as a8, assumes the san is correct
 	public static CoordFour SANtoCoord(String san) {
 		char file = san.charAt(0);
@@ -512,7 +574,5 @@ public class FENParser {
 		}
 		return 0;
 	}
-
-
 
 }

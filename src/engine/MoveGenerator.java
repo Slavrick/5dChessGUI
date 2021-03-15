@@ -476,6 +476,7 @@ public class MoveGenerator {
 		return destCoords;
 	}
 
+	//returns the location of an unmoved rook.
 	public static CoordFour kingCanCastle(Board b, CoordFive kingSquare, boolean kside) {
 		int unmvdRk = UNMOVEDROOK;
 		if (!kingSquare.color) {
@@ -483,7 +484,7 @@ public class MoveGenerator {
 		}
 		if (kside) {
 			// Check For Clearance.
-			CoordFour left = new CoordFour(-1, 0, 0, 0);
+			CoordFour left = new CoordFour(1, 0, 0, 0);
 			CoordFour index = CoordFour.add(kingSquare, left);
 			while (b.getSquare(index) == EMPTYSQUARE) {
 				index.add(left);
@@ -508,7 +509,7 @@ public class MoveGenerator {
 			return index;
 		} else {
 			// Check For Clearance.
-			CoordFour right = new CoordFour(1, 0, 0, 0);
+			CoordFour right = new CoordFour(-1, 0, 0, 0);
 			CoordFour index = CoordFour.add(kingSquare, right);
 			while (b.getSquare(index) == EMPTYSQUARE) {
 				index.add(right);
@@ -630,6 +631,18 @@ public class MoveGenerator {
 							return result;
 						}
 					}
+				}
+			}
+		}
+		return null;
+	}
+	
+	//search for piece, returns first index of the piece, searching from 0, width 0, height
+	public static CoordFour findPiece(Board b, int target) {
+		for (int x = 0; x < b.width; x++) {
+			for (int y = 0; y < b.height; y++) {
+				if(b.getSquare(x,y) == target) {
+					return new CoordFour(x,y,0,0);
 				}
 			}
 		}

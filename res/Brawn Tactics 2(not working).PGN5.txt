@@ -1,0 +1,8 @@
+[variant "Focused-Just Brawns"
+[puzzle "Mate-in-4"]
+
+1.Wb3 / Wc3
+2.Wxc4 / Wxc4
+3.We3 / Wb3
+4.Wd2 / Kd5
+5.Wc2 / Wa3

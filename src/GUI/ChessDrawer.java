@@ -152,9 +152,9 @@ public class ChessDrawer {
 		for (int squarex = 0; squarex < width; squarex++) {
 			for (int squarey = 0; squarey < height; squarey++) {
 				if ((squarex + squarey) % 2 == 1) {
-					gc.setFill(Color.TAN);
-				} else {
 					gc.setFill(Color.DARKGOLDENROD);
+				} else {
+					gc.setFill(Color.TAN);
 				}
 				gc.fillRect(x + squarex * squarewidth - screenx, y + squarey * squarewidth - screeny, squarewidth, squarewidth);
 			}
