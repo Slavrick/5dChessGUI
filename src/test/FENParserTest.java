@@ -24,7 +24,7 @@ public class FENParserTest {
 
 	public static void testFENFileParser() {
 		System.out.print("    Testing Parsing Rookie.FEN.txt:");
-		GameState g = FENParser.FENToGS("res/RookTactics4.FEN.txt");
+		GameState g = FENParser.FENToGS("res/Puzzles/RookTactics4.FEN.txt");
 		assert g != null : g;
 		assert g.getColor() == false;
 		assert g.minTL == 0;
@@ -53,19 +53,25 @@ public class FENParserTest {
 	// this needs to be beefed out anyway.
 	public static void testShadParser() {
 		System.out.println("    Testing Full Coord Parser.");
-		CoordFour h1 = FENParser.halfStringToCoord("(0T0)a1");
-		CoordFour h2 = FENParser.halfStringToCoord("(0T0)Na1");
-		CoordFour h3 = FENParser.halfStringToCoord("(0T1)e3");
-		CoordFour h4 = FENParser.halfStringToCoord("(-1T3)Nh7");
-		CoordFour h5 = FENParser.halfStringToCoord("(-0T3)Nh7");
+		CoordFour h1 = FENParser.halfStringToCoord("(0T0)a1", false);
+		CoordFour h2 = FENParser.halfStringToCoord("(0T0)Na1", false);
+		CoordFour h3 = FENParser.halfStringToCoord("(0T1)e3", false);
+		CoordFour h4 = FENParser.halfStringToCoord("(-1T3)Nh7", false);
+		CoordFour h5 = FENParser.halfStringToCoord("(-0T3)Nh7", true);
+		CoordFour h6 = FENParser.halfStringToCoord("(+0T3)Nh7", true);
+		CoordFour h7 = FENParser.halfStringToCoord("(2T3)Nh7", true);
+		CoordFour h8 = FENParser.halfStringToCoord("(-1T3)Nh7", true);
 		CoordTester.testCoord(h1, 0, 0, 0, 0);
 		CoordTester.testCoord(h2, 0, 0, 0, 0);
 		CoordTester.testCoord(h3, 4, 2, 1, 0);
 		CoordTester.testCoord(h4, 7, 6, 3, -1);
 		CoordTester.testCoord(h5, 7, 6, 3, 0);
-		Move f1 = FENParser.fullStringToCoord("(0T1)Ng1(0T1)f3");
-		Move f2 = FENParser.fullStringToCoord("(0T3)Ng1>(0T2)g3");
-		Move f3 = FENParser.fullStringToCoord("(0T5)Qc3>>(0T1)f7");
+		CoordTester.testCoord(h6, 7, 6, 3, 1);
+		CoordTester.testCoord(h7, 7, 6, 3, 3);
+		CoordTester.testCoord(h8, 7, 6, 3, -1);
+		Move f1 = FENParser.fullStringToCoord("(0T1)Ng1(0T1)f3", false);
+		Move f2 = FENParser.fullStringToCoord("(0T3)Ng1>(0T2)g3", false);
+		Move f3 = FENParser.fullStringToCoord("(0T5)Qc3>>(0T1)f7", false);
 		CoordTester.testCoord(f1.origin, 6, 0, 1, 0);
 		CoordTester.testCoord(f1.dest, 5, 2, 1, 0);
 		CoordTester.testCoord(f2.origin, 6, 0, 3, 0);
@@ -76,8 +82,8 @@ public class FENParserTest {
 
 	public static void testShadFEN() {
 		System.out.println("    Testing Whole Fen Parser.");
-		FENParser.shadSTDGSM("res/Brawn Tactics 1.5DPGN.txt");
-		FENParser.shadSTDGSM("res/AmbiguityCheck.txt");
+		FENParser.shadSTDGSM("res/Puzzles/Brawn Tactics 1.5DPGN.txt");
+		FENParser.shadSTDGSM("res/testPGNs/AmbiguityCheck.txt");
 	}
 
 	public static void testAmbiguityInfoParser() {
