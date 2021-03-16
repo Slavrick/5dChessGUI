@@ -96,7 +96,7 @@ public class Timeline implements Comparable<Timeline>{
 	}
 
 	public boolean addSpatialMove(Move m, boolean moveColor) {
-		if (moveColor != colorPlayable)
+		if (moveColor != colorPlayable)//XXX move this validation up the chain.
 			return false;
 		Board b = getPlayableBoard();
 		Board newBoard = new Board(b);

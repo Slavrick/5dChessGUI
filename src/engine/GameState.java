@@ -231,6 +231,10 @@ public class GameState {
 	 * @return boolean whether the move was made or not
 	 */
 	public boolean makeMove(Move m) {
+		if(m.specialType == Move.NULLMOVE && this.getTimeline(m.origin.L).colorPlayable == this.color) {
+			getTimeline(m.origin.L).addSpatialMove(m, color);
+			return true;
+		}
 		if(!validateMove(m)) {
 			return false;
 		}

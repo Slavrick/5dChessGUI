@@ -14,6 +14,10 @@
 			<Label text="SquareWidth"/>
 			<TextField prefWidth="100" text="32" fx:id="squareWidth"/>
 		</HBox>
+		<HBox>
+			<Label text="Padding"/>
+			<TextField prefWidth="100" text="50" fx:id="padding"/>
+		</HBox>
 		<Button text="Submit" onAction="#handleSubmitButton"/>
 	</VBox>
 </AnchorPane>

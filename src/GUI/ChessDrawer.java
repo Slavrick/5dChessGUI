@@ -33,11 +33,10 @@ public class ChessDrawer {
 	}
 	
 	public static void drawMultiverseGrid(GraphicsContext gc, int screenx, int screeny, GameState game) {
-		
 		int squareWidth = (squarewidth * game.width) * 2 + (2 * padding);
 		int squareHeight = squarewidth * game.height + padding;
-		for(int L = -2; L <= game.maxTL - game.minTL + 2; L++) {
-				for(int T = -2; T < 20; T++) {
+		for(int L = (screeny / squareHeight) - 1; L <= (screeny / squareHeight) + 10; L++) {
+				for(int T = (screenx / squareWidth) - 1; T <= (screenx / squareWidth) + 10; T++) {
 				if((T + L) % 2 != 0) {
 					gc.setFill(multiverseLight);
 				}
@@ -46,7 +45,7 @@ public class ChessDrawer {
 				}
 				gc.fillRect((T * squareWidth) - screenx + halfPadding,(L * squareHeight) - screeny + halfPadding, squareWidth, squareHeight);
 				gc.setFill(Color.BLACK);
-				gc.fillText( (L + game.minTL) + "L, " + T + "T", (T * squareWidth) - screenx + halfPadding, (L * squareHeight) - screeny + halfPadding + 10);
+				gc.fillText( (L + game.minTL) + "L, " + (T+1) + "T", (T * squareWidth) - screenx + halfPadding, (L * squareHeight) - screeny + halfPadding + 10);
 			}
 		}
 	}

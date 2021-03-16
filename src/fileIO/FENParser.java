@@ -147,6 +147,7 @@ public class FENParser {
 		// Parse Header
 		String size = null;
 		String variant = null;
+		String color = null;
 		String Puzzle;
 		ArrayList<String> fenBoards = new ArrayList<String>();
 		ArrayList<String> moves = new ArrayList<String>();
@@ -161,6 +162,9 @@ public class FENParser {
 				}
 				if (line.contains("variant") || line.contains("board")) {
 					variant = line;
+				}
+				if(line.contains("color")) {
+					color = line;
 				}
 				if (line.contains(":") && !line.contains("\"")) {
 					fenBoards.add(line);
@@ -206,6 +210,9 @@ public class FENParser {
 			// loading from some sort of dictionary).
 		} else {
 			return null;
+		}
+		if(color != null) {
+			gsm.color = color.contains("white");			
 		}
 		// Parse Moves
 		ArrayList<String> turns = new ArrayList<String>();
@@ -331,10 +338,12 @@ public class FENParser {
 		Move[] moves = new Move[movesStr.length];
 		for (int i = 0; i < movesStr.length; i++) {
 			String token = movesStr[i];
+			//Ignores tokens meant for readers, not parsers.
 			if (shouldIgnoreToken(token)) {
 				moves[i] = null;
 				continue;
 			}
+			// handle special cases
 			if (isSpecialMove(token)) {
 				if (token.contains("O-O")) {
 					moves[i] = findCastleMove(g, token, evenStarters);
@@ -348,7 +357,15 @@ public class FENParser {
 					moves[i].specialType = promotion;
 					
 				}
-				// handle special cases
+				else if(token.contains("0000")){
+					CoordFour boardOrigin = new CoordFour(0,0,0,0);
+					if(token.contains("(")) {
+						boardOrigin.add(temporalToCoord(token.substring(token.indexOf('('), token.indexOf(')') + 1), evenStarters));
+					}else {
+						boardOrigin.T = g.getTimeline(0).Tend;
+					}
+					moves[i] = new Move(boardOrigin);
+				}
 			} else {
 				moves[i] = getShadMove(g, token, evenStarters);
 			}
@@ -382,7 +399,7 @@ public class FENParser {
 
 	// Handle Castling, Promotion
 	private static boolean isSpecialMove(String string) {
-		if (string.contains("O-O") || string.contains("=")) {
+		if (string.contains("O-O") || string.contains("=") || string.contains("0000")) {
 			return true;
 		}
 		return false;

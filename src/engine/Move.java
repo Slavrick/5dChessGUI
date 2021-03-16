@@ -8,6 +8,7 @@ public class Move implements Comparable<Move>{
 	// 1 for spatial, 2 for jumping(unrecognized branching, 3 for branching.
 	public int type;
 
+	public static final int NULLMOVE = -1;
 	public static final int NORMALMOVE = 0;
 	public static final int CASTLE = 1;
 	public static final int PROMOTION = 2;
@@ -24,7 +25,7 @@ public class Move implements Comparable<Move>{
 		origin = coordorigin;
 		dest = coorddest;
 		if (origin.L == dest.L && origin.T == dest.T) {
-			type = 1;
+			type = SPATIALMOVE;
 		} else {
 			type = JUMPINGMOVE;
 		}
@@ -36,11 +37,18 @@ public class Move implements Comparable<Move>{
 		origin = coordorigin;
 		dest = coorddest;
 		if (origin.L == dest.L && origin.T == dest.T) {
-			type = 1;
+			type = SPATIALMOVE;
 		} else {
-			type = 0;
+			type = JUMPINGMOVE;
 		}
 		pieceMoved = 0;
+	}
+	
+	public Move(CoordFour boardOrigin) {
+		origin = boardOrigin;
+		dest = new CoordFour(0,0,0,0);
+		type = SPATIALMOVE;
+		specialType = NULLMOVE;
 	}
 
 	public String rawMoveNotation() {

@@ -83,7 +83,7 @@ public class Controller implements MessageListener{
 
 	// This func is called in the very start of initialization of this class
 	public Controller() {
-		g = FENParser.FENtoGSM("res/Standard.FEN.txt");
+		g = FENParser.shadSTDGSM("res/Standard.PGN5.txt");
 	}
 	
 	// This func is called after all initializations from the FXML parser.
@@ -287,6 +287,7 @@ public class Controller implements MessageListener{
 			screenX = 0;
 			screenY = 0;
 			drawStage();
+			notationStringArray.clear();
 		}
 	}
 	
@@ -341,7 +342,7 @@ public class Controller implements MessageListener{
 	public CoordFive getCoordClicked(int x, int y, int w, int h) {
 		x += screenX;
 		y += screenY;
-		if (x < 0 || y < 0)
+		if (y < 0)
 			return null;
 		int L = y / ((h * ChessDrawer.squarewidth) + ChessDrawer.padding);
 		int pxrank = y % ((h * ChessDrawer.squarewidth) + ChessDrawer.padding);
@@ -351,6 +352,10 @@ public class Controller implements MessageListener{
 		int T = x / ((w * ChessDrawer.squarewidth) + ChessDrawer.padding);
 		int pxFile = x % ((w * ChessDrawer.squarewidth) + ChessDrawer.padding);
 		int file = ((pxFile - ChessDrawer.padding) / ChessDrawer.squarewidth);
+		if(x < 0) {//XXX workaround for T0
+			file += w;
+			T -= 3;
+		}
 		CoordFive cf = new CoordFive(file, rank, (T / 2) + 1, L + g.minTL, (T % 2 == 0));
 		return cf;
 	}

@@ -33,6 +33,7 @@ public class Turn {
 		}
 	}
 	
+	//XXX this isnt getting used, maybe delete
 	public Turn(ArrayList<Move> tmoves) {
 		this.moves = tmoves.toArray(this.moves);
 		int count = 0;
@@ -76,14 +77,19 @@ public class Turn {
 		this.tls = new int[count];
 		count = 0;
 		for(Move m : this.moves) {
-			if(m.type != 1){
-				tls[count] = m.origin.L;
-				count++;
-				tls[count] = m.dest.L;
-				count++;
-			}else {
-				tls[count] = m.dest.L;
-				count++;
+			switch(m.type){
+				case Move.BRANCHINGMOVE://TODO I need to rework this, the only way you can tell where a branching move effected is through the gamestate
+				case Move.JUMPINGMOVE:
+					tls[count] = m.origin.L;
+					count++;
+					tls[count] = m.dest.L;
+					count++;
+					break;
+				case Move.SPATIALMOVE:
+				case Move.NULLMOVE:
+					tls[count] = m.origin.L;
+					count++;
+					break;
 			}
 		}
 		mode = notationMode.SHAD;
