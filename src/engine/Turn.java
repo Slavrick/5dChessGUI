@@ -18,7 +18,7 @@ public class Turn {
 	}
 	
 	public static enum notationMode{
-		RAW, ALXBRAW, PGN5, SHAD, TESSERACT 
+		COORDINATE, SHAD, SHADRAW 
 	}
 	
 	//This will do no validation as of yet.
@@ -32,33 +32,6 @@ public class Turn {
 			count++;
 		}
 	}
-	
-	//XXX this isnt getting used, maybe delete
-	public Turn(ArrayList<Move> tmoves) {
-		this.moves = tmoves.toArray(this.moves);
-		int count = 0;
-		for(Move m : this.moves) {
-			count++;
-			if(m.type != 1)
-				count++;
-		}
-		this.tls = new int[count];
-		count = 0;
-		for(Move m : this.moves) {
-			if(m.type != 1){
-				tls[count] = m.origin.L;
-				count++;
-				tls[count] = m.dest.L;
-				count++;
-			}else {
-				tls[count] = m.dest.L;
-				count++;
-			}
-		}
-		mode = notationMode.RAW;
-		pre = prefixMode.NONE;
-	}
-	
 	
 	public Turn(Move[] tmoves) {
 		ArrayList<Move> removedNull = new ArrayList<Move>();
@@ -118,7 +91,13 @@ public class Turn {
 				temp += " ";
 			}
 			break;
-		case RAW:
+		case SHADRAW:
+			for(Move m: moves) {
+				temp += m.toRawShadString();
+				temp += " ";
+			}
+			break;
+		case COORDINATE:
 		default:
 			for(Move m : moves) {
 				temp += m.rawMoveNotation();

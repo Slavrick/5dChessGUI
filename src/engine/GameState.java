@@ -193,7 +193,7 @@ public class GameState {
 	 * @param m move to submit
 	 * @return boolean whether the move was made or not
 	 */
-	private boolean makeSilentMove(Move m) {
+	protected boolean makeSilentMove(Move m) {
 		if (m.type == 1) {
 			boolean moveResult = getTimeline(m.origin.L).addSpatialMove(m, color);
 			if (moveResult) {
@@ -561,7 +561,7 @@ public class GameState {
 			if (getTimeline(tlmoved[index]).undoMove()) {
 				// this means that the timeline had only one board.
 				multiverse.remove(GameState.getTLIndex(tlmoved[index], this.minTL));
-				if (color) {
+				if(tlmoved[index] == this.maxTL) {
 					maxTL--;
 				} else {
 					minTL++;
@@ -583,7 +583,7 @@ public class GameState {
 			if (getTimeline(tlmoved.get(index)).undoMove()) {
 				// this means that the timeline had only one board.
 				multiverse.remove(GameState.getTLIndex(tlmoved.get(index), this.minTL));
-				if (color) {
+				if(tlmoved.get(index) == this.maxTL) {
 					maxTL--;
 				} else {
 					minTL++;

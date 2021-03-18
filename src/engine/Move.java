@@ -64,6 +64,7 @@ public class Move implements Comparable<Move>{
 	}
 
 	// This implements shads notation, but you need a piece for this...
+	// XXX remove this, not used
 	public String toString(char piece) {
 		String move = "";
 		if (this.type == SPATIALMOVE) {
@@ -84,7 +85,7 @@ public class Move implements Comparable<Move>{
 		if(piece > Board.numTypes) {
 			piece -= Board.numTypes;
 		}
-		if(pieceMoved != Board.EMPTYSQUARE && pieceMoved != 1) {
+		if(pieceMoved != Board.EMPTYSQUARE && piece != 1) {
 			move += Board.pieceChars[piece];
 		}
 		move = "(" + this.origin.L + "T" + this.origin.T + ")" + move;
@@ -107,5 +108,45 @@ public class Move implements Comparable<Move>{
 			return 0;
 		}
 		return 1;
+	}
+
+	public String toRawShadString() {
+		if(this.specialType == CASTLE) {
+			//This probably needs to change for multiple king boards, that will come later.
+			if(dest.x > origin.x) {
+				return "O-O";
+			}
+			else {
+				return "O-O-O";
+			}
+		}
+		String move = "";
+		String temporalOrigin = "(" + this.origin.L + "T" + this.origin.T + ")";
+		String sanOrigin = this.origin.SANString();
+		String destStr = "(" + this.dest.L + "T" + this.dest.T + ")" + this.dest.SANString();
+		int piece = this.pieceMoved;
+		if(piece > Board.numTypes) {
+			piece -= Board.numTypes;
+		}
+		move = temporalOrigin;
+		if(pieceMoved != Board.EMPTYSQUARE && piece != 1) {
+			move += Board.pieceChars[piece];
+		}
+		move += sanOrigin;
+		if (this.type == SPATIALMOVE) {
+			move += destStr;
+		} else if (this.type == JUMPINGMOVE) {
+			move += ">" + destStr;
+		} else if (this.type == BRANCHINGMOVE) {
+			move += ">>" + destStr;
+		}
+		if(this.specialType > CASTLE) {
+			int promoted = specialType;
+			if(specialType > Board.numTypes) {
+				promoted -= Board.numTypes;
+			}
+			move += "=" + Board.pieceChars[promoted];
+		}
+		return move;
 	}
 }

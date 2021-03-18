@@ -22,12 +22,16 @@ public class GameStateManager extends GameState{
 		originsTL = origins;
 		this.turns = new ArrayList<Turn>();
 		turnNum = 1;
+		currTurn = -1;
 	}
 	
 	public boolean submitMoves() {
 		determineActiveTLS();
 		boolean presColor = calcPresent();
 		if(!opponentCanCaptureKing() && !(presColor == color)) {
+			if(currTurn + 1 < turns.size()) {
+				clearFutureTurns();
+			}
 			turns.add(new Turn( turnMoves, turnTLs));
 			turns.get(turns.size()-1).turnNum = turnNum;
 			currTurn++;
@@ -51,28 +55,31 @@ public class GameStateManager extends GameState{
 	}
 	
 	//Set the gamestate to a previous or future turn depending on the int given.
-	public boolean setTurn(int turnNum) {//TODO test this
-		if(turnNum < 0 || turnNum > turns.size()) {
+	public boolean setTurn(int targetTurn) {
+		undoTempMoves();
+		if(targetTurn < -1 || targetTurn > turns.size()) {
 			return false;
 		}
-		if(currTurn == turnNum) {
+		if(currTurn == targetTurn) {
 			return true;
 		}
-		if(turnNum > currTurn) {
-			while(currTurn < turnNum) {
-				this.makeTurn(turns.get(currTurn).moves);
-				currTurn++;
+		if(targetTurn > currTurn) {
+			while(currTurn < targetTurn) {
+				incrementTurn(turns.get(currTurn+1));
+				turnNum++;
 			}
 		}else {
-			while(currTurn > turnNum) {
+			while(currTurn > targetTurn) {
 				undoTurn(turns.get(currTurn).tls);
 				currTurn--;
+				turnNum--;
 			}
 		}
 		return true;
 	}
 
 	public boolean makeTurn(Turn turn) {
+		
 		if(turn == null) {
 			return false;
 		}
@@ -83,5 +90,23 @@ public class GameStateManager extends GameState{
 		}
 		this.submitMoves();
 		return true;
+	}
+	
+	//MUST BE USED ONLY INCREMENTALLY
+	private boolean incrementTurn(Turn t) {
+		currTurn++;
+		for(Move m : t.moves) {
+			this.makeSilentMove(m);
+		}
+		determineActiveTLS();
+		color = !color;
+		startPresent = present;
+		return true;
+	}
+	
+	private void clearFutureTurns() {
+		for(int i = turns.size() - 1 ; i > currTurn ; i--) {
+			turns.remove(i);			
+		}
 	}
 }

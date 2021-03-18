@@ -416,7 +416,6 @@ public class FENParser {
 	// Recieve a gamestate and a shad move and add it to the gamestate.
 	// The notation for the move should be (<L>T<T>)<Piece><SAN> for spatial,
 	// (<L>T<T>)(Piece)(SAN)>(<L>T<T>)<SAN> for spatial/branching.
-	// XXX make sure this works for +0 and -0
 	public static Move getShadMove(GameState g, String move, boolean evenStarters) {
 		Move temp;// Fit this to +-0 later (increment posative and make it so +0 is 1
 		if (move.contains("(") && move.indexOf("(") != move.lastIndexOf("(")) { // TODO not sure if something like
@@ -512,7 +511,6 @@ public class FENParser {
 	}
 
 	// Recieve a string in format (<L>T<T>)(?PIECE)(SAN) ; or (?PIECE)(SAN)
-	// XXX make this work for +-0
 	public static CoordFour halfStringToCoord(String halfmove, boolean evenStarters) {
 		// This next line should hold true, but may be wrong(hopefully not, im not
 		// planning on supporting boards of 9 or greater length

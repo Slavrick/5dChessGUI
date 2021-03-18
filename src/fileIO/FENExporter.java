@@ -25,36 +25,40 @@ public class FENExporter {
 	}
 	
 	public static String GameStateToFEN(GameStateManager game) {
-		String header = "";
-		header +=  game.width + ";" + game.height + ";" + game.tlHandicap + ";" + game.originsTL.length + ";" + game.startminTL + ";";
-		if(game.color) {
-			header += 'w';
-		}else {
-			header += 'b';
-		}
+		String header = getGameStateHeader(game);
 		String origins = "";
 		for( Timeline t : game.originsTL) {
 			if(t.colorStart) {
-				origins += BoardToString(t.wboards.get(0), t.colorStart, t.Tstart);				
+				origins += "[" + BoardToString(t.wboards.get(0), t.colorStart, t.Tstart, t.layer) + "]";				
 			}else {
-				origins += BoardToString(t.bboards.get(0), t.colorStart, t.Tstart);		
+				origins += "[" + BoardToString(t.bboards.get(0), t.colorStart, t.Tstart, t.layer) + "]";		
 			}
 			origins += '\n';
 		}
 		String moves = "";
-		for(Move m: game.preMoves) {
-			moves += m.rawMoveNotation() + ";";
-		}
+		boolean oddTurn = true;
 		for(Turn t: game.turns) {
-			for(Move m : t.getMoves()) {
-				moves += m.rawMoveNotation() + ";";
+			Turn.mode = Turn.notationMode.SHADRAW;
+			if(oddTurn) {
+				Turn.pre = Turn.prefixMode.TURN;
+			}else {
+				Turn.pre = Turn.prefixMode.NONE;	
 			}
+			moves += t.toString();
+			if(oddTurn) {
+				moves += " / ";
+			}else {
+				moves += " \n";
+			}
+			oddTurn = !oddTurn;
 		}
-		String FEN = header + '\n' + origins + moves; 
+		Turn.mode = Turn.notationMode.SHAD;
+		Turn.pre = Turn.prefixMode.TURN;
+		String FEN = header + '\n' + origins + '\n' +  moves; 
 		return FEN;
 	}
 	
-	public static String BoardToString(Board b, boolean color, int tStart) {
+	private static String BoardToString(Board b, boolean color, int tStart, int layer) {
 		String FEN = "";
 		int count = 0;
 		for(int y = 0; y < b.height ; y++) {
@@ -68,7 +72,7 @@ public class FENExporter {
 						count = 0;
 					}
 					if(piece < 0) {
-						FEN += Board.pieceChars[piece * -1] + '*';
+						FEN += Board.pieceChars[piece * -1] + "*";
 						
 					}else {
 						FEN += Board.pieceChars[piece];						
@@ -83,23 +87,20 @@ public class FENExporter {
 				FEN += "/";
 			}
 		}
-		FEN += ";";
-		FEN += ";";
-		if(b.enPassentSquare == null) {
-			FEN += "-";
-		}
-		else {
-			FEN += b.enPassentSquare.SANString();
-		}
-		FEN += ";";
+		FEN += ":" + layer + ":" + tStart + ":";
 		if(color) {
 			FEN += 'w';
 		}else {
 			FEN += 'b';
 		}
-		FEN += tStart;
-		
 		return FEN;
+	}
+	
+	private static String getGameStateHeader(GameStateManager gsm) {
+		String headers = "";
+		headers += "[board \"custom\"]\n";
+		headers += "[size \"" + gsm.width + "x" + gsm.height + "\"]";	
+		return headers;
 	}
 	
 }

@@ -36,6 +36,7 @@ import engine.CoordFour;
 import engine.GameStateManager;
 import engine.Move;
 import engine.MoveGenerator;
+import engine.Turn;
 import fileIO.FENExporter;
 import fileIO.FENParser;
 
@@ -184,6 +185,7 @@ public class Controller implements MessageListener{
 		drawStage();
 		statusLabel.setFont(new Font(MAX_FONT_SIZE));
 		setStatusLabel();
+		setNotationList();
 		if(Globals.es == null) {
 			Globals.es = new EventSource();
 			Globals.es.addListener(this);
@@ -214,7 +216,7 @@ public class Controller implements MessageListener{
 		boolean submitted = g.submitMoves();
 		setStatusLabel();
 		if(submitted) {			
-			notationStringArray.add(g.turns.get(g.turns.size() - 1).toString());
+			setNotationList();
 			boolean mated = g.bruteForceMateDetection();
 			//System.out.println(mated);
 			if(mated) {
@@ -241,9 +243,9 @@ public class Controller implements MessageListener{
 	
 	@FXML
 	private void handleListEvent(MouseEvent event) throws IOException {
-		//XXX set this -- test this
-		int turnIndex = 0;
-		//g.setTurn(turnIndex);
+		int turnIndex = notationList.getSelectionModel().getSelectedIndex();
+		g.setTurn(turnIndex - 1);
+		this.drawStage();
 	}
 	
 	@FXML
@@ -284,10 +286,10 @@ public class Controller implements MessageListener{
 		if (selectedFile != null) {
 			g = FENParser.shadSTDGSM(selectedFile);
 			setStatusLabel();
+			setNotationList();
 			screenX = 0;
 			screenY = 0;
 			drawStage();
-			notationStringArray.clear();
 		}
 	}
 	
@@ -327,6 +329,14 @@ public class Controller implements MessageListener{
 		return selectedFile;
 	}
 	
+	private void setNotationList() {
+		notationStringArray.clear();
+		notationStringArray.add("Initial Position");
+		for(Turn t : g.turns) {
+			notationStringArray.add(t.toString());
+		}
+	}
+	
 	private void setStatusLabel() {
 		String status = " Present:" + g.startPresent;
 		if(g.color) {
@@ -352,7 +362,7 @@ public class Controller implements MessageListener{
 		int T = x / ((w * ChessDrawer.squarewidth) + ChessDrawer.padding);
 		int pxFile = x % ((w * ChessDrawer.squarewidth) + ChessDrawer.padding);
 		int file = ((pxFile - ChessDrawer.padding) / ChessDrawer.squarewidth);
-		if(x < 0) {//XXX workaround for T0
+		if(x < 0) {// workaround for T0
 			file += w;
 			T -= 3;
 		}
