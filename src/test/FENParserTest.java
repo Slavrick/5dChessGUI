@@ -24,7 +24,7 @@ public class FENParserTest {
 
 	public static void testFENFileParser() {
 		System.out.print("    Testing Parsing Rookie.FEN.txt:");
-		GameState g = FENParser.FENToGS("res/Puzzles/RookTactics4.FEN.txt");
+		GameState g = FENParser.shadSTDGSM("res/Puzzles/RookTactics4.PGN5.txt");
 		assert g != null : g;
 		assert g.getColor() == false;
 		assert g.minTL == 0;

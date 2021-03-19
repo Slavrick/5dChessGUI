@@ -17,7 +17,6 @@ public class FENExporter {
 		      FileWriter myWriter = new FileWriter(saveFile);
 		      myWriter.write(export);
 		      myWriter.close();
-		      //System.out.println("Successfully wrote to the file.");
 		} catch (IOException e) {
 		      System.out.println("An error occurred while saving file.");
 		      e.printStackTrace();
@@ -87,6 +86,7 @@ public class FENExporter {
 				FEN += "/";
 			}
 		}
+		//TODO fix this because even starting games dont export correctly
 		FEN += ":" + layer + ":" + tStart + ":";
 		if(color) {
 			FEN += 'w';

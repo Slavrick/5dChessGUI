@@ -269,18 +269,6 @@ public class Controller implements MessageListener{
 	}
 	
 	@FXML
-	private void loadGame(ActionEvent event) {
-		File selectedFile = getFile();
-		if (selectedFile != null) {
-			g = FENParser.FENtoGSM(selectedFile);
-			setStatusLabel();
-			screenX = 0;
-			screenY = 0;
-			drawStage();
-		}
-	}
-	
-	@FXML
 	private void loadShadGame(ActionEvent event) {
 		File selectedFile = getFile();
 		if (selectedFile != null) {

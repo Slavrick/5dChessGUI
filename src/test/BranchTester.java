@@ -10,6 +10,6 @@ public class BranchTester {
 	}
 
 	public static GameState getTestGS() {
-		return FENParser.FENToGS("res/exampleGame.txt");
+		return FENParser.shadSTDGSM("res/testPGNs/ExmpleGame.PGN5.txt");
 	}
 }
