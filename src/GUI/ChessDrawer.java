@@ -25,12 +25,9 @@ public class ChessDrawer {
 	private static final int SPRITEWIDTH = 32;
 	private static final int SPRITESHEETWIDTH = 10;
 	public static int squarewidth = 32;
+	public static int halfSquare = squarewidth / 2;
 	public static int padding = 50;
 	public static int halfPadding = padding / 2;
-		
-	public static void drawPromotionPrompt() {
-		
-	}
 	
 	public static void drawMultiverseGrid(GraphicsContext gc, int screenx, int screeny, GameState game) {
 		int squareWidth = (squarewidth * game.width) * 2 + (2 * padding);
@@ -62,7 +59,7 @@ public class ChessDrawer {
 				offsetNum++;
 			}
 			int xoffset = offsetNum * (boardwidth + padding);
-			int yoffset = (layerCTR * (boardHeight + padding));
+			int yoffset = (i * (boardHeight + padding));
 			if(yoffset - screeny < 0 - (boardHeight + padding + 20)) {
 				//Excludes Items too high to see.
 			}
@@ -73,6 +70,7 @@ public class ChessDrawer {
 			}
 			layerCTR++;
 		}
+		//gc.fillRect( -screenx , -screeny, 10, 10);
 	}
 	
 	public static void drawTimelineV(GraphicsContext gc, int x, int y, int screenx, int screeny, int width, Timeline t, boolean active) {
@@ -184,7 +182,7 @@ public class ChessDrawer {
 		if(!squareLoc.color) {
 			xOffset += xboardOffset;
 		}
-		int yOffset = ((squareLoc.L - minLayer + 1) * (yboardOffset)) - ((squareLoc.y+1) * squarewidth);
+		int yOffset = ((squareLoc.L + 1) * (yboardOffset)) - ((squareLoc.y+1) * squarewidth);
 		gc.fillRect(xOffset - screenx, yOffset - screeny, squarewidth, squarewidth);
 	}
 	
@@ -194,5 +192,28 @@ public class ChessDrawer {
 		}
 	}
 	
+	public static void drawMoveLine(GraphicsContext gc, DrawableArrow da, int screenx, int screeny) {
+		gc.setFill(Color.RED);
+		gc.setLineWidth(4);
+		gc.setStroke(Color.RED);
+		gc.strokeLine(da.startX - screenx + halfSquare, da.startY - screeny + halfSquare, da.endX - screenx + halfSquare, da.endY - screeny + halfSquare);
+		
+	}
+	
+	//XXX maybe clean up these two functions
+	public static int coordToX(CoordFive square, int width, int height) {
+		int xboardOffset = (width * squarewidth) + padding;
+		int xOffset = (2 * (square.T-1) * (xboardOffset) + (square.x * squarewidth) + padding);
+		if(!square.color) {
+			xOffset += xboardOffset;
+		}
+		return xOffset;
+	}
+	
+	public static int coordToY(CoordFive square, int width, int height) {
+		int yboardOffset = (height * squarewidth) + padding;
+		int yOffset = ((square.L + 1) * (yboardOffset)) - ((square.y+1) * squarewidth);
+		return yOffset;
+	}
 	
 }

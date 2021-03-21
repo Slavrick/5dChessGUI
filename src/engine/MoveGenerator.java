@@ -45,7 +45,7 @@ public class MoveGenerator {
 		}
 		for (int x = 0; x < g.width; x++) {
 			for (int y = 0; y < g.height; y++) {
-				int piece = b.getSquare(x, y);// TODO this doesnt work with negative numners :/
+				int piece = b.getSquare(x, y);
 				if (piece != 0 && Board.getColorBool(piece) == spatialCoord.color) {
 					CoordFive currSquare = new CoordFive(x, y, spatialCoord.T, spatialCoord.L, spatialCoord.color);
 					ArrayList<CoordFour> currSquareCaps = getCaptures(piece, g, currSquare);
@@ -392,9 +392,7 @@ public class MoveGenerator {
 			}
 			destCoords.add(currSquare.clone());
 			currSquare.add(movementVec);
-
 		}
-		// TODO fixWarning
 		ArrayList<CoordFour>[] objs = new ArrayList[2];
 		objs[0] = destCoords;
 		objs[1] = capCoords;

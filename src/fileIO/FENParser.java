@@ -53,7 +53,7 @@ public class FENParser {
 		String Puzzle;
 		ArrayList<String> fenBoards = new ArrayList<String>();
 		ArrayList<String> moves = new ArrayList<String>();
-		boolean evenStarters = false;// FIXME add this to parser.
+		boolean evenStarters = false;
 		for (String line : lines) {
 			if (line.charAt(0) == '[') {
 				if (line.contains("\"")) {
@@ -276,6 +276,7 @@ public class FENParser {
 	}
 
 	// Find Castling move XXX finalize this with notation changess
+	// TODO parsing castling needs to change, ie. it should also detect Kg1 as O-O
 	private static Move findCastleMove(GameState g, String token, boolean evenStarters) {
 		boolean side = true;
 		CoordFive temporalOrigin;
@@ -379,24 +380,27 @@ public class FENParser {
 		// make sure to get axb5 --> as the right thing
 		CoordFour temp = new CoordFour(-1, -1, -1, -1);
 		move = move.trim();
+		int index = 0;
+		int rindex = move.length();
 		// Trim temporal
 		if (move.contains(")")) {
-			move = move.substring(move.indexOf(")") + 1);
+			index = move.indexOf(")") + 1;
 		}
 		// Trim possible Piece.
-		if (move.charAt(0) > 'A' && move.charAt(0) < 'a') {
-			move = move.substring(1);
+		if(move.charAt(index) > 'A' && move.charAt(index) < 'a') {
+			index++;
 		}
 		// trim takes symbol
-		if (move.charAt(0) == 'x') {
-			move = move.substring(1);
+		if(move.charAt(index) == 'x') {
+			index++;
 		}
 		// trim san
-		if (move.length() >= 3 && move.charAt(move.length() - 3) == 'x') {
-			move = move.substring(0, move.length() - 3);
+		if (rindex - index >= 3 && move.charAt(rindex - 3) == 'x') {
+			rindex -= 3;
 		} else {
-			move = move.substring(0, move.length() - 2);
+			rindex -= 2;
 		}
+		move = move.substring(index, rindex);
 		if (move.length() == 2) {
 			temp = SANtoCoord(move);
 			temp.T = -1;
@@ -409,7 +413,6 @@ public class FENParser {
 			}
 		}
 		return temp;
-		// XXX instead of constantly changing the String, just simply get the index.
 	}
 
 	// Recieve a string in format (<L>T<T>)(?PIECE)(SAN) ; or (?PIECE)(SAN)

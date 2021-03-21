@@ -58,7 +58,9 @@ public class Controller implements MessageListener{
 	Label infoBox;
 	
 	ObservableList<String> notationStringArray;
-
+	
+	DrawableArrow da;
+	
 	static final double MAX_FONT_SIZE = 20.0;
 	
 	// Canvas Constants
@@ -85,6 +87,7 @@ public class Controller implements MessageListener{
 	// This func is called in the very start of initialization of this class
 	public Controller() {
 		g = FENParser.shadSTDGSM("res/Standard.PGN5.txt");
+		da = new DrawableArrow(new CoordFive(0,0,1,0,true), new CoordFive(0,2,1,0,true) ,8,8);
 	}
 	
 	// This func is called after all initializations from the FXML parser.
@@ -340,10 +343,14 @@ public class Controller implements MessageListener{
 	public CoordFive getCoordClicked(int x, int y, int w, int h) {
 		x += screenX;
 		y += screenY;
-		if (y < 0)
-			return null;
 		int L = y / ((h * ChessDrawer.squarewidth) + ChessDrawer.padding);
+		if(y < 0) {
+			L--;
+		}
 		int pxrank = y % ((h * ChessDrawer.squarewidth) + ChessDrawer.padding);
+		if(pxrank < 0) {
+			pxrank += ((h * ChessDrawer.squarewidth) + ChessDrawer.padding);
+		}
 		if (pxrank <= ChessDrawer.padding)
 			return null;
 		int rank = h - ((pxrank - ChessDrawer.padding) / ChessDrawer.squarewidth) - 1;
@@ -354,7 +361,7 @@ public class Controller implements MessageListener{
 			file += w;
 			T -= 3;
 		}
-		CoordFive cf = new CoordFive(file, rank, (T / 2) + 1, L + g.minTL, (T % 2 == 0));
+		CoordFive cf = new CoordFive(file, rank, (T / 2) + 1, L, (T % 2 == 0));
 		return cf;
 	}
 
@@ -374,6 +381,7 @@ public class Controller implements MessageListener{
 		if (destinations != null && destinations.size() > 0) {
 			ChessDrawer.drawAllSquaresV(gc, new Color(1f,0f,0f,.5f ), destinations, selectedSquare.color, g.width, g.height, g.minTL, (int)screenX, (int)screenY);
 		}
+		ChessDrawer.drawMoveLine(canvasbox.getGraphicsContext2D(), da, (int)(screenX), (int)(screenY));
 	}
 
 	public void drawStage(double changex, double changey) {
@@ -383,9 +391,9 @@ public class Controller implements MessageListener{
 		gc.clearRect(0, 0, 8000, 8000);
 		ChessDrawer.drawMultiverseV(canvasbox.getGraphicsContext2D(), (int)(screenX - changex), (int)(screenY - changey), g);
 		if (destinations != null && destinations.size() > 0) {
-			ChessDrawer.drawAllSquaresV(gc, new Color(1f,0f,0f,.5f ), destinations, selectedSquare.color, g.width, g.height, g.minTL, (int)(screenX - changex), (int)(screenY- changey));
-			
+			ChessDrawer.drawAllSquaresV(gc, new Color(1f,0f,0f,.5f ), destinations, selectedSquare.color, g.width, g.height, g.minTL, (int)(screenX - changex), (int)(screenY- changey));			
 		}
+		ChessDrawer.drawMoveLine(canvasbox.getGraphicsContext2D(), da, (int)(screenX - changex), (int)(screenY - changey));
 
 	}
 

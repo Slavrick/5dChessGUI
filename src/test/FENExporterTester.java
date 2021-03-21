@@ -4,6 +4,6 @@ import fileIO.FENExporter;
 
 public class FENExporterTester {
 	public static void testExporter() {
-		//XXX redo This Test.
+		//XXX write test case
 	}
 }
