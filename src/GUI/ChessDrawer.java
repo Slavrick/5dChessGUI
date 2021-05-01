@@ -42,7 +42,25 @@ public class ChessDrawer {
 				}
 				gc.fillRect((T * squareWidth) - screenx + halfPadding,(L * squareHeight) - screeny + halfPadding, squareWidth, squareHeight);
 				gc.setFill(Color.BLACK);
-				gc.fillText( (L + game.minTL) + "L, " + (T+1) + "T", (T * squareWidth) - screenx + halfPadding, (L * squareHeight) - screeny + halfPadding + 10);
+				gc.fillText( (L) + "L, " + (T+1) + "T", (T * squareWidth) - screenx + halfPadding, (L * squareHeight) - screeny + halfPadding + 10);
+			}
+		}
+	}
+	
+	public static void drawMultiverseGridHalf(GraphicsContext gc, int screenx, int screeny, GameState game) {
+		int squareWidth = squarewidth * game.width + padding;
+		int squareHeight = squarewidth * game.height + padding;
+		for(int L = (screeny / squareHeight) - 1; L <= (screeny / squareHeight) + 10; L++) {
+				for(int T = (screenx / squareWidth) - 1; T <= (screenx / squareWidth) + 10; T++) {
+				if((T + L) % 2 != 0) {
+					gc.setFill(multiverseLight);
+				}
+				else{
+					gc.setFill(multiverseDark);
+				}
+				gc.fillRect((T * squareWidth) - screenx + halfPadding,(L * squareHeight) - screeny + halfPadding, squareWidth, squareHeight);
+				gc.setFill(Color.BLACK);
+				gc.fillText( (L) + "L, " + (T+1) + "T", (T * squareWidth) - screenx + halfPadding, (L * squareHeight) - screeny + halfPadding + 10);
 			}
 		}
 	}
@@ -72,6 +90,33 @@ public class ChessDrawer {
 		}
 		//gc.fillRect( -screenx , -screeny, 10, 10);
 	}
+	
+	public static void drawColoredMultiverse(GraphicsContext gc, int screenx, int screeny, GameState game, boolean color) {
+		drawMultiverseGridHalf(gc,screenx,screeny,game);
+		int layerCTR = 0;
+		int boardwidth = squarewidth * game.width;
+		int boardHeight = squarewidth * game.height;
+		for (int i = game.minTL; i <= game.maxTL; i++) {
+			Timeline t = game.getTimeline(i);
+			int offsetNum = (t.Tstart - 1) * 2;
+			if (!t.colorStart) {
+				offsetNum++;
+			}
+			int xoffset = offsetNum * (boardwidth + padding);
+			int yoffset = (i * (boardHeight + padding));
+			if(yoffset - screeny < 0 - (boardHeight + padding + 20)) {
+				//Excludes Items too high to see.
+			}
+			else if(game.layerIsActive(i)) {
+				drawColoredTimeline(gc, padding + xoffset, padding + yoffset, screenx, screeny, game.width, t, true, color);				
+			}else {
+				drawColoredTimeline(gc, padding + xoffset, padding + yoffset, screenx, screeny, game.width, t, false, color);
+			}
+			layerCTR++;
+		}
+		//gc.fillRect( -screenx , -screeny, 10, 10);
+	}
+	
 	
 	public static void drawTimelineV(GraphicsContext gc, int x, int y, int screenx, int screeny, int width, Timeline t, boolean active) {
 		int lastWindex = t.wboards.size();
@@ -109,6 +154,49 @@ public class ChessDrawer {
 				playable = true;
 			}
 			ChessDrawer.drawFullBoardV(gc, t.bboards.get(i), false, playable, xoffset + x , y, screenx, screeny);
+		}
+	}
+	
+	public static void drawColoredTimeline(GraphicsContext gc, int x, int y, int screenx, int screeny, int width, Timeline t, boolean active, boolean color) {
+		int lastWindex = t.wboards.size();
+		int lastBindex = t.bboards.size();;
+		int boardwidth = squarewidth * width;
+		int boardOffset = boardwidth + padding;
+		if(active) {			
+			drawArrowV(gc, (lastWindex + lastBindex) * (boardOffset), x - 10, y + (boardwidth / 2), screenx, screeny);
+		}
+		else{
+			drawArrowV(gc, Color.GREY, (lastWindex + lastBindex) * (boardOffset), x - 10, y + (boardwidth / 2), screenx, screeny);
+		}
+		//Draw white
+		if(color) {			
+			int offset = 0;
+			if(!t.colorStart) {
+				offset = 1;			
+			}
+			for(int i = 0; i < t.wboards.size(); i++) {
+				int xoffset = ((i) + offset) * boardOffset;
+				boolean playable = false;
+				if( i == t.wboards.size() - 1 && t.colorPlayable) {
+					playable = true;
+				}
+				ChessDrawer.drawFullBoardV(gc, t.wboards.get(i), true, playable, xoffset + x, y, screenx, screeny);
+			}
+		}
+		//Draw black
+		else {
+			int offset = 0;
+			if(t.colorStart) {
+				offset = 1;
+			}
+			for(int i = 0; i < t.bboards.size(); i++) {
+				int xoffset = ((i) + offset) * boardOffset;
+				boolean playable = false;
+				if( i == t.bboards.size() - 1 && !t.colorPlayable) {
+					playable = true;
+				}
+				ChessDrawer.drawFullBoardV(gc, t.bboards.get(i), false, playable, xoffset + x , y, screenx, screeny);
+			}
 		}
 	}
 	
@@ -200,7 +288,15 @@ public class ChessDrawer {
 		
 	}
 	
-	//XXX maybe clean up these two functions
+	public static int coordToX(CoordFour square, boolean color, int width, int height) {
+		int xboardOffset = (width * squarewidth) + padding;
+		int xOffset = (2 * (square.T-1) * (xboardOffset) + (square.x * squarewidth) + padding);
+		if(!color) {
+			xOffset += xboardOffset;
+		}
+		return xOffset;
+	}
+	
 	public static int coordToX(CoordFive square, int width, int height) {
 		int xboardOffset = (width * squarewidth) + padding;
 		int xOffset = (2 * (square.T-1) * (xboardOffset) + (square.x * squarewidth) + padding);
@@ -210,7 +306,7 @@ public class ChessDrawer {
 		return xOffset;
 	}
 	
-	public static int coordToY(CoordFive square, int width, int height) {
+	public static int coordToY(CoordFour square, int width, int height) {
 		int yboardOffset = (height * squarewidth) + padding;
 		int yOffset = ((square.L + 1) * (yboardOffset)) - ((square.y+1) * squarewidth);
 		return yOffset;

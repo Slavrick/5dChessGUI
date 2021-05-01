@@ -42,6 +42,7 @@ import fileIO.FENParser;
 
 
 public class Controller implements MessageListener{
+	//Included in the FXML 
 	@FXML
 	BorderPane innerLayout;
 	@FXML
@@ -56,12 +57,23 @@ public class Controller implements MessageListener{
 	Label statusLabel;
 	@FXML
 	Label infoBox;
+	@FXML
+	RadioButton fullView;
+	@FXML
+	RadioButton whiteView;
+	@FXML
+	RadioButton blackView;
 	
+	//GUI Variables
+	ToggleGroup group;
 	ObservableList<String> notationStringArray;
 	
-	DrawableArrow da;
+	ArrayList<DrawableArrow> arrows;
 	
 	static final double MAX_FONT_SIZE = 20.0;
+	static final int FULL_VIEW = 0;
+	static final int WHITE_VIEW = 1;
+	static final int BLACK_VIEW = 2;
 	
 	// Canvas Constants
 	double lastX = 0;
@@ -76,18 +88,20 @@ public class Controller implements MessageListener{
 	double ychange;
 	boolean dragging = false;
 	boolean release = false;
+	int viewType = FULL_VIEW;
 	
+	
+	//Gamestate variables
 	GameStateManager g;
 	CoordFive selectedSquare;
 	ArrayList<CoordFour> destinations;
 	Move promotionMoveBuffer;
 	
-	boolean prompt = false;
 
 	// This func is called in the very start of initialization of this class
 	public Controller() {
 		g = FENParser.shadSTDGSM("res/Standard.PGN5.txt");
-		da = new DrawableArrow(new CoordFive(0,0,1,0,true), new CoordFive(0,2,1,0,true) ,8,8);
+		arrows = new ArrayList<DrawableArrow>();
 	}
 	
 	// This func is called after all initializations from the FXML parser.
@@ -193,6 +207,11 @@ public class Controller implements MessageListener{
 			Globals.es = new EventSource();
 			Globals.es.addListener(this);
 		}
+		group = new ToggleGroup();
+		fullView.setToggleGroup(group);
+		whiteView.setToggleGroup(group);
+		blackView.setToggleGroup(group);
+		
 	}
 
 	//===========================Event Functions=========================================================================
@@ -218,7 +237,10 @@ public class Controller implements MessageListener{
 	public void handleSubmitButton(ActionEvent e) {
 		boolean submitted = g.submitMoves();
 		setStatusLabel();
-		if(submitted) {			
+		if(submitted) {
+			for(Move m : g.turns.get(g.turns.size()-1).moves) {
+					arrows.add(new DrawableArrow(m,!g.color,g.width,g.height,g.currTurn));
+			}
 			setNotationList();
 			boolean mated = g.bruteForceMateDetection();
 			//System.out.println(mated);
@@ -308,6 +330,24 @@ public class Controller implements MessageListener{
 		stage.setResizable(false);
 		stage.show();
 	}
+	
+	@FXML
+	private void handleRadioView(ActionEvent event) {
+		System.out.println(event.getSource());
+		if(event.getSource() == fullView) {
+			viewType = FULL_VIEW;
+			System.out.println("Entering Full View");
+			
+		}
+		else if(event.getSource() == whiteView) {
+			System.out.println("Entering white View");
+			viewType = WHITE_VIEW;
+		}
+		else if(event.getSource() == blackView) {
+			viewType = BLACK_VIEW;
+			System.out.println("Entering Black View");
+		}
+	}
 
 	//================================================================================================================
 	
@@ -377,11 +417,26 @@ public class Controller implements MessageListener{
 		//System.out.println("n(" + screenX + "," + screenY + ")");
 		GraphicsContext gc = canvasbox.getGraphicsContext2D();
 		gc.clearRect(0, 0, 8000, 8000);
-		ChessDrawer.drawMultiverseV(canvasbox.getGraphicsContext2D(), (int) screenX, (int) screenY, g);
+		switch(viewType) {
+		case WHITE_VIEW:
+			ChessDrawer.drawColoredMultiverse(canvasbox.getGraphicsContext2D(), (int) screenX, (int) screenY, g,true);
+			break;
+		case BLACK_VIEW:
+			ChessDrawer.drawColoredMultiverse(canvasbox.getGraphicsContext2D(), (int) screenX, (int) screenY, g,false);
+			break;
+		default:
+		case FULL_VIEW:
+			ChessDrawer.drawMultiverseV(canvasbox.getGraphicsContext2D(), (int) screenX, (int) screenY, g);
+			break;
+		}
 		if (destinations != null && destinations.size() > 0) {
 			ChessDrawer.drawAllSquaresV(gc, new Color(1f,0f,0f,.5f ), destinations, selectedSquare.color, g.width, g.height, g.minTL, (int)screenX, (int)screenY);
 		}
-		ChessDrawer.drawMoveLine(canvasbox.getGraphicsContext2D(), da, (int)(screenX), (int)(screenY));
+		for(DrawableArrow da : arrows) {
+			if(da.turnnum <= g.currTurn) {
+				ChessDrawer.drawMoveLine(canvasbox.getGraphicsContext2D(), da, (int)(screenX), (int)(screenY));			
+			}
+		}
 	}
 
 	public void drawStage(double changex, double changey) {
@@ -389,12 +444,26 @@ public class Controller implements MessageListener{
 		//System.out.println("y(" + (screenX - changex) + "," + (screenY - changey) + ")");
 		GraphicsContext gc = canvasbox.getGraphicsContext2D();
 		gc.clearRect(0, 0, 8000, 8000);
-		ChessDrawer.drawMultiverseV(canvasbox.getGraphicsContext2D(), (int)(screenX - changex), (int)(screenY - changey), g);
+		switch(viewType) {
+		case WHITE_VIEW:
+			ChessDrawer.drawColoredMultiverse(canvasbox.getGraphicsContext2D(), (int)(screenX - changex), (int)(screenY - changey), g,true);
+			break;
+		case BLACK_VIEW:
+			ChessDrawer.drawColoredMultiverse(canvasbox.getGraphicsContext2D(), (int)(screenX - changex), (int)(screenY - changey), g,false);
+			break;
+		default:
+		case FULL_VIEW:
+			ChessDrawer.drawMultiverseV(canvasbox.getGraphicsContext2D(), (int)(screenX - changex), (int)(screenY - changey), g);
+			break;
+		}
 		if (destinations != null && destinations.size() > 0) {
 			ChessDrawer.drawAllSquaresV(gc, new Color(1f,0f,0f,.5f ), destinations, selectedSquare.color, g.width, g.height, g.minTL, (int)(screenX - changex), (int)(screenY- changey));			
 		}
-		ChessDrawer.drawMoveLine(canvasbox.getGraphicsContext2D(), da, (int)(screenX - changex), (int)(screenY - changey));
-
+		for(DrawableArrow da : arrows) {
+			if(da.turnnum <= g.currTurn) {
+				ChessDrawer.drawMoveLine(canvasbox.getGraphicsContext2D(), da, (int)(screenX - changex), (int)(screenY - changey));				
+			}
+		}
 	}
 
 	private void showPromotionPrompt(){

@@ -70,7 +70,7 @@ public class MoveGenerator {
 		Board b = g.getBoard(new CoordFive(0, 0, T, L, color));
 		for (int x = 0; x < g.width; x++) {
 			for (int y = 0; y < g.height; y++) {
-				int piece = b.getSquare(x, y);// TODO fix for negative numbers
+				int piece = b.getSquare(x, y);
 				if (Board.getColorBool(piece) == color) {
 					CoordFour srcLocation = new CoordFour(x, y, T, L);
 					ArrayList<CoordFour> moveLocations = getMoves(piece, g, new CoordFive(srcLocation, color));

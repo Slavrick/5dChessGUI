@@ -1,0 +1,6 @@
+[board "custom"]
+[size "8x8"]
+[3r1r2/1p3pk1/7b/p2ppBpP/1pP3P1/3PP3/P4P2/1R2K*2R*:0:1:w]
+
+1.O-O / Rd6
+2.cxd5 / Rf6

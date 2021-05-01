@@ -63,8 +63,7 @@ public class Move implements Comparable<Move>{
 		return moveStr;
 	}
 
-	// This implements shads notation, but you need a piece for this...
-	// XXX remove this, not used
+	// This implements shads notation, mainly used for debugging(The eclipse debugger uses toString to show objects)
 	public String toString(char piece) {
 		String move = "";
 		if (this.type == SPATIALMOVE) {

@@ -36,10 +36,15 @@
 				<Button text="Submit Turn" onAction="#handleSubmitButton" />	
 				<Button text="Undo Turn" onAction="#handleUndoButton" />
 				<Button text="~~" onAction="#handlePanButton" />
+				
+				<RadioButton fx:id="fullView"  onAction="#handleRadioView" text="Full View" />
+				<RadioButton fx:id="whiteView" onAction="#handleRadioView" text="White View" />
+				<RadioButton fx:id="blackView" onAction="#handleRadioView" text="Black View" />
 			</HBox>
 			<HBox prefHeight="50" spacing="20">
 				<Label fx:id="statusLabel" prefWidth="300"/>
 				<Label fx:id="infoBox" prefWidth="500"/>
+				
 			</HBox>
 		</VBox>
 	</bottom>

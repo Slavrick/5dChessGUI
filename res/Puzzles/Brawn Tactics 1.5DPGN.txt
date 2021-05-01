@@ -3,6 +3,6 @@
 [Board "custom"]
 [w*w*w*w*k/5/5/5/KW*W*W*W*:0:1:w]
 
-1. Wd1d3 / Wc4
+1. Wd3 / Wc4
 2. Wc2 / Kd4
 

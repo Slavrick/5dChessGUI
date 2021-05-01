@@ -9,10 +9,10 @@ public class GameStateManager extends GameState{
 	public Move[] preMoves;
 	public Timeline[] originsTL;
 	public int startminTL;
-	public int turnNum;
 
 	//TODO make this into a tree, that way we can have diff lines.
 	public ArrayList<Turn> turns;
+	//Represents the current turn that the state is set to. Ie if you play 10 turns, and rewind to turn 5, this should be 5 so as to know how to apply turns etc.
 	public int currTurn;
 	
 	
@@ -21,7 +21,6 @@ public class GameStateManager extends GameState{
 		this.preMoves = moves;
 		originsTL = origins;
 		this.turns = new ArrayList<Turn>();
-		turnNum = 1;
 		currTurn = -1;
 	}
 	
@@ -29,15 +28,14 @@ public class GameStateManager extends GameState{
 		determineActiveTLS();
 		boolean presColor = calcPresent();
 		if(!opponentCanCaptureKing() && !(presColor == color)) {
-			if(currTurn + 1 < turns.size()) {
+			if(currTurn + 1< turns.size()) {
 				clearFutureTurns();
 			}
-			turns.add(new Turn( turnMoves, turnTLs));
-			turns.get(turns.size()-1).turnNum = turnNum;
 			currTurn++;
+			turns.add(new Turn( turnMoves, turnTLs));
+			turns.get(turns.size()-1).turnNum = currTurn / 2 + 1;
 			turnTLs.clear();
-			turnMoves.clear();
-			turnNum = !color ? turnNum + 1 : turnNum; 
+			turnMoves.clear(); 
 			color =! color;
 			startPresent = present;
 			return true;
@@ -66,13 +64,11 @@ public class GameStateManager extends GameState{
 		if(targetTurn > currTurn) {
 			while(currTurn < targetTurn) {
 				incrementTurn(turns.get(currTurn+1));
-				turnNum++;
 			}
 		}else {
 			while(currTurn > targetTurn) {
 				undoTurn(turns.get(currTurn).tls);
 				currTurn--;
-				turnNum--;
 			}
 		}
 		return true;

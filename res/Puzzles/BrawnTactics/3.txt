@@ -1,0 +1,5 @@
+[board "custom"]
+[size "5x5"]
+[4k/3w1/3W1/5/K3W*:0:1:w]
+
+1. We3 / Wxe3

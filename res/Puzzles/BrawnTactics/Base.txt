@@ -1,0 +1,3 @@
+[board "custom"]
+[size "5x5"]
+[3wk/5/3WW/5/K4:0:1:w]
