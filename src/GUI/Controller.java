@@ -235,12 +235,14 @@ public class Controller implements MessageListener{
 
 	@FXML
 	public void handleSubmitButton(ActionEvent e) {
+		
 		boolean submitted = g.submitMoves();
 		setStatusLabel();
 		if(submitted) {
 			for(Move m : g.turns.get(g.turns.size()-1).moves) {
 					arrows.add(new DrawableArrow(m,!g.color,g.width,g.height,g.currTurn));
 			}
+			this.infoBox.setText("");
 			setNotationList();
 			boolean mated = g.bruteForceMateDetection();
 			//System.out.println(mated);
@@ -333,20 +335,16 @@ public class Controller implements MessageListener{
 	
 	@FXML
 	private void handleRadioView(ActionEvent event) {
-		System.out.println(event.getSource());
 		if(event.getSource() == fullView) {
-			viewType = FULL_VIEW;
-			System.out.println("Entering Full View");
-			
+			viewType = FULL_VIEW;		
 		}
 		else if(event.getSource() == whiteView) {
-			System.out.println("Entering white View");
 			viewType = WHITE_VIEW;
 		}
 		else if(event.getSource() == blackView) {
 			viewType = BLACK_VIEW;
-			System.out.println("Entering Black View");
 		}
+		drawStage();
 	}
 
 	//================================================================================================================

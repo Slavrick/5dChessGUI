@@ -167,6 +167,25 @@ public class MoveGenerator {
 			Movementvec = MoveNotation.blackPawnattack;
 		}
 		destCoords.addAll(getLeaperCaptures(g, source.color, source, Movementvec));
+		//Add en passent
+		if(g.getBoard(source).enPassentSquare != null) {
+			CoordFour enPassent = g.getBoard(source).enPassentSquare;
+			CoordFour left;
+			CoordFour right;
+			if(source.color) {
+				left = CoordFour.add(source,MoveNotation.whitePawnattack[0]);
+				right = CoordFour.add(source,MoveNotation.whitePawnattack[1]);
+			}else {
+				left = CoordFour.add(source,MoveNotation.blackPawnattack[0]);
+				right = CoordFour.add(source,MoveNotation.blackPawnattack[1]);
+			}
+			if(left.spatialEquals(enPassent)) {
+				destCoords.add(left);
+			}
+			else if(right.spatialEquals(enPassent)) {
+				destCoords.add(right);
+			}
+		}
 		return destCoords;
 	}
 

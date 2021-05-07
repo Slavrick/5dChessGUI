@@ -17,10 +17,11 @@ import javafx.scene.canvas.GraphicsContext;
 public class ChessDrawer {
 
 	public static Image piecesprites;
-	public static Color darkColor = Color.DARKGOLDENROD;
-	public static Color lightColor = Color.TAN;
-	public static Color multiverseLight = Color.ANTIQUEWHITE;
-	public static Color multiverseDark = Color.SILVER;
+	public static Color darkColor = Color.rgb(118,150,86);//.DARKGOLDENROD; 
+	public static Color lightColor = Color.rgb(238,238,210);
+	public static Color multiverseLight = Color.rgb(248,248,220);
+	public static Color multiverseDark = Color.rgb(148,180,116);
+	public static Color arrowColor = Color.rgb(147,112,219);
 
 	private static final int SPRITEWIDTH = 32;
 	private static final int SPRITESHEETWIDTH = 10;
@@ -98,10 +99,7 @@ public class ChessDrawer {
 		int boardHeight = squarewidth * game.height;
 		for (int i = game.minTL; i <= game.maxTL; i++) {
 			Timeline t = game.getTimeline(i);
-			int offsetNum = (t.Tstart - 1) * 2;
-			if (!t.colorStart) {
-				offsetNum++;
-			}
+			int offsetNum = (t.Tstart - 1);
 			int xoffset = offsetNum * (boardwidth + padding);
 			int yoffset = (i * (boardHeight + padding));
 			if(yoffset - screeny < 0 - (boardHeight + padding + 20)) {
@@ -114,17 +112,16 @@ public class ChessDrawer {
 			}
 			layerCTR++;
 		}
-		//gc.fillRect( -screenx , -screeny, 10, 10);
 	}
 	
 	
 	public static void drawTimelineV(GraphicsContext gc, int x, int y, int screenx, int screeny, int width, Timeline t, boolean active) {
 		int lastWindex = t.wboards.size();
-		int lastBindex = t.bboards.size();;
+		int lastBindex = t.bboards.size();
 		int boardwidth = squarewidth * width;
 		int boardOffset = boardwidth + padding;
 		if(active) {			
-			drawArrowV(gc, (lastWindex + lastBindex) * (boardOffset), x - 10, y + (boardwidth / 2), screenx, screeny);
+			drawTimelineArrow(gc, (lastWindex + lastBindex) * (boardOffset), x - 10, y + (boardwidth / 2), screenx, screeny);
 		}
 		else{
 			drawArrowV(gc, Color.GREY, (lastWindex + lastBindex) * (boardOffset), x - 10, y + (boardwidth / 2), screenx, screeny);
@@ -158,21 +155,26 @@ public class ChessDrawer {
 	}
 	
 	public static void drawColoredTimeline(GraphicsContext gc, int x, int y, int screenx, int screeny, int width, Timeline t, boolean active, boolean color) {
-		int lastWindex = t.wboards.size();
-		int lastBindex = t.bboards.size();;
+		int arrowSize;
+		if(color) {
+			arrowSize = t.wboards.size();
+		}
+		else {
+			arrowSize = t.bboards.size();
+		}
 		int boardwidth = squarewidth * width;
 		int boardOffset = boardwidth + padding;
 		if(active) {			
-			drawArrowV(gc, (lastWindex + lastBindex) * (boardOffset), x - 10, y + (boardwidth / 2), screenx, screeny);
+			drawTimelineArrow(gc, arrowSize * (boardOffset), x - 10, y + (boardwidth / 2), screenx, screeny);
 		}
 		else{
-			drawArrowV(gc, Color.GREY, (lastWindex + lastBindex) * (boardOffset), x - 10, y + (boardwidth / 2), screenx, screeny);
+			drawArrowV(gc, Color.GREY, arrowSize * (boardOffset), x - 10, y + (boardwidth / 2), screenx, screeny);
 		}
 		//Draw white
-		if(color) {			
+		if(color) {
 			int offset = 0;
 			if(!t.colorStart) {
-				offset = 1;			
+				offset++;
 			}
 			for(int i = 0; i < t.wboards.size(); i++) {
 				int xoffset = ((i) + offset) * boardOffset;
@@ -186,9 +188,6 @@ public class ChessDrawer {
 		//Draw black
 		else {
 			int offset = 0;
-			if(t.colorStart) {
-				offset = 1;
-			}
 			for(int i = 0; i < t.bboards.size(); i++) {
 				int xoffset = ((i) + offset) * boardOffset;
 				boolean playable = false;
@@ -209,7 +208,7 @@ public class ChessDrawer {
 				e.printStackTrace();
 			}
 		}
-		drawChessBoardColoredV(gc, b.width, b.height, color, playable, x, y, screenx, screeny);
+		drawChessBoard(gc, b.width, b.height, color, playable, x, y, screenx, screeny);
 		for (int squarex = 0; squarex < b.width; squarex++) {
 			for (int squarey = 0; squarey < b.height; squarey++) {
 				int piecenum = b.getSquare(squarex,squarey);
@@ -222,7 +221,7 @@ public class ChessDrawer {
 		}
 	}
 	
-	public static void drawChessBoardColoredV(GraphicsContext gc,  int width, int height, boolean color, boolean playable, int x, int y, int screenx,
+	public static void drawChessBoard(GraphicsContext gc,  int width, int height, boolean color, boolean playable, int x, int y, int screenx,
 			int screeny) {
 		if (color) {
 			gc.setFill(Color.LIGHTGRAY);
@@ -237,19 +236,19 @@ public class ChessDrawer {
 		for (int squarex = 0; squarex < width; squarex++) {
 			for (int squarey = 0; squarey < height; squarey++) {
 				if ((squarex + squarey) % 2 == 1) {
-					gc.setFill(Color.DARKGOLDENROD);
+					gc.setFill(ChessDrawer.darkColor);
 				} else {
-					gc.setFill(Color.TAN);
+					gc.setFill(ChessDrawer.lightColor);
 				}
 				gc.fillRect(x + squarex * squarewidth - screenx, y + squarey * squarewidth - screeny, squarewidth, squarewidth);
 			}
 		}
 	}
 	
-	public static void drawArrowV(GraphicsContext gc, int len, int x, int y, int screenx, int screeny) {
-		gc.setFill(Color.PURPLE);
+	public static void drawTimelineArrow(GraphicsContext gc, int len, int x, int y, int screenx, int screeny) {
+		gc.setFill(ChessDrawer.arrowColor);
 		gc.fillRect(x - screenx, y - 20 - screeny, len, 40);
-		double[] arrowx = { (double) x + len - screenx, (double) x + len - screenx, (double) x + len + 30 - screenx };
+		double[] arrowx = { (double) x + len - screenx, (double) x + len - screenx, (double) x + len + 50 - screenx };
 		double[] arrowy = { (double) y - 40 - screeny, (double) y + 40 - screeny, (double) y - screeny};
 		gc.fillPolygon(arrowx, arrowy, 3);
 	}

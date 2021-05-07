@@ -1,0 +1,15 @@
+[board "Standard"]
+
+1.(0T1)Ng1f3 / (0T1)e7e6
+2.(0T2)d2d4 / (0T2)Qd8f6
+3.(0T3)c2c3 / (0T3)Bf8d6
+4.(0T4)Qd1b3 / (0T4)Ng8e7
+5.(0T5)e2e4 / (0T5)Bd6f4
+6.(0T6)Qb3c2 / (0T6)Ne7d5
+7.(0T7)e4d5 / (0T7)d7d6
+8.(0T8)Bc1f4 / (0T8)Qf6f4
+9.(0T9)Nb1d2 / (0T9)Bc8d7
+10.(0T10)Qc2e4 / (0T10)Qf4>>(0T7)c1
+11.(-1T8)Qc2c1 / (-1T8)Bf4c1
+12.(0T11)Qe4>>(0T8)e4 / (1T8)Bf4e3
+13.(1T9)Ke1d1 (-1T9)Ke1d1 / (-1T9)Qf6f4 (1T9)Qf6f3

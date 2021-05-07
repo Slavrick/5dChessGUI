@@ -35,7 +35,18 @@ public class CoordFour {
 	public boolean equals(CoordFour c) {
 		return this.x == c.x && this.y == c.y && this.T == c.T && this.L == c.L;
 	}
-
+	
+	/**
+	 * A comparison function to compare this coordinate and another.
+	 * this only checks spatially
+	 * 
+	 * @param c coordinate to compare to.
+	 * @return true if the two coordinates are the same.
+	 */
+	public boolean spatialEquals(CoordFour c) {
+		return this.x == c.x && this.y == c.y;
+	}
+	
 	/**
 	 * 
 	 * @return true if the coordinate is pure spatial, and false otherwise.
