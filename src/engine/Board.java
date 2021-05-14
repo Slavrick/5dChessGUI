@@ -9,7 +9,6 @@ public class Board {
 	public int height;
 	public int width;
 	// The board has no need for its location within the multiverse
-	// TODO en passent.... :l
 	public CoordFour enPassentSquare;
 
 	public static final int numTypes = 10;

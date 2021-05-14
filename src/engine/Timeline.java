@@ -105,12 +105,11 @@ public class Timeline implements Comparable<Timeline>{
 		m.pieceMoved = piece;
 		newBoard.setSquare(m.origin, Board.piece.EMPTY.ordinal());
 		newBoard.setSquare(m.dest, piece);
-		//TODO make this work for brawns
-		if((piece == Board.piece.WPAWN.ordinal() || piece == Board.piece.BPAWN.ordinal()) && Math.abs(m.dest.y - m.origin.y) == 2) {
+		if((piece == Board.piece.WPAWN.ordinal() || piece == Board.piece.BPAWN.ordinal() || piece == Board.piece.WBRAWN.ordinal() || piece == Board.piece.BBRAWN.ordinal()) && Math.abs(m.dest.y - m.origin.y) == 2) {
 			newBoard.enPassentSquare = m.dest.clone();
 			newBoard.enPassentSquare.y = (m.dest.y + m.origin.y) / 2; 
 		}
-		if((piece == Board.piece.WPAWN.ordinal() || piece == Board.piece.BPAWN.ordinal()) && b.enPassentSquare != null && m.dest.spatialEquals(b.enPassentSquare) ) {
+		if((piece == Board.piece.WPAWN.ordinal() || piece == Board.piece.BPAWN.ordinal() || piece == Board.piece.WBRAWN.ordinal() || piece == Board.piece.BBRAWN.ordinal()) && b.enPassentSquare != null && m.dest.spatialEquals(b.enPassentSquare) ) {
 			CoordFour pawnSquare = m.origin.clone();
 			pawnSquare.x = m.dest.x;
 			newBoard.setSquare(pawnSquare, Board.EMPTYSQUARE);

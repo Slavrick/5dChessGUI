@@ -82,7 +82,6 @@ public class Turn {
 		case NONE:
 		default:
 			break;
-			
 		}
 		switch(mode) {
 		case SHAD:

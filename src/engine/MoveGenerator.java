@@ -560,7 +560,7 @@ public class MoveGenerator {
 			for (int y = 0; y < b.height; y++) {
 				int piece = b.getSquare(x, y);
 				if (piece != EMPTYSQUARE && Board.getColorBool(piece) != target.color) {
-					Move attack = new Move(new CoordFour(x, y, 0, 0), target);
+					Move attack = new Move(new CoordFour(x, y, target.T, target.L), target);
 					if (MoveGenerator.validateSpatialPath(b, piece, attack)) {
 						return true;
 					}
@@ -572,7 +572,7 @@ public class MoveGenerator {
 
 	//TODO not sure this works with pawns/brawns. -- it doesnt.
 	private static boolean validateSpatialPath(Board b, int piece, Move attack) {
-		CoordFour attackVector = CoordFour.sub(attack.origin, attack.dest);
+		CoordFour attackVector = CoordFour.sub(attack.dest, attack.origin);
 		attackVector.flatten();
 		if (!arrContains(MoveNotation.getMoveVectors(piece), attackVector)) {
 			return false;

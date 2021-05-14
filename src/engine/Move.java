@@ -111,7 +111,7 @@ public class Move implements Comparable<Move>{
 
 	public String toRawShadString() {
 		if(this.specialType == CASTLE) {
-			//This probably needs to change for multiple king boards, that will come later.
+			//TODO fix this This probably needs to change for multiple king boards, that will come later.
 			if(dest.x > origin.x) {
 				return "O-O";
 			}
@@ -133,7 +133,7 @@ public class Move implements Comparable<Move>{
 		}
 		move += sanOrigin;
 		if (this.type == SPATIALMOVE) {
-			move += destStr;
+			move += this.dest.SANString();
 		} else if (this.type == JUMPINGMOVE) {
 			move += ">" + destStr;
 		} else if (this.type == BRANCHINGMOVE) {

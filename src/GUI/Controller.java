@@ -299,7 +299,13 @@ public class Controller implements MessageListener{
 	private void loadShadGame(ActionEvent event) {
 		File selectedFile = getFile();
 		if (selectedFile != null) {
-			g = FENParser.shadSTDGSM(selectedFile);
+			GameStateManager temp = FENParser.shadSTDGSM(selectedFile);
+			if(temp == null) {
+				MessageEvent me = new MessageEvent("Could Not Load GameState, Please Check if the file is valid");
+				Globals.es.broadcastEvent(me);
+				return;
+			}
+			g = temp;
 			setStatusLabel();
 			setNotationList();
 			screenX = 0;

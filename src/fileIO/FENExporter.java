@@ -36,8 +36,8 @@ public class FENExporter {
 		}
 		String moves = "";
 		boolean oddTurn = true;
+		Turn.mode = Turn.notationMode.SHADRAW;
 		for(Turn t: game.turns) {
-			Turn.mode = Turn.notationMode.SHADRAW;
 			if(oddTurn) {
 				Turn.pre = Turn.prefixMode.TURN;
 			}else {
