@@ -235,7 +235,6 @@ public class Controller implements MessageListener{
 
 	@FXML
 	public void handleSubmitButton(ActionEvent e) {
-		
 		boolean submitted = g.submitMoves();
 		setStatusLabel();
 		if(submitted) {

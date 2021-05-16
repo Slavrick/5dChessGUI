@@ -105,8 +105,8 @@ public class MoveGenerator {
 		if (piece == 7 || piece == 17) {
 			ArrayList<CoordFour> moves = new ArrayList<CoordFour>();
 			if (unMoved) {
-				CoordFour rookLocq = kingCanCastle(g.getBoard(source), source, true);
-				CoordFour rookLock = kingCanCastle(g.getBoard(source), source, false);
+				CoordFour rookLocq = kingCanCastlenew(g.getBoard(source), source, true);
+				CoordFour rookLock = kingCanCastlenew(g.getBoard(source), source, false);
 				if (rookLocq != null) {
 					moves.add(rookLocq);
 				}
@@ -552,6 +552,64 @@ public class MoveGenerator {
 		}
 	}
 
+	public static CoordFour kingCanCastlenew(Board b, CoordFive kingSquare, boolean kside) {//TODO change this when works
+		int unmvdRk = UNMOVEDROOK;
+		if (!kingSquare.color) {
+			unmvdRk -= Board.numTypes;
+		}
+		if (kside) {
+			// Check For Clearance.
+			CoordFour left = new CoordFour(1, 0, 0, 0);
+			CoordFour index = CoordFour.add(kingSquare, left);
+			while (b.getSquare(index) == EMPTYSQUARE) {
+				index.add(left);
+			}
+			int firstNonEmpty = b.getSquare(index);
+			if (firstNonEmpty != unmvdRk) {
+				return null;
+			}
+			// Check For check
+			CoordFive target = kingSquare.clone();
+			if (MoveGenerator.isSquareAttacked(b, target)) {
+				return null;
+			}
+			target.add(left);
+			if (MoveGenerator.isSquareAttacked(b, target)) {
+				return null;
+			}
+			target.add(left);
+			if (MoveGenerator.isSquareAttacked(b, target)) {
+				return null;
+			}
+			return CoordFour.add(kingSquare, CoordFour.add(left,left));
+		} else {
+			// Check For Clearance.
+			CoordFour right = new CoordFour(-1, 0, 0, 0);
+			CoordFour index = CoordFour.add(kingSquare, right);
+			while (b.getSquare(index) == EMPTYSQUARE) {
+				index.add(right);
+			}
+			int firstNonEmpty = b.getSquare(index);
+			if (firstNonEmpty != unmvdRk) {
+				return null;
+			}
+			// Check For check
+			CoordFive target = kingSquare.clone();
+			if (MoveGenerator.isSquareAttacked(b, target)) {
+				return null;
+			}
+			target.add(right);
+			if (MoveGenerator.isSquareAttacked(b, target)) {
+				return null;
+			}
+			target.add(right);
+			if (MoveGenerator.isSquareAttacked(b, target)) {
+				return null;
+			}
+			return CoordFour.add(kingSquare, CoordFour.add(right,right));
+		}
+	}
+	
 	// For now, somewhat counterIntuitively this checks for pieces of opposite CF
 	// color,
 	//TODO fix this, it doesnt work but look around given square on a queen/knight basis rather than searching like this.

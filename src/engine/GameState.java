@@ -193,8 +193,14 @@ public class GameState {
 	 * @param m move to submit
 	 * @return boolean whether the move was made or not
 	 */
-	protected boolean makeSilentMove(Move m) {
-		if (m.type == 1) {
+	protected boolean makeSilentMove(Move m) {//TODO promotion doesn't work for this
+		if (m.type == Move.SPATIALMOVE) {
+			int pieceMoved = this.getSquare(m.origin, this.color);
+			if(pieceMoved == Board.piece.WKING.ordinal() || pieceMoved == Board.piece.BKING.ordinal()) {
+				if(Math.abs(m.origin.x - m.dest.x) == 2) {
+					return this.getTimeline(m.origin.L).castleKingNew(m);
+				}
+			}
 			boolean moveResult = getTimeline(m.origin.L).addSpatialMove(m, color);
 			if (moveResult) {
 				return true;
@@ -249,15 +255,24 @@ public class GameState {
 					return false;
 				}
 			}
-			if(m.specialType == Move.CASTLE) {
+			/*if(m.specialType == Move.CASTLE) {
 				getTimeline(m.origin.L).castleKing(m);
 				turnTLs.add(m.origin.L);
 				turnMoves.add(m);
 				return true;
-			}
+			}*/
 		}
+		int pieceMoved = this.getSquare(m.origin, this.color);
+		pieceMoved = pieceMoved < 0 ? pieceMoved * -1 : pieceMoved;
 		// Move the piece.
 		if (m.type == Move.SPATIALMOVE) {
+			if(pieceMoved == Board.piece.WKING.ordinal() || pieceMoved == Board.piece.BKING.ordinal()) {
+				if(Math.abs(m.origin.x - m.dest.x) == 2) {
+					turnTLs.add(m.origin.L);
+					turnMoves.add(m);
+					return this.getTimeline(m.origin.L).castleKingNew(m);
+				}
+			}
 			boolean moveResult = getTimeline(m.origin.L).addSpatialMove(m, color);
 			if (moveResult) {
 				turnTLs.add(m.origin.L);
@@ -267,7 +282,6 @@ public class GameState {
 				return false;
 			}
 		}
-		int pieceMoved = this.getSquare(m.origin, this.color);
 		Timeline originT = getTimeline(m.origin.L);
 		Timeline destT = getTimeline(m.dest.L);
 		originT.addJumpingMove(m, color);

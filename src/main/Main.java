@@ -22,6 +22,7 @@ public class Main extends Application {
 		System.out.println("Starting Tests");
 		CoordTester.testAllCoordFourFuncs();
 		MoveTester.TestBishopMoves();
+		MoveTester.testCastle();
 		FENParserTest.testFENFileParser();
 		FENParserTest.testMoveParser();
 		FENParserTest.testSANParser();

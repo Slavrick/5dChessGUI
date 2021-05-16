@@ -137,6 +137,24 @@ public class Timeline implements Comparable<Timeline>{
 		return addMove(newBoard);
 	}
 	
+	public boolean castleKingNew(Move m) {//TODO refactor the name when this works.
+		Board b = getPlayableBoard();
+		Board newBoard = new Board(b);
+		int king = newBoard.getSquare(m.origin) * -1;
+		CoordFour direction = CoordFour.sub(m.dest,m.origin);
+		direction.flatten();
+		CoordFour index = CoordFour.add(direction, m.origin);
+		while(b.getSquare(index) != Board.piece.WROOK.ordinal() * -1 && b.getSquare(index) != Board.piece.BROOK.ordinal() * -1) {
+			index.add(direction);
+		}
+		int rook = newBoard.getSquare(index) * -1;
+		newBoard.setSquare(m.origin,0);
+		newBoard.setSquare(m.dest,king);
+		newBoard.setSquare(index, 0);
+		newBoard.setSquare(CoordFour.sub(m.dest, direction), rook);
+		return addMove(newBoard);
+	}
+	
 	public boolean promote(Move m) {
 		Board b = getPlayableBoard();
 		Board newBoard = new Board(b);
