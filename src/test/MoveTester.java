@@ -55,9 +55,9 @@ public class MoveTester {
 	public static void testCastle() {
 		System.out.print("    Testing Castling: ");
 		GameStateManager g = fileIO.FENParser.shadSTDGSM("res/testPGNs/CastleTest.txt");
-		g.getTimeline(0).castleKingNew(new Move(FENParser.SANtoCoord("e1"),FENParser.SANtoCoord("g1")));
+		g.getTimeline(0).castleKing(new Move(FENParser.SANtoCoord("e1"),FENParser.SANtoCoord("g1")));
 		assert g.getTimeline(0).getPlayableBoard().getSquare(FENParser.SANtoCoord("g1")) == Board.piece.WKING.ordinal();
-		g.getTimeline(0).castleKingNew(new Move(FENParser.SANtoCoord("e8"),FENParser.SANtoCoord("c8")));
+		g.getTimeline(0).castleKing(new Move(FENParser.SANtoCoord("e8"),FENParser.SANtoCoord("c8")));
 		assert g.getTimeline(0).getPlayableBoard().getSquare(FENParser.SANtoCoord("c8")) == Board.piece.BKING.ordinal();
 		System.out.println("passed");
 	}

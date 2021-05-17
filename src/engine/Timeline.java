@@ -117,27 +117,7 @@ public class Timeline implements Comparable<Timeline>{
 		return addMove(newBoard);
 	}
 	
-	//Absolutely no validation here, must be done in gamestate
 	public boolean castleKing(Move m) {
-		Board b = getPlayableBoard();
-		Board newBoard = new Board(b);
-		int king = newBoard.getSquare(m.origin) * -1;
-		int rook = newBoard.getSquare(m.dest) * -1;
-		if(m.origin.x - m.dest.x > 0) {
-			newBoard.setSquare(CoordFour.add(m.origin,new CoordFour(-2,0,0,0)), king );
-			newBoard.setSquare(CoordFour.add(m.origin,new CoordFour(-1,0,0,0)), rook);
-			newBoard.setSquare(m.origin,0);
-			newBoard.setSquare(m.dest,0);
-		}else {
-			newBoard.setSquare(CoordFour.add(m.origin,new CoordFour(2,0,0,0)), king );
-			newBoard.setSquare(CoordFour.add(m.origin,new CoordFour(1,0,0,0)), rook);
-			newBoard.setSquare(m.origin,0);
-			newBoard.setSquare(m.dest,0);
-		}
-		return addMove(newBoard);
-	}
-	
-	public boolean castleKingNew(Move m) {//TODO refactor the name when this works.
 		Board b = getPlayableBoard();
 		Board newBoard = new Board(b);
 		int king = newBoard.getSquare(m.origin) * -1;
@@ -149,8 +129,8 @@ public class Timeline implements Comparable<Timeline>{
 		}
 		int rook = newBoard.getSquare(index) * -1;
 		newBoard.setSquare(m.origin,0);
-		newBoard.setSquare(m.dest,king);
 		newBoard.setSquare(index, 0);
+		newBoard.setSquare(m.dest,king);
 		newBoard.setSquare(CoordFour.sub(m.dest, direction), rook);
 		return addMove(newBoard);
 	}

@@ -196,9 +196,10 @@ public class GameState {
 	protected boolean makeSilentMove(Move m) {//TODO promotion doesn't work for this
 		if (m.type == Move.SPATIALMOVE) {
 			int pieceMoved = this.getSquare(m.origin, this.color);
+			pieceMoved = pieceMoved < 0 ? pieceMoved * -1 : pieceMoved;
 			if(pieceMoved == Board.piece.WKING.ordinal() || pieceMoved == Board.piece.BKING.ordinal()) {
 				if(Math.abs(m.origin.x - m.dest.x) == 2) {
-					return this.getTimeline(m.origin.L).castleKingNew(m);
+					return this.getTimeline(m.origin.L).castleKing(m);
 				}
 			}
 			boolean moveResult = getTimeline(m.origin.L).addSpatialMove(m, color);
@@ -270,7 +271,7 @@ public class GameState {
 				if(Math.abs(m.origin.x - m.dest.x) == 2) {
 					turnTLs.add(m.origin.L);
 					turnMoves.add(m);
-					return this.getTimeline(m.origin.L).castleKingNew(m);
+					return this.getTimeline(m.origin.L).castleKing(m);
 				}
 			}
 			boolean moveResult = getTimeline(m.origin.L).addSpatialMove(m, color);

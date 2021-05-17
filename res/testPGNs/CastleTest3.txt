@@ -1,0 +1,8 @@
+[board "custom"]
+[size "8x8"]
+[5npk/K*R*4pp/K*1R*5/K*2R*4/K*3R*3/K*4R*2/K*5R*1/K*6R*:0:1:w]
+
+1. Kc1 / Ng6
+2. Kc3 / Nf8
+3. Kc5 / Ng6
+4. Kc7 / Nf8

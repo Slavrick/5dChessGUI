@@ -9,9 +9,9 @@ import sun.awt.KeyboardFocusManagerPeerImpl;
 public class MoveGenerator {
 
 	public static final int EMPTYSQUARE = Board.piece.EMPTY.ordinal();
-	public static final int WKING = 7;
-	public static final int BKING = 17;
-	public static final int UNMOVEDROOK = -4;
+	public static final int WKING = Board.piece.WKING.ordinal();
+	public static final int BKING = Board.piece.BKING.ordinal();
+	public static final int UNMOVEDROOK = Board.piece.WROOK.ordinal() * -1;
 
 	public boolean canCaptureSquare(GameState g, boolean color, CoordFour origin, CoordFour target, int pieceType) {
 		boolean rider = Board.getColorBool(pieceType);
@@ -105,8 +105,8 @@ public class MoveGenerator {
 		if (piece == 7 || piece == 17) {
 			ArrayList<CoordFour> moves = new ArrayList<CoordFour>();
 			if (unMoved) {
-				CoordFour rookLocq = kingCanCastlenew(g.getBoard(source), source, true);
-				CoordFour rookLock = kingCanCastlenew(g.getBoard(source), source, false);
+				CoordFour rookLocq = kingCanCastle(g.getBoard(source), source, true);
+				CoordFour rookLock = kingCanCastle(g.getBoard(source), source, false);
 				if (rookLocq != null) {
 					moves.add(rookLocq);
 				}
@@ -493,66 +493,7 @@ public class MoveGenerator {
 		return destCoords;
 	}
 
-	//returns the location of an unmoved rook.
 	public static CoordFour kingCanCastle(Board b, CoordFive kingSquare, boolean kside) {
-		int unmvdRk = UNMOVEDROOK;
-		if (!kingSquare.color) {
-			unmvdRk -= Board.numTypes;
-		}
-		if (kside) {
-			// Check For Clearance.
-			CoordFour left = new CoordFour(1, 0, 0, 0);
-			CoordFour index = CoordFour.add(kingSquare, left);
-			while (b.getSquare(index) == EMPTYSQUARE) {
-				index.add(left);
-			}
-			int firstNonEmpty = b.getSquare(index);
-			if (firstNonEmpty != unmvdRk) {
-				return null;
-			}
-			// Check For check
-			CoordFive target = kingSquare.clone();
-			if (MoveGenerator.isSquareAttacked(b, target)) {
-				return null;
-			}
-			target.add(left);
-			if (MoveGenerator.isSquareAttacked(b, target)) {
-				return null;
-			}
-			target.add(left);
-			if (MoveGenerator.isSquareAttacked(b, target)) {
-				return null;
-			}
-			return index;
-		} else {
-			// Check For Clearance.
-			CoordFour right = new CoordFour(-1, 0, 0, 0);
-			CoordFour index = CoordFour.add(kingSquare, right);
-			while (b.getSquare(index) == EMPTYSQUARE) {
-				index.add(right);
-			}
-			int firstNonEmpty = b.getSquare(index);
-			if (firstNonEmpty != unmvdRk) {
-				return null;
-			}
-			// Check For check
-			CoordFive target = kingSquare.clone();
-			if (MoveGenerator.isSquareAttacked(b, target)) {
-				return null;
-			}
-			target.add(right);
-			if (MoveGenerator.isSquareAttacked(b, target)) {
-				return null;
-			}
-			target.add(right);
-			if (MoveGenerator.isSquareAttacked(b, target)) {
-				return null;
-			}
-			return index;
-		}
-	}
-
-	public static CoordFour kingCanCastlenew(Board b, CoordFive kingSquare, boolean kside) {//TODO change this when works
 		int unmvdRk = UNMOVEDROOK;
 		if (!kingSquare.color) {
 			unmvdRk -= Board.numTypes;
@@ -637,6 +578,14 @@ public class MoveGenerator {
 		}
 		CoordFour index = attack.origin.clone();
 		index.add(attackVector);
+		if(!MoveNotation.pieceIsRider(piece)) {
+			if(index.equals(attack.dest)) {
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
 		while (!index.equals(attack.dest)) {
 			if (b.getSquare(index) != EMPTYSQUARE) {
 				return false;
@@ -708,6 +657,21 @@ public class MoveGenerator {
 					}
 				}
 			}
+		}
+		//Parse For castling
+		if(pieceType == WKING || pieceType == BKING) {
+			CoordFour[] CastleLkup = {
+					new CoordFour(2,0,0,0),
+					new CoordFour(-2,0,0,0)
+			};
+			for(CoordFour vector : CastleLkup) {
+				CoordFour result = CoordFour.sub(destSquare, vector);
+				if(b.getSquare(result) == pieceType || b.getSquare(result) * -1 == pieceType) {
+					if( (file == -1 || result.x == file) && (rank == -1 || result.y == rank)) {
+							return result;
+					}
+				}
+			}		
 		}
 		return null;
 	}

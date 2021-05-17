@@ -1,0 +1,5 @@
+[board "custom"]
+[size "8x8"]
+[r*3k*2r*/p*p*p*p*p*p*p*p*/8/8/8/8/P*P*P*P*P*P*P*P*/R*3K*2R*:0:1:w]
+
+1. Kg1 / Kc8

@@ -255,6 +255,7 @@ public class Controller implements MessageListener{
 				statusLabel.setText("Game Over - " + color + " wins!" );
 			}
 		}
+		drawStage();
 	}
 	
 	@FXML
