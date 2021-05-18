@@ -1,6 +1,7 @@
 package GUI;
 
 import javafx.scene.paint.*;
+import javafx.scene.shape.ArcType;
 import javafx.scene.image.Image;
 
 import java.io.FileInputStream;
@@ -247,6 +248,7 @@ public class ChessDrawer {
 	
 	public static void drawTimelineArrow(GraphicsContext gc, int len, int x, int y, int screenx, int screeny) {
 		gc.setFill(ChessDrawer.arrowColor);
+		gc.fillArc(x - 20 - screenx, y - 20 - screeny, 40, 40, 0, 360, ArcType.ROUND);
 		gc.fillRect(x - screenx, y - 20 - screeny, len, 40);
 		double[] arrowx = { (double) x + len - screenx, (double) x + len - screenx, (double) x + len + 50 - screenx };
 		double[] arrowy = { (double) y - 40 - screeny, (double) y + 40 - screeny, (double) y - screeny};
@@ -255,6 +257,7 @@ public class ChessDrawer {
 	
 	public static void drawArrowV(GraphicsContext gc, Color c, int len, int x, int y, int screenx, int screeny) {
 		gc.setFill(c);
+		gc.fillArc(x - 20 - screenx, y - 20 - screeny, 40, 40, 0, 360, ArcType.ROUND);
 		gc.fillRect(x - screenx, y - 20 - screeny, len, 40);
 		double[] arrowx = { (double) x + len - screenx, (double) x + len - screenx, (double) x + len + 30 - screenx };
 		double[] arrowy = { (double) y - 40 - screeny, (double) y + 40 - screeny, (double) y - screeny};

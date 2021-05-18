@@ -273,6 +273,7 @@ public class Controller implements MessageListener{
 		int turnIndex = notationList.getSelectionModel().getSelectedIndex();
 		g.setTurn(turnIndex - 1);
 		this.drawStage();
+		handlePanButton(null);
 	}
 	
 	@FXML

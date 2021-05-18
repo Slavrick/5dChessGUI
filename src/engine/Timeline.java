@@ -127,6 +127,7 @@ public class Timeline implements Comparable<Timeline>{
 		while(b.getSquare(index) != Board.piece.WROOK.ordinal() * -1 && b.getSquare(index) != Board.piece.BROOK.ordinal() * -1) {
 			index.add(direction);
 		}
+		m.pieceMoved = king;
 		int rook = newBoard.getSquare(index) * -1;
 		newBoard.setSquare(m.origin,0);
 		newBoard.setSquare(index, 0);

@@ -1,0 +1,6 @@
+[board "standard"]
+
+1.(0T1)Ng1f3  / (0T1)Ng8f6  
+2.(0T2)g2g3  / (0T2)g7g6  
+3.(0T3)Bf1g2  / (0T3)Bf8g7  
+4.(0T4)Ke1g1  / (0T4)Ke8g8  
