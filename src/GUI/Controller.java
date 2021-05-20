@@ -503,7 +503,7 @@ public class Controller implements MessageListener{
 	}
 	
 	private void panToBoard(int T, int L) {
-		int pany = (L - g.minTL) * (ChessDrawer.padding + (ChessDrawer.squarewidth * g.height)) - 30;
+		int pany = (L) * (ChessDrawer.padding + (ChessDrawer.squarewidth * g.height)) - 30;
 		int panx = ((T - 1) * 2) * (ChessDrawer.padding + (ChessDrawer.squarewidth * g.width)) - 30;
 		screenX = panx;
 		screenY = pany;
