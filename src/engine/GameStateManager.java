@@ -45,7 +45,8 @@ public class GameStateManager extends GameState{
 				MessageEvent m = new MessageEvent("The present Still rests on your color.");
 				GUI.Globals.es.broadcastEvent(m);
 			}else {
-				MessageEvent m = new MessageEvent("Submitting now Would Allow your opponent to capture your king.");
+				ArrayList<CoordFour> checkingpiece = MoveGenerator.getAllCheckingPieces(this);
+				MessageEvent m = new MessageEvent("Submitting now Would Allow your opponent to capture your king. \n For example, the piece on: " + checkingpiece + " can capture your piece");
 				GUI.Globals.es.broadcastEvent(m);
 			}			
 		}

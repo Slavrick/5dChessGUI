@@ -1,0 +1,3 @@
+[board "custom"]
+[size "5x5"]
+[ycccc/ccccc/5/CCCCC/CCCCY:0:1:w]

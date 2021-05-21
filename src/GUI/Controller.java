@@ -445,8 +445,6 @@ public class Controller implements MessageListener{
 	}
 
 	public void drawStage(double changex, double changey) {
-		//System.out.println("(" + screenX + "," + screenY + ")");
-		//System.out.println("y(" + (screenX - changex) + "," + (screenY - changey) + ")");
 		GraphicsContext gc = canvasbox.getGraphicsContext2D();
 		gc.clearRect(0, 0, 8000, 8000);
 		switch(viewType) {

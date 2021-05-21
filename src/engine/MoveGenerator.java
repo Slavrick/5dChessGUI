@@ -27,7 +27,7 @@ public class MoveGenerator {
 		ArrayList<CoordFour> attackingPieces = new ArrayList<CoordFour>();
 		for (Timeline t : g.multiverse) {
 			if (t.colorPlayable != g.color) {
-				attackingPieces.addAll(getCheckingPieces(g, new CoordFive(0, 0, 0, t.Tend, !g.color)));
+				attackingPieces.addAll(getCheckingPieces(g, new CoordFive(0, 0, t.Tend, t.layer, !g.color)));
 			}
 		}
 		return attackingPieces;
@@ -52,7 +52,7 @@ public class MoveGenerator {
 					for (CoordFour square : currSquareCaps) {
 						int attackedPiece = g.getSquare(square, spatialCoord.color);
 						attackedPiece = attackedPiece < 0 ? attackedPiece * -1 : attackedPiece;
-						if (attackedPiece == WKING || attackedPiece == BKING) {
+						if (MoveNotation.pieceIsRoyal(attackedPiece)) {
 							attackingPieces.add(currSquare);
 						} // Yes, this will put say a queen who is checking like a spatial rook and a
 							// temporal bishop in the list twice. Im trying to think if this is bad
@@ -92,7 +92,7 @@ public class MoveGenerator {
 			unMoved = true;
 			piece *= -1;
 		}
-		if (piece == 0)
+		if (piece == Board.EMPTYSQUARE)
 			return null;
 		if (piece == Board.piece.WPAWN.ordinal() || piece == Board.piece.BPAWN.ordinal()) {
 			return getPawnMoves(piece, g, source, unMoved);
@@ -102,7 +102,7 @@ public class MoveGenerator {
 			moves.addAll(getCaptures(piece,g,source));
 			return moves;
 		}
-		if (piece == 7 || piece == 17) {
+		if (piece == WKING || piece == BKING) {
 			ArrayList<CoordFour> moves = new ArrayList<CoordFour>();
 			if (unMoved) {
 				CoordFour rookLocq = kingCanCastle(g.getBoard(source), source, true);

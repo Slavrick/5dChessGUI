@@ -1,0 +1,3 @@
+[board "custom"]
+[size "8x8"]
+[kyqsnbrc/udp*p*w*w*du/8/8/8/8/UDP*P*W*W*DU/KYQSNBRC:0:1:w]

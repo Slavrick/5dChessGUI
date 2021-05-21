@@ -11,17 +11,17 @@ public class Board {
 	// The board has no need for its location within the multiverse
 	public CoordFour enPassentSquare;
 
-	public static final int numTypes = 10;
+	public static final int numTypes = 12;
 	public static final int ERRORSQUARE = -63;
 	public static final int EMPTYSQUARE = 0;
 	
 	public static enum piece {
-		EMPTY, WPAWN, WKNIGHT, WBISHOP, WROOK, WPRINCESS, WQUEEN, WKING, WUNICORN, WDRAGON, WBRAWN, BPAWN, BKNIGHT,
-		BBISHOP, BROOK, BPRINCESS, BQUEEN, BKING, BUNICORN, BDRAGON, BBRAWN
+		EMPTY, WPAWN, WKNIGHT, WBISHOP, WROOK, WPRINCESS, WQUEEN, WKING, WUNICORN, WDRAGON, WBRAWN, WROYALQUEEN, WCOMMONKING, BPAWN, BKNIGHT,
+		BBISHOP, BROOK, BPRINCESS, BQUEEN, BKING, BUNICORN, BDRAGON, BBRAWN, BROYALQUEEN, BCOMMONKING
 	}
 
-	public static final char[] pieceChars = { '_', 'P', 'N', 'B', 'R', 'S', 'Q', 'K', 'U', 'D', 'W', 'p', 'n', 'b', 'r',
-			's', 'q', 'k', 'u', 'd', 'w' };
+	public static final char[] pieceChars = { '_', 'P', 'N', 'B', 'R', 'S', 'Q', 'K', 'U', 'D', 'W', 'Y', 'C', 'p', 'n', 'b', 'r',
+			's', 'q', 'k', 'u', 'd', 'w', 'y', 'c' };
 
 	public Board(Board b) {
 		this.brd = new int[b.width][b.height];

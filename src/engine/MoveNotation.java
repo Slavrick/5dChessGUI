@@ -1,5 +1,4 @@
 package engine;
-import java.util.ArrayList;
 
 public class MoveNotation {
 	
@@ -460,6 +459,13 @@ public class MoveNotation {
 			new CoordFour(-1,0,0,1),
 	};
 	
+	
+	//Impossible to avoid magic number antipattern below (or so i think)
+	//If I were to do for instantce case board.piece.pawn.ordinal()
+	//java complains its no constant :(
+	//Perhaps changing this to an if else is something I want to do
+	//However, as long as I strictly add new pieces in a predictable pattern, this is fine
+	
 	/**
 	 * Take a piece and turns it into an array of movement vectors,
 	 * 
@@ -471,37 +477,42 @@ public class MoveNotation {
 		switch(piece) {
 		case 1:
 			return whitePawnMovement;
-		case 1 + 10:
+		case 1 + Board.numTypes:
 			return blackPawnMovement;
 		case 2:
-		case 2 + 10:
+		case 2 + Board.numTypes:
 			return KNIGHTMOVESET;
 		case 3:
-		case 3 + 10:
+		case 3 + Board.numTypes:
 			return BISHOPMOVESET;
 		case 4:
-		case 4 + 10:
+		case 4 + Board.numTypes:
 			return ROOKMOVESET;
 		case 5:
-		case 5 + 10:
+		case 5 + Board.numTypes:
 			return PRINCESSMOVESET;
 		case 6:
-		case 6 + 10:
+		case 6 + Board.numTypes:
 			//this case is the queen, but it has the same movement vectors as a king, but is a rider instead. making the queen a "king rider" (that sounds dirty)
 			return KINGMOVESET;
 		case 7:
-		case 7 + 10:
+		case 7 + Board.numTypes:
 			return KINGMOVESET;
 		case 8:
-		case 8 + 10:
+		case 8 + Board.numTypes:
 			return UnicornMoveset;
 		case 9:
-		case 9 + 10:
+		case 9 + Board.numTypes:
 			return DragonMoveset;
 		case 10:
 			return whitePawnMovement;
-		case 20:
+		case 10 + Board.numTypes:
 			return blackPawnMovement;
+		case 11:
+		case 11 + Board.numTypes://Royal Queen
+		case 12:
+		case 12 + Board.numTypes://Common King
+			return KINGMOVESET;
 		case 0:
 		default:
 			return NULLMOVESET;
@@ -520,53 +531,24 @@ public class MoveNotation {
 		case 7:
 		case 10 + Board.numTypes://Brawn
 		case 10:
+		case 12 + Board.numTypes://common king
+		case 12:
 			return false;
 		default: 
 			return true;
 		}
 	}
 	
-	//this is not very useful, but may be used if i find something for it.
-	public static ArrayList<CoordFour> getMultiMoveset(int[] moveAxes){
-		ArrayList<CoordFour> moveset = new ArrayList<CoordFour>();
-		for(int i: moveAxes) {
-			moveset.addAll(getMoveset(i));
+	public static boolean pieceIsRoyal(int piece) {
+		piece = piece < 0 ? piece * -1 : piece;
+		switch(piece) {
+		case 7 + Board.numTypes://King
+		case 7:
+		case 11 + Board.numTypes://Royal Queen
+		case 11:
+			return true;
+		default: 
+			return false;
 		}
-		return moveset;
-	}	
-	
-	//this is probably not useful.
-	public static ArrayList<CoordFour> getMoveset(int moveAxi){
-		ArrayList<CoordFour> moveset = new ArrayList<CoordFour>();
-		
-		switch(moveAxi)
-		{
-		case 1:
-			for(CoordFour c : ROOKMOVESET) {
-				moveset.add(c);				
-			}
-			break;
-		case 2:
-			for(CoordFour c : BISHOPMOVESET) {
-				moveset.add(c);				
-			}
-			break;
-		case 3:
-			for(CoordFour c : UnicornMoveset) {
-				moveset.add(c);				
-			}
-			break;
-		case 4:
-			for(CoordFour c : DragonMoveset) {
-				moveset.add(c);				
-			}
-			break;
-		default:
-			break;
-		}
-		return moveset;
-		
-		
 	}
-	
 }
