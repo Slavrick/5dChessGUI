@@ -18,6 +18,7 @@ import javafx.event.*;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Popup;
@@ -196,6 +197,35 @@ public class Controller implements MessageListener{
 				}
 			}
 		});
+		
+		innerLayout.setOnScroll(new EventHandler<ScrollEvent>() {
+			public void handle(ScrollEvent event) {
+				//System.out.println(event.getDeltaY());
+				if(event.getDeltaY() > 0) {
+					ChessDrawer.squarewidth += 8;					
+				}
+				else {
+					ChessDrawer.squarewidth -= 8;		
+				}
+				if(ChessDrawer.squarewidth < 8) {
+					ChessDrawer.squarewidth = 8;
+				}
+				drawStage();
+				
+			}
+		});
+		
+		//XXX remove Magic numbers
+		//This makes the canvas resize, there is probably a better way to do this but i haven't found it yet
+		innerLayout.widthProperty().addListener( e-> {
+			this.canvasbox.setWidth(this.innerLayout.getWidth() - 200);
+			drawStage();
+		});
+		innerLayout.heightProperty().addListener( e-> {
+			this.canvasbox.setHeight(this.innerLayout.getHeight() - 100);
+			drawStage();
+		});
+		
 		//---------------------------------------------------------------------------------------------------------------------------
 		notationStringArray = FXCollections.observableArrayList();
 		notationList.setItems(notationStringArray);

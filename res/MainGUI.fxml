@@ -23,9 +23,7 @@
 	    </MenuBar>
 	</top>
 	<center>
-		<ScrollPane>
-				<Canvas fx:id="canvasbox" width="2000" height="2000" />
-		</ScrollPane>
+		<Canvas fx:id="canvasbox" width="200" height="200" />
 	</center>
 	<right>
 		<ListView fx:id="notationList" minWidth="200" maxWidth="300" prefWidth="200" onMouseClicked="#handleListEvent" />
