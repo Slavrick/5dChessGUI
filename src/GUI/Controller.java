@@ -89,7 +89,7 @@ public class Controller implements MessageListener{
 	double ychange;
 	boolean dragging = false;
 	boolean release = false;
-	int viewType = FULL_VIEW;
+	static int viewType = FULL_VIEW;
 	
 	
 	//Gamestate variables
@@ -361,7 +361,6 @@ public class Controller implements MessageListener{
 	
 	@FXML
 	private void setProperties(ActionEvent e) throws IOException {
-		Popup p = new Popup();
 		Parent root = FXMLLoader.load(getClass().getResource("/Properties.fxml"));
 		Scene properties = new Scene(root, 200, 200);
 		Stage stage = new Stage();
@@ -416,28 +415,55 @@ public class Controller implements MessageListener{
 	// =========================================Canvas Functions=========================================
 	//This is the worst.....
 	public CoordFive getCoordClicked(int x, int y, int w, int h) {
-		x += screenX;
-		y += screenY;
-		int L = y / ((h * ChessDrawer.squarewidth) + ChessDrawer.padding);
-		if(y < 0) {
-			L--;
+		if(viewType == Controller.FULL_VIEW) {
+			x += screenX;
+			y += screenY;
+			int L = y / ((h * ChessDrawer.squarewidth) + ChessDrawer.padding);
+			if(y < 0) {
+				L--;
+			}
+			int pxrank = y % ((h * ChessDrawer.squarewidth) + ChessDrawer.padding);
+			if(pxrank < 0) {
+				pxrank += ((h * ChessDrawer.squarewidth) + ChessDrawer.padding);
+			}
+			if (pxrank <= ChessDrawer.padding)
+				return null;
+			int rank = h - ((pxrank - ChessDrawer.padding) / ChessDrawer.squarewidth) - 1;
+			int T = x / ((w * ChessDrawer.squarewidth) + ChessDrawer.padding);
+			int pxFile = x % ((w * ChessDrawer.squarewidth) + ChessDrawer.padding);
+			int file = ((pxFile - ChessDrawer.padding) / ChessDrawer.squarewidth);
+			if(x < 0) {// workaround for T0
+				file += w;
+				T -= 3;
+			}
+			CoordFive cf = new CoordFive(file, rank, (T / 2) + 1, L, (T % 2 == 0));
+			return cf;
 		}
-		int pxrank = y % ((h * ChessDrawer.squarewidth) + ChessDrawer.padding);
-		if(pxrank < 0) {
-			pxrank += ((h * ChessDrawer.squarewidth) + ChessDrawer.padding);
+		else {
+			x += screenX;
+			y += screenY;
+			int L = y / ((h * ChessDrawer.squarewidth) + ChessDrawer.padding);
+			if(y < 0) {
+				L--;
+			}
+			int pxrank = y % ((h * ChessDrawer.squarewidth) + ChessDrawer.padding);
+			if(pxrank < 0) {
+				pxrank += ((h * ChessDrawer.squarewidth) + ChessDrawer.padding);
+			}
+			if (pxrank <= ChessDrawer.padding)
+				return null;
+			int rank = h - ((pxrank - ChessDrawer.padding) / ChessDrawer.squarewidth) - 1;
+			int T = x / ((w * ChessDrawer.squarewidth) + ChessDrawer.padding);
+			int pxFile = x % ((w * ChessDrawer.squarewidth) + ChessDrawer.padding);
+			int file = ((pxFile - ChessDrawer.padding) / ChessDrawer.squarewidth);
+			if(x < 0) {// workaround for T0
+				file += w;
+				T -= 3;
+			}
+			CoordFive cf = new CoordFive(file, rank, T + 1, L, viewType == Controller.WHITE_VIEW);
+			System.out.println(cf);
+			return cf;
 		}
-		if (pxrank <= ChessDrawer.padding)
-			return null;
-		int rank = h - ((pxrank - ChessDrawer.padding) / ChessDrawer.squarewidth) - 1;
-		int T = x / ((w * ChessDrawer.squarewidth) + ChessDrawer.padding);
-		int pxFile = x % ((w * ChessDrawer.squarewidth) + ChessDrawer.padding);
-		int file = ((pxFile - ChessDrawer.padding) / ChessDrawer.squarewidth);
-		if(x < 0) {// workaround for T0
-			file += w;
-			T -= 3;
-		}
-		CoordFive cf = new CoordFive(file, rank, (T / 2) + 1, L, (T % 2 == 0));
-		return cf;
 	}
 
 	public boolean updateDestinations(CoordFive c) {

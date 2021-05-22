@@ -2,10 +2,8 @@ package fileIO;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -50,7 +48,7 @@ public class FENParser {
 		String size = null;
 		String variant = null;
 		String color = null;
-		String Puzzle;
+		//String Puzzle; used for mate in x puzzles, which could be a thing but never was....
 		ArrayList<String> fenBoards = new ArrayList<String>();
 		ArrayList<String> moves = new ArrayList<String>();
 		boolean evenStarters = false;
@@ -321,9 +319,7 @@ public class FENParser {
 	// (<L>T<T>)(Piece)(SAN)>(<L>T<T>)<SAN> for spatial/branching.
 	public static Move getShadMove(GameState g, String move, boolean evenStarters) {
 		Move temp;// Fit this to +-0 later (increment posative and make it so +0 is 1
-		if (move.contains("(") && move.indexOf("(") != move.lastIndexOf("(")) { // TODO not sure if something like
-																				// Qc2(0T1)f7 is possible (origin of L0
-																				// T5
+		if (move.contains("(") && move.indexOf("(") != move.lastIndexOf("(")) {
 			return fullStringToCoord(move, evenStarters);
 		}
 		return ambiguousStringToMove(g, move, evenStarters);

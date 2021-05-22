@@ -1,10 +1,6 @@
 package engine;
 
 import java.util.ArrayList;
-import java.util.Collection;
-
-import GUI.Controller;
-import sun.awt.KeyboardFocusManagerPeerImpl;
 
 public class MoveGenerator {
 
@@ -373,7 +369,7 @@ public class MoveGenerator {
 		Board b = g.getBoard(sourceCoord, color);
 		CoordFour currSquare = CoordFour.add(sourceCoord, movementVec);
 		while (b.isInBounds(currSquare)) {
-			int currPiece = b.getSquare(currSquare); //TODO this can be optimized, getsquare has bounds checking now
+			int currPiece = b.getSquare(currSquare);
 			if (currPiece != EMPTYSQUARE) {
 				boolean currColor = Board.getColorBool(currPiece);
 				if (currColor == color) {
@@ -399,7 +395,7 @@ public class MoveGenerator {
 		Board b = g.getBoard(sourceCoord, color);
 		CoordFour currSquare = CoordFour.add(sourceCoord, movementVec);
 		while (b.isInBounds(currSquare)) {
-			int currPiece = b.getSquare(currSquare); // TODO this can be optimized, getsquare has bounds checking now
+			int currPiece = b.getSquare(currSquare);
 			if (currPiece != EMPTYSQUARE) {
 				boolean currColor = Board.getColorBool(currPiece);
 				if (currColor == color) {

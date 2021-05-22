@@ -25,7 +25,6 @@ public class GameStateManager extends GameState{
 	}
 	
 	public boolean submitMoves() {
-		determineActiveTLS();
 		boolean presColor = calcPresent();
 		if(!opponentCanCaptureKing() && !(presColor == color)) {
 			if(currTurn + 1< turns.size()) {

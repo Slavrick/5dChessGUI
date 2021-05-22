@@ -73,6 +73,22 @@ public class Turn {
 		return this.moves;
 	}
 	
+	public boolean equals(Turn t) {
+		for(Move ogMove : this.moves) {
+			boolean found = false;
+			for(Move compareTo : t.moves) {
+				if(ogMove.equals(compareTo)) {
+					found = true;
+					break;
+				}
+			}
+			if(!found) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
 	public String toString() {
 		String temp = "";
 		switch(pre) {

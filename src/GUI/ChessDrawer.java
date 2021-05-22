@@ -12,6 +12,7 @@ import engine.Board;
 import engine.CoordFive;
 import engine.CoordFour;
 import engine.GameState;
+import engine.Move;
 import engine.Timeline;
 import javafx.scene.canvas.GraphicsContext;
 
@@ -125,7 +126,7 @@ public class ChessDrawer {
 			drawTimelineArrow(gc, (lastWindex + lastBindex) * (boardOffset), x - 10, y + (boardwidth / 2), screenx, screeny);
 		}
 		else{
-			drawArrowV(gc, Color.GREY, (lastWindex + lastBindex) * (boardOffset), x - 10, y + (boardwidth / 2), screenx, screeny);
+			drawTimelineArrowColored(gc, Color.GREY, (lastWindex + lastBindex) * (boardOffset), x - 10, y + (boardwidth / 2), screenx, screeny);
 		}
 		//Draw white
 		int offset = 0;
@@ -169,7 +170,7 @@ public class ChessDrawer {
 			drawTimelineArrow(gc, arrowSize * (boardOffset), x - 10, y + (boardwidth / 2), screenx, screeny);
 		}
 		else{
-			drawArrowV(gc, Color.GREY, arrowSize * (boardOffset), x - 10, y + (boardwidth / 2), screenx, screeny);
+			drawTimelineArrowColored(gc, Color.GREY, arrowSize * (boardOffset), x - 10, y + (boardwidth / 2), screenx, screeny);
 		}
 		//Draw white
 		if(color) {
@@ -255,7 +256,7 @@ public class ChessDrawer {
 		gc.fillPolygon(arrowx, arrowy, 3);
 	}
 	
-	public static void drawArrowV(GraphicsContext gc, Color c, int len, int x, int y, int screenx, int screeny) {
+	public static void drawTimelineArrowColored(GraphicsContext gc, Color c, int len, int x, int y, int screenx, int screeny) {
 		gc.setFill(c);
 		gc.fillArc(x - 20 - screenx, y - 20 - screeny, 40, 40, 0, 360, ArcType.ROUND);
 		gc.fillRect(x - screenx, y - 20 - screeny, len, 40);
@@ -268,10 +269,16 @@ public class ChessDrawer {
 		gc.setFill(c);
 		int xboardOffset = (width * squarewidth) + padding;
 		int yboardOffset = (height * squarewidth) + padding;
-		int xOffset = (2 * (squareLoc.T-1) * (xboardOffset) + (squareLoc.x * squarewidth) + padding);
-		if(!squareLoc.color) {
-			xOffset += xboardOffset;
+		int xOffset;
+		if(Controller.viewType == Controller.FULL_VIEW) {
+			xOffset = (2 * (squareLoc.T-1) * (xboardOffset) + (squareLoc.x * squarewidth) + padding);
+			if(!squareLoc.color) {
+				xOffset += xboardOffset;
+			}
+		}else {
+			xOffset = ((squareLoc.T-1) * (xboardOffset) + (squareLoc.x * squarewidth) + padding);				
 		}
+		
 		int yOffset = ((squareLoc.L + 1) * (yboardOffset)) - ((squareLoc.y+1) * squarewidth);
 		gc.fillRect(xOffset - screenx, yOffset - screeny, squarewidth, squarewidth);
 	}
@@ -288,6 +295,16 @@ public class ChessDrawer {
 		gc.strokeLine(da.startX - screenx + halfSquare, da.startY - screeny + halfSquare, da.endX - screenx + halfSquare, da.endY - screeny + halfSquare);
 	}
 	
+	public static void drawLine(GraphicsContext gc, DrawableArrow da, int screenx, int screeny) {
+		gc.setLineWidth(3);
+		gc.setStroke(Color.CORNFLOWERBLUE);
+		gc.strokeLine(da.startX - screenx + halfSquare, da.startY - screeny + halfSquare, da.endX - screenx + halfSquare, da.endY - screeny + halfSquare);
+	}
+	
+	public static void drawMove(Move m) {
+		
+	}
+	
 	public static int coordToX(CoordFour square, boolean color, int width, int height) {
 		int xboardOffset = (width * squarewidth) + padding;
 		int xOffset = (2 * (square.T-1) * (xboardOffset) + (square.x * squarewidth) + padding);
@@ -298,6 +315,11 @@ public class ChessDrawer {
 	}
 	
 	public static int coordToX(CoordFive square, int width, int height) {
+		if(Controller.viewType == Controller.BLACK_VIEW || Controller.viewType == Controller.WHITE_VIEW) {
+			int xboardOffset = (width * squarewidth) + padding;
+			int xOffset = ((square.T-1) * (xboardOffset) + (square.x * squarewidth) + padding);
+			return xOffset;
+		}
 		int xboardOffset = (width * squarewidth) + padding;
 		int xOffset = (2 * (square.T-1) * (xboardOffset) + (square.x * squarewidth) + padding);
 		if(!square.color) {

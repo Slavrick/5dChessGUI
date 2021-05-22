@@ -1,8 +1,6 @@
 package engine;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-
 import GUI.MessageEvent;
 
 public class GameState {
@@ -31,7 +29,6 @@ public class GameState {
 	// therefore in the above example, you would have 2 timeline start. starters
 	// would be 0,1 and handicap would be 1.
 	// without this, the +2 TL would be inactive.
-	// TODO fix this, much of the assumptions may be wrong because of this..... also
 	// we need to take into consideration parsing of coords
 	public int tlHandicap;
 
@@ -279,7 +276,7 @@ public class GameState {
 				turnTLs.add(m.origin.L);
 				turnMoves.add(m);
 				return true;
-			} else { //TODO if this is nessesary
+			} else { 
 				return false;
 			}
 		}
@@ -314,7 +311,6 @@ public class GameState {
 	}
 	
 	public boolean submitMoves() {
-		determineActiveTLS();
 		boolean presColor = calcPresent();
 		if (!opponentCanCaptureKing() && !(presColor == color)) {
 			turnTLs.clear();
@@ -408,9 +404,6 @@ public class GameState {
 		}
 		int pieceMoved = this.getSquare(m.origin, this.color);
 		int movedTo = this.getSquare(m.dest, this.color);
-		if((pieceMoved == -7 && movedTo == -4) || (pieceMoved == -7 - Board.numTypes && movedTo == -4 - Board.numTypes)) {
-			m.specialType = Move.CASTLE;
-		}
 		if(pieceMoved == Board.EMPTYSQUARE || pieceMoved == Board.ERRORSQUARE || this.color != Board.getColorBool(pieceMoved)) {
 			return false;
 		}
@@ -432,7 +425,7 @@ public class GameState {
 			}
 			else if(m.specialType == Move.CASTLE) {
 				//XXX make sure it is possible to castle-- possibly call the Movegenerator Function.
-				if((pieceMoved == -7 && movedTo == -4) || (pieceMoved == -7 - Board.numTypes && movedTo == -4 - Board.numTypes)) {
+				if((pieceMoved == -1 * Board.piece.WKING.ordinal() && movedTo == -4) || (pieceMoved == -7 - Board.numTypes && movedTo == -4 - Board.numTypes)) {
 					return true;
 				}
 				else {
@@ -506,8 +499,7 @@ public class GameState {
 		return (layer >= minTL && layer <= maxTL);
 	}
 
-	// This assumes that the activeness has been calculated //TODO make sure it
-	// present calculated at the right time.
+	// This assumes that the activeness has been calculated
 	public boolean layerIsActive(int layer) {
 		if (layer < minActiveTL || layer > maxActiveTL) {
 			return false;
@@ -636,9 +628,8 @@ public class GameState {
 	 * this function changes the object to reflect which TL are 'active' Uses
 	 * 'handicap' for even tl things -- May be wrong but we will see.
 	 * 
-	 * Should calculate this after every move, and at the end of the turn -- and
-	 * therefore all calculations should be working with correct numbers TODO make
-	 * sure the above line is achieved.
+	 * Should calculate this after every move that is non spatial -- and
+	 * therefore all calculations should be working with correct numbers 
 	 */
 	protected void determineActiveTLS() {
 		// case 1 -- black has branched more.
@@ -689,23 +680,70 @@ public class GameState {
 	}
 
 	// TODO set this to return a turn so we can hint, check if this moves properly.
-	//FIXME fix this pls
+	// TODO Finish this function, Make it so that not all permutations between spatial moves are made.
 	public boolean isMated() {
 		determineActiveTLS();
-		ArrayList<CoordFour> attackers = MoveGenerator.getAllCheckingPieces(this);
-		// 1st pass, try to solve spatially.
-
-		// 2nd pass, try to do a simply branch
-		if (canActiveBranch()) {
-
+		calcPresent();
+		if (opponentCanCaptureKing()) {
+			return true;
 		}
-		// FIXME finish this.
+		// Get all the moves from the current place 
+		ArrayList<ArrayList<Move>> allMoves = new ArrayList<ArrayList<Move>>();
+		for (int i = minTL; i <= maxTL; i++) {
+			ArrayList<Move> tlMoves = new ArrayList<Move>();
+			Timeline t = getTimeline(i);
+			if (t.colorPlayable != color) {
+				continue;
+			}
+			// the null move marks that the timeline is unmoved. Ie this is the case for
+			// certain things.(inactive, future timelines etc.)
+			tlMoves.add(null);
+			tlMoves.addAll(MoveGenerator.getAllMoves(this, color, t.Tend, i));
+			allMoves.add(tlMoves);
+		}
+		//DO a first pass to get rid of any moves that immediatly put you in check
+		for(ArrayList<Move> tlMoves : allMoves) {
+			for(int i = 0; i < tlMoves.size(); i++) {// TODO test if this function works
+				this.makeMove(tlMoves.get(i));
+				CoordFive loc = new CoordFive(0 , 0 , tlMoves.get(i).origin.T, tlMoves.get(i).origin.L, this.color);
+				if(MoveGenerator.getCheckingPieces(this, loc).size() > 0) {
+					tlMoves.remove(i);
+				}
+				this.undoTempMoves();
+				tlMoves.remove(i);
+				i--;//I assume I need this, but maybe not.
+			}
+		}
+		int curMove[] = new int[allMoves.size()];
+		while (curMove[0] < allMoves.get(0).size()) {
+			Move[] moves = new Move[curMove.length];
+			for (int getM = 0; getM < curMove.length; getM++) {
+				moves[getM] = allMoves.get(getM).get(curMove[getM]);
+			}
+			if (this.validateAllPermutations(moves)) {
+				//System.out.println(Arrays.toString(moves));
+				return false;
+			}
+			int cursor = 0;
+			while (true) {
+				curMove[cursor]++;
+				if (curMove[cursor] >= allMoves.get(cursor).size()) {
+					curMove[cursor] = 0;
+					cursor++;
+					if (cursor >= curMove.length) {
+						return true;
+					}
+				} else {
+					break;
+				}
+			}
+		}
 		return true;
 	}
 
 	// returns true if the position is checkmate.
 	public boolean bruteForceMateDetection() {
-		determineActiveTLS();// TODO figure out if this is needed.
+		determineActiveTLS();
 		calcPresent();
 		if (opponentCanCaptureKing()) {
 			return true;
@@ -751,38 +789,6 @@ public class GameState {
 		return true;
 	}
 	
-	public boolean firstPassMateDetection() {
-		determineActiveTLS();// TODO figure out if this is needed.
-		calcPresent();
-		if (opponentCanCaptureKing()) {
-			return true;
-		}
-		// This looks like it should be hackey and bad, i should change it.
-		ArrayList<ArrayList<Move>> allMoves = new ArrayList<ArrayList<Move>>();
-		for (int i = minTL; i <= maxTL; i++) {
-			ArrayList<Move> tlMoves = new ArrayList<Move>();
-			Timeline t = getTimeline(i);
-			if (t.colorPlayable != color) {
-				continue;
-			}
-			// the null move marks that the timeline is unmoved. Ie this is the case for
-			// certain things.(inactive, future timelines etc.)
-			tlMoves.add(null);
-			tlMoves.addAll(MoveGenerator.getAllMoves(this, color, t.Tend, i));
-			allMoves.add(tlMoves);
-		}
-		for(int i = 0; i < allMoves.size(); i++) {
-			ArrayList<Move> tlMoves = allMoves.get(i);
-			for(int w = 0; w < tlMoves.size(); w++) {
-				Move moveToValidate = tlMoves.get(w);
-				if(moveToValidate.type == Move.SPATIALMOVE) {
-					//FIXME validate the moves.
-				}
-				//Validate and remove any unnessasary things.
-			}
-		}
-		return true;
-	}
 	// Looks at all permutations of a moveset and validates them. this uses a swap
 	// permutation algorithm.
 	public boolean validateAllPermutations(Move[] moves) {

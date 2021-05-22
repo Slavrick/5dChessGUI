@@ -109,6 +109,10 @@ public class Move implements Comparable<Move>{
 		return 1;
 	}
 
+	public boolean equals(Move m) {
+		return this.origin.equals(m.origin) && this.dest.equals(m.dest);
+	}
+	
 	public String toRawShadString() {
 		if(this.specialType == CASTLE) {
 			//TODO fix this This probably needs to change for multiple king boards, that will come later.

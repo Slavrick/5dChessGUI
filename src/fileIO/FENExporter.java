@@ -6,7 +6,6 @@ import java.io.IOException;
 
 import engine.Board;
 import engine.GameStateManager;
-import engine.Move;
 import engine.Timeline;
 import engine.Turn;
 

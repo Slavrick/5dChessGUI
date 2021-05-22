@@ -3,7 +3,6 @@ package test;
 
 import engine.Board;
 import engine.CoordFive;
-import engine.CoordFour;
 import engine.GameState;
 import engine.GameStateManager;
 import engine.Move;
