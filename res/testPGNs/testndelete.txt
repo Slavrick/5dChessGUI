@@ -1,0 +1,22 @@
+[Board "Standard"]
+1. Nf3 / e6
+2. e3 / Be7
+3. c4 / Bf6
+4. Nc3 / c6
+5. b4 / c5
+6. bxc5 / Bxc3
+7. dxc3 / Qa5
+8. Bd2 / Qxc5
+9. Qb3 / Nf6
+10. Bd3 / Qh5
+11. Bc1 / O-O
+12. Ba3 / Re8
+13. Qb4 / Nc6
+14. Qd6 / Qg4
+15. Bf1 / Ne7
+16. (0T16)Qd6>>(0T14)f8~ (>L1) / (1T14)Rxf8
+17. (1T15)Qxf8 / (0T16)Qg4>>x(0T12)c4~ (>L-1)
+18. (-1T13)Qxc4 / (-1T13)d6
+19. (-1T14)Bxd6 / (-1T14)Qh5>>(0T13)g4~ (>L-2)
+20. (-2T14)Qf8 / (-2T14)Rxf8
+21. (-2T15)Bxf8 (-1T15)Bxh7

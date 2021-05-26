@@ -27,10 +27,24 @@ public class ChessDrawer {
 
 	private static final int SPRITEWIDTH = 128;
 	private static final int SPRITESHEETWIDTH = 10;
+	//Width of the squares on the chess board, plus the padding that is between the boards.
 	public static int squarewidth = 32;
 	public static int halfSquare = squarewidth / 2;
 	public static int padding = 50;
 	public static int halfPadding = padding / 2;
+	//Dimensions of the chess board
+	public static int width = 8;
+	public static int height = 8;
+	
+	public static void setSquareWidth(int sqwdth) {
+		squarewidth = sqwdth;
+		 halfSquare = squarewidth / 2;
+	}
+	
+	public static void changeSquareWidth(int change) {
+		squarewidth += change;
+		halfSquare = squarewidth / 2;
+	}
 	
 	public static void drawMultiverseGrid(GraphicsContext gc, int screenx, int screeny, GameState game) {
 		int squareWidth = (squarewidth * game.width) * 2 + (2 * padding);
@@ -292,7 +306,8 @@ public class ChessDrawer {
 	public static void drawMoveLine(GraphicsContext gc, DrawableArrow da, int screenx, int screeny) {
 		gc.setLineWidth(3);
 		gc.setStroke(Color.CORNFLOWERBLUE);
-		gc.strokeLine(da.startX - screenx + halfSquare, da.startY - screeny + halfSquare, da.endX - screenx + halfSquare, da.endY - screeny + halfSquare);
+		//gc.strokeLine(da.startX - screenx + halfSquare, da.startY - screeny + halfSquare, da.endX - screenx + halfSquare, da.endY - screeny + halfSquare);
+		gc.strokeLine(coordToX(da.origin,width,height) + halfSquare - screenx , coordToY(da.origin,width,height)  + halfSquare - screeny, coordToX(da.dest,width,height) + halfSquare - screenx, coordToY(da.dest,width,height) + halfSquare - screeny);
 	}
 	
 	public static void drawLine(GraphicsContext gc, DrawableArrow da, int screenx, int screeny) {

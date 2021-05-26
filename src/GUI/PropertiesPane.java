@@ -27,7 +27,7 @@ public class PropertiesPane {
 	private void handleSubmitButton(ActionEvent e) {
 		int sw = Integer.parseInt(squareWidth.getText());
 		int pdg = Integer.parseInt(padding.getText());
-		ChessDrawer.squarewidth = sw;
+		ChessDrawer.setSquareWidth(sw);
 		ChessDrawer.padding = pdg;
 		ChessDrawer.halfPadding = pdg / 2;
 	}

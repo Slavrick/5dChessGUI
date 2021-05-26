@@ -1,6 +1,8 @@
 package engine;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 
 public class Turn {
 	
@@ -33,7 +35,7 @@ public class Turn {
 		}
 	}
 	
-	public Turn(Move[] tmoves) {
+	public Turn(Move[] tmoves) { //I dont even know but this makes the thing not undoable?
 		ArrayList<Move> removedNull = new ArrayList<Move>();
 		for (Move m : tmoves) {
 			if (m != null) {
@@ -131,6 +133,20 @@ public class Turn {
 				
 			}//XXX finish this later
 			return temp;
+		}
+	}
+	
+	private class TLMoveComparator implements Comparator<Move>{
+		//Sorts in ascending order
+		@Override
+		public int compare(Move o1, Move o2) {
+			if(o1.origin.L > o2.origin.L) {
+				return 1;
+			}
+			if(o1.origin.L < o2.origin.L) {
+				return -1;
+			}
+			return 0;
 		}
 	}
 }

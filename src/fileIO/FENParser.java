@@ -319,6 +319,8 @@ public class FENParser {
 	// (<L>T<T>)(Piece)(SAN)>(<L>T<T>)<SAN> for spatial/branching.
 	public static Move getShadMove(GameState g, String move, boolean evenStarters) {
 		Move temp;// Fit this to +-0 later (increment posative and make it so +0 is 1
+		//Replace Characters we dont need to look at, uses regex.
+		move = move.replaceAll("[~!#]", "");
 		if (move.contains("(") && move.indexOf("(") != move.lastIndexOf("(")) {
 			return fullStringToCoord(move, evenStarters);
 		}

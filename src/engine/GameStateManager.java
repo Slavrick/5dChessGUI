@@ -3,6 +3,7 @@ package engine;
 import java.util.ArrayList;
 
 import GUI.MessageEvent;
+import engine.TurnTree.Node;
 
 public class GameStateManager extends GameState{
 	
@@ -12,6 +13,8 @@ public class GameStateManager extends GameState{
 
 	//TODO make this into a tree, that way we can have diff lines.
 	public ArrayList<Turn> turns;
+	public TurnTree turnTree;
+	public Node index;
 	//Represents the current turn that the state is set to. Ie if you play 10 turns, and rewind to turn 5, this should be 5 so as to know how to apply turns etc.
 	public int currTurn;
 	

@@ -1,5 +1,7 @@
 package engine;
 
+import java.util.Comparator;
+
 public class Move implements Comparable<Move>{
 
 	public CoordFour origin;
@@ -152,4 +154,6 @@ public class Move implements Comparable<Move>{
 		}
 		return move;
 	}
+	
+
 }

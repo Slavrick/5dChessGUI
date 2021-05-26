@@ -202,13 +202,13 @@ public class Controller implements MessageListener{
 			public void handle(ScrollEvent event) {
 				//System.out.println(event.getDeltaY());
 				if(event.getDeltaY() > 0) {
-					ChessDrawer.squarewidth += 8;					
+					ChessDrawer.changeSquareWidth(8);					
 				}
 				else {
-					ChessDrawer.squarewidth -= 8;		
+					ChessDrawer.changeSquareWidth(-8);		
 				}
 				if(ChessDrawer.squarewidth < 8) {
-					ChessDrawer.squarewidth = 8;
+					ChessDrawer.setSquareWidth(8);
 				}
 				drawStage();
 				
