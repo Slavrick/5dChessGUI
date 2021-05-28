@@ -81,8 +81,6 @@ public class Controller implements MessageListener{
 	double lastY = 0;
 	double screenX = 0;
 	double screenY = 0;
-	double canvasWidth = 8000;
-	double canvasHeight = 8000;
 	double startDragx;
 	double startDragy;
 	double xchange;
@@ -301,7 +299,7 @@ public class Controller implements MessageListener{
 	@FXML
 	private void handleListEvent(MouseEvent event) throws IOException {
 		int turnIndex = notationList.getSelectionModel().getSelectedIndex();
-		g.setTurn(turnIndex - 1);
+		g.navigateToTurn(turnIndex);
 		this.drawStage();
 		handlePanButton(null);
 	}
@@ -339,6 +337,8 @@ public class Controller implements MessageListener{
 			g = temp;
 			setStatusLabel();
 			setNotationList();
+			ChessDrawer.width = g.width;
+			ChessDrawer.height = g.height;
 			screenX = 0;
 			screenY = 0;
 			drawStage();
@@ -396,10 +396,8 @@ public class Controller implements MessageListener{
 	
 	private void setNotationList() {
 		notationStringArray.clear();
-		notationStringArray.add("Initial Position");
-		for(Turn t : g.turns) {
-			notationStringArray.add(t.toString());
-		}
+		//notationStringArray.add("Initial Position");
+		notationStringArray.addAll(g.turnTree.getLabels());
 	}
 	
 	private void setStatusLabel() {

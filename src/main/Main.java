@@ -15,7 +15,7 @@ import javafx.scene.Parent;
 public class Main extends Application {
 	
 	public static void main(String[] args) {
-		runTests();
+		//runTests();
 		launch();
 	}
 

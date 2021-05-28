@@ -8,10 +8,14 @@ public class Turn {
 	
 	public Move[] moves;
 	public int[] tls;
+	//This is ply, not actual turn num, so 2 would be blacks first turn and 3 would be whites 2nd
+	public int turnNum;
+
+	//XXX implement or delete these fields
 	public int numTL;
 	public boolean color;
-	public int turnNum;
 	public int Tpresent;
+	
 	public static notationMode mode = notationMode.SHAD;
 	public static prefixMode pre = prefixMode.TURN;
 	
@@ -70,12 +74,27 @@ public class Turn {
 		mode = notationMode.SHAD;
 		pre = prefixMode.TURN;
 	}
+	
+	public Turn() {
+		moves = null;
+		tls = null;
+		turnNum = 0;
+	}
 
 	public Move[] getMoves(){
 		return this.moves;
 	}
 	
 	public boolean equals(Turn t) {
+		if(this.moves == null && t.moves == null) {
+			return true;
+		}
+		if(this.moves == null || t.moves == null) {
+			return false;
+		}
+		if(this.moves.length != t.moves.length) {
+			return false;
+		}
 		for(Move ogMove : this.moves) {
 			boolean found = false;
 			for(Move compareTo : t.moves) {
@@ -92,10 +111,13 @@ public class Turn {
 	}
 	
 	public String toString() {
+		if(moves == null) {
+			return "";
+		}
 		String temp = "";
 		switch(pre) {
 		case TURN:
-			temp += turnNum + ".";
+			temp += ((turnNum + 1) / 2) + "" + (turnNum % 2 == 1 ? 'w' : 'b') + ".";
 			break;
 		case NONE:
 		default:

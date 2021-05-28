@@ -11,7 +11,6 @@ public class GameStateManager extends GameState{
 	public Timeline[] originsTL;
 	public int startminTL;
 
-	//TODO make this into a tree, that way we can have diff lines.
 	public ArrayList<Turn> turns;
 	public TurnTree turnTree;
 	public Node index;
@@ -24,7 +23,9 @@ public class GameStateManager extends GameState{
 		this.preMoves = moves;
 		originsTL = origins;
 		this.turns = new ArrayList<Turn>();
-		currTurn = -1;
+		currTurn = 1;
+		turnTree = new TurnTree(new Turn());
+		index = turnTree.root;
 	}
 	
 	public boolean submitMoves() {
@@ -32,6 +33,13 @@ public class GameStateManager extends GameState{
 		if(!opponentCanCaptureKing() && !(presColor == color)) {
 			if(currTurn + 1< turns.size()) {
 				clearFutureTurns();
+			}
+			Turn newTurn = new Turn(turnMoves,turnTLs);
+			newTurn.turnNum = currTurn;
+			if(!TurnTree.contains(index, newTurn)) {
+				index = index.addChild(newTurn);
+			}else {
+				index = TurnTree.findNode(index, newTurn);
 			}
 			currTurn++;
 			turns.add(new Turn( turnMoves, turnTLs));
@@ -70,10 +78,55 @@ public class GameStateManager extends GameState{
 			}
 		}else {
 			while(currTurn > targetTurn) {
+				if(index.getParent() != null) {
+					index = index.getParent();					
+				}
 				undoTurn(turns.get(currTurn).tls);
 				currTurn--;
 			}
 		}
+		return true;
+	}
+	
+	public boolean navigateToTurn(int indexClicked) {//FIXME Transpositions break this so far. ie. if i play e3 Nf6 and a sideline is is Nf3 Nf6, there is ambiguity
+		if(indexClicked == 0) {
+			while(index != turnTree.root) {
+				undoTree();
+			}
+			return true;
+		}
+		ArrayList<Node> nodeList = turnTree.getNodesLinear();
+		Node target = nodeList.get(indexClicked);
+		while(!TurnTree.contains(index, target.getNodeID())) {
+			undoTree();
+		}
+		ArrayList<Integer> navpath = TurnTree.navPath(index, target.getNodeID());
+		//System.out.println(target.getNodeID() + " " + navpath);
+		if(navpath == null) {
+			return true;
+		}
+		for(Integer i : navpath) {
+			progressTree(i);
+		}
+		//printTree(this.turnTree);
+		//System.out.println("Current Index: " + index);
+		return true;
+	}
+	
+	private void undoTree() {
+		if(index.getParent() != null) {
+			undoTurn(index.data.tls);
+			currTurn--;
+			index = index.getParent();					
+		}
+	}
+	
+	private boolean progressTree(int childindex) {
+		if(index.children.size() <= childindex) {
+			return false;
+		}
+		index = index.children.get(childindex);
+		incrementTurn(index.data);
 		return true;
 	}
 
@@ -91,7 +144,7 @@ public class GameStateManager extends GameState{
 		return true;
 	}
 	
-	//MUST BE USED ONLY INCREMENTALLY
+	//MUST BE USED ONLY INCREMENTALLY BY THE NAVBAR FUNCTIONS
 	private boolean incrementTurn(Turn t) {
 		currTurn++;
 		for(Move m : t.moves) {
@@ -106,6 +159,17 @@ public class GameStateManager extends GameState{
 	private void clearFutureTurns() {
 		for(int i = turns.size() - 1 ; i > currTurn ; i--) {
 			turns.remove(i);			
+		}
+	}
+	
+	public static void printTree(TurnTree t) {
+		ArrayList<Node> nodes = t.getNodesLinear();
+		for(Node n : nodes) {
+			System.out.print(n);
+			for(Node child : n.children) {
+				System.out.print(" : " + child);
+			}
+			System.out.println();
 		}
 	}
 }
