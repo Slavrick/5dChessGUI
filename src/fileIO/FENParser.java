@@ -273,8 +273,6 @@ public class FENParser {
 		return new Turn(moves);
 	}
 
-	// Find Castling move XXX finalize this with notation changess
-	// TODO parsing castling needs to change, ie. it should also detect Kg1 as O-O
 	private static Move findCastleMove(GameState g, String token, boolean evenStarters) {
 		boolean side = true;
 		CoordFive temporalOrigin;

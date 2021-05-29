@@ -388,8 +388,10 @@ public class GameState {
 			result = true;
 		}
 		if (this.undoTurn(affectedTimelines)) {
-			color = !color; // This is because the last line changes the color of the thing for some reason
-							// TODO figure this out.
+			color = !color; 
+			// This is because the last line changes the color of the structure,
+			// but it was not changed when the moves were applied, so we need to undo that factor.
+			
 		}
 		return result;
 	}
@@ -763,7 +765,7 @@ public class GameState {
 			allMoves.add(tlMoves);
 		}
 		int curMove[] = new int[allMoves.size()];
-		while (curMove[0] < allMoves.get(0).size()) { // TODO fix this
+		while (curMove[0] < allMoves.get(0).size()) {
 			Move[] moves = new Move[curMove.length];
 			for (int getM = 0; getM < curMove.length; getM++) {
 				moves[getM] = allMoves.get(getM).get(curMove[getM]);

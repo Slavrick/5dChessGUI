@@ -88,7 +88,11 @@ public class GameStateManager extends GameState{
 		return true;
 	}
 	
-	public boolean navigateToTurn(int indexClicked) {//FIXME Transpositions break this so far. ie. if i play e3 Nf6 and a sideline is is Nf3 Nf6, there is ambiguity
+	public boolean navigateToTurn(int indexClicked) {
+		//Happens when the navbar is clicked but on an empty row
+		if(indexClicked == -1) {
+			return true;
+		}
 		if(indexClicked == 0) {
 			while(index != turnTree.root) {
 				undoTree();

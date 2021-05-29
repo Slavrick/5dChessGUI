@@ -27,7 +27,6 @@ public class TurnTree{
     	public Turn data;
         private Node parent;
         public ArrayList<Node> children;
-        //FIXME fix this based on searching for id instead
         private int nodeID;
 		public Node getParent() {
 			return this.parent;
@@ -217,5 +216,16 @@ public class TurnTree{
 	    	nodes.addAll(getNodesLinear(currentNode.children.get(0)));
     	}
     	return nodes;
+    }
+    
+    //Gets path from root to node of data for the node passed
+    public static ArrayList<Turn> getNodeLinePath(Node n){
+    	ArrayList<Turn> line = new ArrayList<Turn>();
+    	Node temp = n;
+    	while(temp.parent != null) {
+    		line.add(temp.data);
+    		temp = temp.parent;
+    	}
+    	return line;
     }
 }

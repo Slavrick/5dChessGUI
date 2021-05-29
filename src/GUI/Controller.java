@@ -38,6 +38,7 @@ import engine.GameStateManager;
 import engine.Move;
 import engine.MoveGenerator;
 import engine.Turn;
+import engine.TurnTree;
 import fileIO.FENExporter;
 import fileIO.FENParser;
 
@@ -296,10 +297,12 @@ public class Controller implements MessageListener{
 		drawStage();
 	}
 	
+	//TODO when navigate, undo any selected pieces etc.
 	@FXML
 	private void handleListEvent(MouseEvent event) throws IOException {
 		int turnIndex = notationList.getSelectionModel().getSelectedIndex();
 		g.navigateToTurn(turnIndex);
+		resetArrowList();
 		this.drawStage();
 		handlePanButton(null);
 	}
@@ -517,10 +520,24 @@ public class Controller implements MessageListener{
 			ChessDrawer.drawAllSquaresV(gc, new Color(1f,0f,0f,.5f ), destinations, selectedSquare.color, g.width, g.height, g.minTL, (int)(screenX - changex), (int)(screenY- changey));			
 		}
 		for(DrawableArrow da : arrows) {
-			if(da.turnnum <= g.currTurn) {
+			if(da.turnnum <= g.currTurn) { //TODO change this it is no longer so needed for the if statement, the same above when this is doen
 				ChessDrawer.drawMoveLine(canvasbox.getGraphicsContext2D(), da, (int)(screenX - changex), (int)(screenY - changey));				
 			}
 		}
+	}
+	
+	private void resetArrowList() {
+		arrows.clear();
+		ArrayList<Turn> line = TurnTree.getNodeLinePath(g.index);
+		boolean color = true;
+		for(int i = line.size() - 1; i >= 0; i-- ) {
+			Turn t = line.get(i);
+			for(Move m : t.moves){
+				arrows.add(new DrawableArrow(m,color, g.width, g.height));				
+			}
+			color = !color;
+		}
+		System.out.println(arrows.size());
 	}
 
 	private void showPromotionPrompt(){
