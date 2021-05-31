@@ -123,9 +123,7 @@ public class MoveGenerator {
 
 	// TODO possibly make a function for only king captures.
 	public static ArrayList<CoordFour> getCaptures(int piece, GameState g, CoordFive source) {
-		boolean unMoved = false;
 		if (piece < 0) {
-			unMoved = true;
 			piece *= -1;
 		}
 		if (piece == Board.piece.WPAWN.ordinal()) {

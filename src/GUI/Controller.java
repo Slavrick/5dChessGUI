@@ -72,6 +72,9 @@ public class Controller implements MessageListener{
 	
 	ArrayList<DrawableArrow> arrows;
 	
+	static final int BOTTOM_HEIGHT = 100;
+	static final int RIGHT_WIDTH = 200;
+	
 	static final double MAX_FONT_SIZE = 20.0;
 	static final int FULL_VIEW = 0;
 	static final int WHITE_VIEW = 1;
@@ -214,14 +217,13 @@ public class Controller implements MessageListener{
 			}
 		});
 		
-		//XXX remove Magic numbers
 		//This makes the canvas resize, there is probably a better way to do this but i haven't found it yet
 		innerLayout.widthProperty().addListener( e-> {
-			this.canvasbox.setWidth(this.innerLayout.getWidth() - 200);
+			this.canvasbox.setWidth(this.innerLayout.getWidth() - RIGHT_WIDTH);
 			drawStage();
 		});
 		innerLayout.heightProperty().addListener( e-> {
-			this.canvasbox.setHeight(this.innerLayout.getHeight() - 100);
+			this.canvasbox.setHeight(this.innerLayout.getHeight() - BOTTOM_HEIGHT);
 			drawStage();
 		});
 		
@@ -297,13 +299,13 @@ public class Controller implements MessageListener{
 		drawStage();
 	}
 	
-	//TODO when navigate, undo any selected pieces etc.
 	@FXML
 	private void handleListEvent(MouseEvent event) throws IOException {
 		int turnIndex = notationList.getSelectionModel().getSelectedIndex();
 		g.navigateToTurn(turnIndex);
 		resetArrowList();
-		this.drawStage();
+		selectedSquare = null;
+		destinations = null;
 		handlePanButton(null);
 	}
 	
@@ -462,7 +464,6 @@ public class Controller implements MessageListener{
 				T -= 3;
 			}
 			CoordFive cf = new CoordFive(file, rank, T + 1, L, viewType == Controller.WHITE_VIEW);
-			System.out.println(cf);
 			return cf;
 		}
 	}
@@ -537,7 +538,6 @@ public class Controller implements MessageListener{
 			}
 			color = !color;
 		}
-		System.out.println(arrows.size());
 	}
 
 	private void showPromotionPrompt(){
