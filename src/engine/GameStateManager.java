@@ -64,6 +64,7 @@ public class GameStateManager extends GameState{
 	}
 	
 	//Set the gamestate to a previous or future turn depending on the int given.
+	//XXX clean this up soon
 	public boolean setTurn(int targetTurn) {
 		undoTempMoves();
 		if(targetTurn < -1 || targetTurn > turns.size()) {
@@ -89,6 +90,8 @@ public class GameStateManager extends GameState{
 	}
 	
 	public boolean navigateToTurn(int indexClicked) {
+		//Need this as the temp move data structure will hold too many moves otherwise
+		this.undoTempMoves();
 		//Happens when the navbar is clicked but on an empty row
 		if(indexClicked == -1) {
 			return true;
