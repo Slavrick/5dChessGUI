@@ -2,6 +2,7 @@ package main;
 
 import test.CoordTester;
 import test.FENParserTest;
+import test.MateTest;
 import test.MoveTester;
 import test.TurnTester;
 import javafx.stage.Stage;
@@ -15,7 +16,7 @@ import javafx.scene.Parent;
 public class Main extends Application {
 	
 	public static void main(String[] args) {
-		//runTests();
+		runTests();
 		launch();
 	}
 
@@ -31,6 +32,8 @@ public class Main extends Application {
 		FENParserTest.testAmbiguityInfoParser();
 		FENParserTest.testShadFEN();
 		TurnTester.testTurnEquals();
+		MateTest.MateSpeedTest();
+		//MateTest.MateCorrectnessTest();
 		//FENExporterTester.testExporter();
 		System.out.println("Done.");
 	}

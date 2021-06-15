@@ -31,6 +31,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import engine.AnnotatedTurn;
 import engine.Board;
 import engine.CoordFive;
 import engine.CoordFour;
@@ -340,6 +341,9 @@ public class Controller implements MessageListener{
 				return;
 			}
 			g = temp;
+			this.arrows.clear();
+			this.destinations = null;
+			this.selectedSquare = null;
 			setStatusLabel();
 			setNotationList();
 			ChessDrawer.width = g.width;
@@ -347,6 +351,7 @@ public class Controller implements MessageListener{
 			screenX = 0;
 			screenY = 0;
 			drawStage();
+			
 		}
 	}
 	
@@ -477,7 +482,6 @@ public class Controller implements MessageListener{
 	}
 
 	public void drawStage() {
-		//System.out.println("n(" + screenX + "," + screenY + ")");
 		GraphicsContext gc = canvasbox.getGraphicsContext2D();
 		gc.clearRect(0, 0, 8000, 8000);
 		switch(viewType) {
@@ -499,6 +503,9 @@ public class Controller implements MessageListener{
 			if(da.turnnum <= g.currTurn) {
 				ChessDrawer.drawMoveLine(canvasbox.getGraphicsContext2D(), da, (int)(screenX), (int)(screenY));			
 			}
+		}
+		if(g.index.data instanceof AnnotatedTurn ) {
+			
 		}
 	}
 

@@ -11,5 +11,4 @@ public class AnnotatedTurn extends Turn{
 	public AnnotatedTurn(ArrayList<Move> turnMoves, ArrayList<Integer> tlEffected) {
 		super(turnMoves, tlEffected);
 	}
-	
 }

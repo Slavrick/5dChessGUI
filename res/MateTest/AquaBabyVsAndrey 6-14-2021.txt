@@ -1,0 +1,21 @@
+[Board "Standard"]
+[Date "6-14-2021"]
+[Result "0-1"]
+[White "AquaBaby"]
+[Black "Andrey"]
+
+1.(0T1)Ng1f3 / (0T1)e7e6 
+2.(0T2)c2c4 / (0T2)Ng8f6 
+3.(0T3)d2d4 / (0T3)h7h6 
+4.(0T4)Nb1c3 / (0T4)Qd8e7 
+5.(0T5)Bc1d2 / (0T5)g7g5 
+6.(0T6)e2e3 / (0T6)Bf8g7 
+7.(0T7)h2h3 / (0T7)Nb8c6 
+8.(0T8)Nc3b5 / (0T8)d7d5 
+9.(0T9)Qd1c2 / (0T9)g5g4 
+10.(0T10)h3g4 / (0T10)Nf6g4 
+11.(0T11)Bd2c3 / (0T11)a7a6 
+12.(0T12)Nb5a3 / (0T12)Bc8d7 
+13.(0T13)Bf1d3 / (0T13)Bg7d4 
+14.(0T14)Nf3d4 / (0T14)Nc6d4 
+15.(0T15)Bc3d4 / (0T15)Qe7b4 

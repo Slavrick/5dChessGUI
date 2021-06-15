@@ -235,6 +235,9 @@ public class GameState {
 	 * @return boolean whether the move was made or not
 	 */
 	public boolean makeMove(Move m) {
+		if(m == null) {
+			return false;
+		}
 		if(m.specialType == Move.NULLMOVE && this.getTimeline(m.origin.L).colorPlayable == this.color) {
 			getTimeline(m.origin.L).addSpatialMove(m, color);
 			return true;
@@ -705,15 +708,25 @@ public class GameState {
 		}
 		//DO a first pass to get rid of any moves that immediatly put you in check
 		for(ArrayList<Move> tlMoves : allMoves) {
-			for(int i = 0; i < tlMoves.size(); i++) {// TODO test if this function works
-				this.makeMove(tlMoves.get(i));
-				CoordFive loc = new CoordFive(0 , 0 , tlMoves.get(i).origin.T, tlMoves.get(i).origin.L, this.color);
+			int i = 0;
+			while(i < tlMoves.size()) {
+				Move m = tlMoves.get(i);
+				if(m == null) {
+					i++;
+					continue;
+				}
+				this.makeMove(m);
+				CoordFive loc = new CoordFive(0 , 0 , m.origin.T, m.origin.L, !this.color);
+				if(!this.color) {
+					loc.T++;
+				}
 				if(MoveGenerator.getCheckingPieces(this, loc).size() > 0) {
+					//System.out.println("removed move");
 					tlMoves.remove(i);
+					i--;//I assume I need this, but maybe not.
 				}
 				this.undoTempMoves();
-				tlMoves.remove(i);
-				i--;//I assume I need this, but maybe not.
+				i++;
 			}
 		}
 		int curMove[] = new int[allMoves.size()];
