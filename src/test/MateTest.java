@@ -54,6 +54,7 @@ public class MateTest {
 		boolean mate = g.isMated();
 		if(mate != result) {
 			System.out.println("Failed on file: " + fileLocation);
+			return;
 		}
 		assert mate == result;
 		long endTime = System.nanoTime();

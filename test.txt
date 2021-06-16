@@ -1,8 +1,0 @@
-[board "custom"]
-[size "8x8"]
-[r*nbqk*bnr*/p*p*p*p*p*p*p*p*/8/8/8/8/P*P*P*P*P*P*P*P*/R*NBQK*BNR*:0:1:w]
-
-1b.(0T1)Ng1f3  / (0T1)Ng8f6  
-2w.(0T2)g2g3  / (0T2)g7g6  
-2w.(0T2)g2g4  / (0T2)g7g5  
-2b.(0T3)h2h3  / (0T3)h7h5  
