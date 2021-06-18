@@ -15,7 +15,8 @@
 		       	<MenuItem text="Load Game (PGN5 only)" fx:id="open" onAction="#loadShadGame"/>
 		       	<MenuItem text="    Save Game        " onAction="#saveGameState"/>
 		    </Menu>
-	        <Menu text="Edit" onAction="#handleMenu">
+	        <Menu text="Hints">
+	        	<MenuItem text="    Find Legal Move(opens popup)       " onAction="#getTurnHint"/>
 	        </Menu>
 	       	<Menu text="Options">
 		       	<MenuItem text="   Properties       "  onAction="#setProperties"/>
@@ -34,7 +35,6 @@
 				<Button text="Submit Turn" onAction="#handleSubmitButton" />	
 				<Button text="Undo Turn" onAction="#handleUndoButton" />
 				<Button text="~~" onAction="#handlePanButton" />
-				
 				<RadioButton fx:id="fullView"  onAction="#handleRadioView" text="Full View" />
 				<RadioButton fx:id="whiteView" onAction="#handleRadioView" text="White View" />
 				<RadioButton fx:id="blackView" onAction="#handleRadioView" text="Black View" />

@@ -684,8 +684,6 @@ public class GameState {
 		}
 	}
 
-	// TODO set this to return a turn so we can hint, check if this moves properly.
-	// TODO Finish this function, Make it so that not all permutations between spatial moves are made.
 	public boolean isMated() {
 		determineActiveTLS();
 		calcPresent();
@@ -707,6 +705,81 @@ public class GameState {
 			allMoves.add(tlMoves);
 		}
 		//DO a first pass to get rid of any moves that immediatly put you in check
+		//TODO this is too reductive, as its possible a branching move checks frome the origin TL to the branched TL(i think) and therefore, a different order would
+		// allow the move to exist, this is simply supposed to look at single moves (like moving the king into the fire of a bishop etc.)
+		for(ArrayList<Move> tlMoves : allMoves) {
+			int i = 0;
+			while(i < tlMoves.size()) {
+				Move m = tlMoves.get(i);
+				if(m == null) {
+					i++;
+					continue;
+				}
+				this.makeMove(m);
+				CoordFive loc = new CoordFive(0 , 0 , m.origin.T, m.origin.L, !this.color);
+				if(!this.color) {
+					loc.T++;
+				}
+				if(MoveGenerator.getCheckingPieces(this, loc).size() > 0) {
+					//System.out.println("removed move");
+					tlMoves.remove(i);
+					i--;//I assume I need this, but maybe not.
+				}
+				this.undoTempMoves();
+				i++;
+			}
+		}
+		int curMove[] = new int[allMoves.size()];
+		while (curMove[0] < allMoves.get(0).size()) {
+			Move[] moves = new Move[curMove.length];
+			for (int getM = 0; getM < curMove.length; getM++) {
+				moves[getM] = allMoves.get(getM).get(curMove[getM]);
+			}
+			if (this.validatePermutationsReduced(moves)){
+			//if(this.validateAllPermutations(moves)) {
+				//System.out.println(Arrays.toString(moves));
+				return false;
+			}
+			int cursor = 0;
+			while (true) {
+				curMove[cursor]++;
+				if (curMove[cursor] >= allMoves.get(cursor).size()) {
+					curMove[cursor] = 0;
+					cursor++;
+					if (cursor >= curMove.length) {
+						return true;
+					}
+				} else {
+					break;
+				}
+			}
+		}
+		return true;
+	}
+	
+	//This is a copy of the mate detection, but returns a move if exists,
+	public Turn findLegalTurn() {
+		determineActiveTLS();
+		calcPresent();
+		//if the opponent can already capture the king, then the player has no legal turns from current position
+		if (opponentCanCaptureKing()) {
+			return null;
+		}
+		// Get all the moves from the current place 
+		ArrayList<ArrayList<Move>> allMoves = new ArrayList<ArrayList<Move>>();
+		for (int i = minTL; i <= maxTL; i++) {
+			ArrayList<Move> tlMoves = new ArrayList<Move>();
+			Timeline t = getTimeline(i);
+			if (t.colorPlayable != color) {
+				continue;
+			}
+			// the null move marks that the timeline is unmoved. Ie this is the case for
+			// certain things.(inactive, future timelines etc.)
+			tlMoves.add(null);
+			tlMoves.addAll(MoveGenerator.getAllMoves(this, color, t.Tend, i));
+			allMoves.add(tlMoves);
+		}
+		//do a first pass to get rid of any moves that immediatly put you in check
 		for(ArrayList<Move> tlMoves : allMoves) {
 			int i = 0;
 			while(i < tlMoves.size()) {
@@ -737,7 +810,7 @@ public class GameState {
 			}
 			if (this.validateAllPermutations(moves)) {
 				//System.out.println(Arrays.toString(moves));
-				return false;
+				return new Turn(moves);
 			}
 			int cursor = 0;
 			while (true) {
@@ -746,14 +819,14 @@ public class GameState {
 					curMove[cursor] = 0;
 					cursor++;
 					if (cursor >= curMove.length) {
-						return true;
+						return null;
 					}
 				} else {
 					break;
 				}
 			}
 		}
-		return true;
+		return null;
 	}
 
 	// returns true if the position is checkmate.
@@ -837,6 +910,69 @@ public class GameState {
 			}
 		}
 		return false;
+	}
+	
+	//this function simply reduces the amount of turns validated by not permuting spatial moves in relation to each other
+	public boolean validatePermutationsReduced(Move[] moves) {
+		if (validateTurn(moves)) {
+			return true;
+		}
+		ArrayList<Move> spatialMoves = new ArrayList<Move>();
+		ArrayList<Move> nonSpatialMoves = new ArrayList<Move>();
+		for(Move m: moves ) {
+			if(m == null) {
+				continue;
+			}
+			else if(m.type == Move.SPATIALMOVE) {
+				spatialMoves.add(m);
+			}
+			else {
+				nonSpatialMoves.add(m);
+			}
+		}
+		//The null will be a marker, so that we know where to input the spatial moves.
+		//we permute all nonspatial moves as required to generate all unique turns
+		//this optimization reduces duplicate turns createdd
+		nonSpatialMoves.add(null);
+		Move[] nonSpatialArray = nonSpatialMoves.toArray(new Move[0]);
+		boolean plus = false;
+		int[] c = new int[nonSpatialArray.length];
+		for (int i = 0; i < nonSpatialArray.length;) {
+			if (c[i] < i) {
+				if (i % 2 == 0) {
+					swap(nonSpatialArray, 0, i);
+
+				} else {
+					swap(nonSpatialArray, c[i], i);
+				}
+				if (validatePermutation(nonSpatialArray, spatialMoves.toArray(new Move[0]))) {
+					return true;
+				}
+				plus = !plus;
+				c[i]++;
+				i = 0;
+			} else {
+				c[i] = 0;
+				i++;
+			}
+		}
+		return false;
+	}
+	
+	public boolean validatePermutation(Move[] nonSpatial, Move[] spatial) {
+		Move[] allMoves = new Move[nonSpatial.length + spatial.length - 1];
+		int nonspatialIndex = 0;
+		for(int i = 0; i < allMoves.length; i++) {
+			if(nonSpatial[nonspatialIndex] == null) {
+				nonspatialIndex++;
+				for(Move m: spatial) {
+					allMoves[i++] = m;
+				}
+			}else {
+				allMoves[i] = nonSpatial[nonspatialIndex++];				
+			}
+		}
+		return validateTurn(allMoves);
 	}
 
 	public static void swap(Object[] array, int index1, int index2) {

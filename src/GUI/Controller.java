@@ -7,6 +7,7 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.control.Label;
@@ -391,6 +392,21 @@ public class Controller implements MessageListener{
 			viewType = BLACK_VIEW;
 		}
 		drawStage();
+	}
+	
+	//TODO get this in another thread
+	@FXML
+	private void getTurnHint(ActionEvent event) {
+		Alert a = new Alert(AlertType.INFORMATION);
+		Turn t = g.findLegalTurn();
+		if(t != null) {
+			a.setContentText("The Turn is: " + t);			
+		}
+		else {
+			a.setContentText("It appears you are in mate!");			
+		}
+		a.show();
+		
 	}
 
 	//================================================================================================================
