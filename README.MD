@@ -1,3 +1,4 @@
+Update: Please see my new project <https://github.com/Slavrick/Godot5DChess> Which is built in Godot, with a better and more friendly UI, and more portable (hopefully)
 
 # Purpose
 
